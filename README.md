@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-markdown
 # Programming for Kids
-
-![Programming for Kids](https://example.com/path/to/image.png)
-=======
-# Programming for Kids
-
->>>>>>> b5e1e44e231fc8003aa5b1006af88fa68b483bd6
 
 ## Table of Contents
 

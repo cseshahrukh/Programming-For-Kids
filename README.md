@@ -32,6 +32,7 @@ Welcome to Programming for Kids! This project aims to provide a fun and interact
 ## Technologies Used
 
 - Django: Backend framework for building the web application.
+- Flask: Backend framework for building the web application.
 - React: Frontend library for creating interactive user interfaces.
 - Docker: Containerization to manage application deployment.
 - PostgreSQL: Database for storing user information and course data.

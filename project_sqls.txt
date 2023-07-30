@@ -1,0 +1,118 @@
+-- ************************************** Course
+CREATE TABLE Course
+(
+ course_id         int8range NOT NULL,
+ course_name       varchar(50) NOT NULL,
+ course_level      varchar(50) NOT NULL,
+ short_description varchar(500) NULL,
+ CONSTRAINT PK_1 PRIMARY KEY ( course_id )
+);
+
+-- ************************************** Course_Prerequisite
+
+CREATE TABLE Course_Prerequisite
+(
+ course_id       int8range NOT NULL,
+ prerequisite_id int8range NOT NULL,
+ CONSTRAINT FK_4 FOREIGN KEY ( course_id ) REFERENCES Course ( course_id ),
+ CONSTRAINT FK_5 FOREIGN KEY ( prerequisite_id ) REFERENCES Course ( course_id )
+);
+
+CREATE INDEX FK_1 ON Course_Prerequisite
+(
+ course_id
+);
+
+CREATE INDEX FK_2 ON Course_Prerequisite
+(
+ prerequisite_id
+);
+
+
+
+-- ************************************** Student
+
+CREATE TABLE Student
+(
+ student_id           int8range NOT NULL,
+ name                 varchar(50) NOT NULL,
+ school_name          varchar(50) NULL,
+ level                varchar(50) NOT NULL,
+ current_course       int8range NULL,
+ total_points         int8range NOT NULL,
+ currentweekly_module int8range NOT NULL,
+ CONSTRAINT PK_1 PRIMARY KEY ( student_id ),
+ CONSTRAINT FK_6 FOREIGN KEY ( currentweekly_module ) REFERENCES WeeklyModules ( weeklymodule_id )
+);
+
+CREATE INDEX FK_1 ON Student
+(
+ currentweekly_module
+);
+
+
+-- ************************************** Student_Course
+
+CREATE TABLE Student_Course
+(
+ student_id     int8range NOT NULL,
+ course_id      int8range NOT NULL,
+ achieved_score int8range NOT NULL,
+ is_completed   boolean NOT NULL,
+ CONSTRAINT FK_2 FOREIGN KEY ( student_id ) REFERENCES Student ( student_id ),
+ CONSTRAINT FK_3 FOREIGN KEY ( course_id ) REFERENCES Course ( course_id )
+);
+
+CREATE INDEX FK_1 ON Student_Course
+(
+ student_id
+);
+
+CREATE INDEX FK_2 ON Student_Course
+(
+ course_id
+);
+
+
+
+-- ************************************** WeeklyModules
+
+CREATE TABLE WeeklyModules
+(
+ weeklymodule_id    int8range NOT NULL,
+ week_no            int8range NOT NULL,
+ module_name        varchar(50) NOT NULL,
+ module_description varchar(500) NULL,
+ course_id          int8range NOT NULL,
+ CONSTRAINT PK_1 PRIMARY KEY ( weeklymodule_id ),
+ CONSTRAINT FK_1 FOREIGN KEY ( course_id ) REFERENCES Course ( course_id )
+);
+
+CREATE INDEX FK_1 ON WeeklyModules
+(
+ course_id
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

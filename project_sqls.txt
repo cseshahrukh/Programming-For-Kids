@@ -51,6 +51,23 @@ CREATE INDEX FK_1 ON Student
 );
 
 
+-- ************************************** Student_Login
+
+CREATE TABLE Student_Login
+(
+ student_id_1 int8range NOT NULL,
+ password     varchar(50) NOT NULL,
+ CONSTRAINT PK_1 PRIMARY KEY ( student_id ),
+ CONSTRAINT FK_1 FOREIGN KEY ( student_id ) REFERENCES Student ( student_id )
+);
+
+CREATE INDEX FK_1 ON Student_Login
+(
+ student_id
+);
+
+
+
 -- ************************************** Student_Course
 
 CREATE TABLE Student_Course

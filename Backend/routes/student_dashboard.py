@@ -1,7 +1,11 @@
 # dashboard.py
-from backendapp import app
+from Backend.routes import app
 from flask import jsonify,request
-from backendapp.models import Course, CoursePrerequisite,Student,StudentCourse
+from Backend.models import Course, Student, StudentCourse, CoursePrerequisite
+
+def printBondhu():
+    print("Bondhu")
+
 
 @app.route('/api/dashboard/newuser', methods=['GET'])
 def get_recommended_courses():

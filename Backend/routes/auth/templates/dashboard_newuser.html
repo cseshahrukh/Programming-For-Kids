@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recommended Courses</title>
+</head>
+<body>
+    <h1>Recommended Courses for New Users</h1>
+    <div id="courses"></div>
+    <script>
+        // Fetch the recommended courses from the backend API
+        fetch('/dashboard/newuser')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.recommended_courses) {
+                    // If there are recommended courses, display them on the page
+                    const coursesDiv = document.getElementById('courses');
+                    data.recommended_courses.forEach(course => {
+                        const courseDiv = document.createElement('div');
+                        courseDiv.innerHTML = `
+                            <h2>${course.course_name}</h2>
+                            <p>Level: ${course.course_level}</p>
+                            <p>Description: ${course.short_description}</p>
+                        `;
+                        coursesDiv.appendChild(courseDiv);
+                    });
+                } else {
+                    // If no recommended courses are found, display an error message
+                    const coursesDiv = document.getElementById('courses');
+                    coursesDiv.innerHTML = '<p>No recommended courses found for new users.</p>';
+                }
+            })
+            .catch(error => {
+                // Display any error that occurred during the API call
+                const coursesDiv = document.getElementById('courses');
+                coursesDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+            });
+    </script>
+</body>
+</html>

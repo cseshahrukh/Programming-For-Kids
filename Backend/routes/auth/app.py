@@ -13,11 +13,14 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 
 
+
 import os
 import psycopg2
 from dotenv import load_dotenv
 
 app = Flask(__name__)
+
+
 
 
 api = Api(app)
@@ -26,15 +29,18 @@ api = Api(app)
 load_dotenv()
 db_url = os.getenv('DATABASE_URL')
 
-# Connect to database
-conn = psycopg2.connect(db_url, sslmode='prefer')
-
 # Configure SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # For authentication
 app.config['SECRET_KEY'] = 'thisisasecretkey'
+
+
+# Connect to database
+conn = psycopg2.connect(db_url, sslmode='prefer')
+
+
 bcrypt = Bcrypt(app)
 # Initialize SQLAlchemy
 db = SQLAlchemy(app)
@@ -54,18 +60,18 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
-    password = db.Column(db.String(80), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
 
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+                           InputRequired(), Length(min=2, max=20)], render_kw={"placeholder": "Username"})
 
     password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+                             InputRequired(), Length(min=2, max=20)], render_kw={"placeholder": "Password"})
 
     submit = SubmitField('Register')
 
@@ -79,10 +85,10 @@ class RegisterForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+                           InputRequired(), Length(min=2, max=20)], render_kw={"placeholder": "Username"})
 
     password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+                             InputRequired(), Length(min=2, max=20)], render_kw={"placeholder": "Password"})
 
     submit = SubmitField('Login')
 
@@ -97,7 +103,8 @@ def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        hashed_password = form.password.data
+        #hashed_password = form.password.data
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8", "ignore")
         #hashed_password = bcrypt.generate_password_hash(form.password.data)
         #hashed_password = hashed_password.decode("utf-8", "ignore")
         
@@ -116,8 +123,11 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user:
-            #if bcrypt.check_password_hash(user.password, form.password.data):
-            if user.password == form.password.data:
+            print('user password is '+user.password)
+            print('form entered password is '+bcrypt.generate_password_hash(form.password.data).decode("utf-8", "ignore"))
+            print('database password is '+user.password)
+            if bcrypt.check_password_hash(user.password, form.password.data):
+            #if user.password == form.password.data:
                 login_user(user)
                 return redirect(url_for('dashboard'))
     return render_template('login.html', form=form)

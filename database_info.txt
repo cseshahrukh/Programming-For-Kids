@@ -1,0 +1,6 @@
+postgres://cse:YKPuNTa6GJ2OLLkE12weXYDoex5m3gUM@dpg-cj7496k5kgrc73b13dj0-a.singapore-postgres.render.com/prog
+postgres://cse:YKPuNTa6GJ2OLLkE12weXYDoex5m3gUM@dpg-cj7496k5kgrc73b13dj0-a.singapore-postgres.render.com/prog
+username : cse 
+databasename: prog
+pass: YKPuNTa6GJ2OLLkE12weXYDoex5m3gUM
+host: dpg-cj7496k5kgrc73b13dj0-a.singapore-postgres.render.com

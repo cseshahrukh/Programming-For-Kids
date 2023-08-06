@@ -112,8 +112,7 @@ CREATE INDEX FK_1 ON WeeklyModules
 
 
 
-
-
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 
 

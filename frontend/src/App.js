@@ -4,6 +4,7 @@ import Mcq from './Pages/MCQs';
 import ProgrammingProb from './Pages/ProgrammingProblem';
 import ReadingMaterial from './Pages/readingMaterials';
 import './App.css';
+import Compiler from './Pages/compiler';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
         {/* <AddCourses /> */}
         {/* <ReadingMaterial /> */}
         {/* <Mcq /> */}
-        <ProgrammingProb />
+        {/* <ProgrammingProb /> */}
+        <Compiler />
         
       </body>
     </div>

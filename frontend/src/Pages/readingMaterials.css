@@ -1,0 +1,124 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #272c34;
+  min-height: 5vh; /* Adjust the min-height value to make the header shorter */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+  
+  .reading-materials-container {
+  
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #ccc;
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+    align-content: center;
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .reading-materials {
+    display: flex;
+    flex: 90%;
+  }
+  
+  .section-content {
+    flex: 0 0 calc(90% - 40px);
+  }
+  
+  .section {
+    border: 1px solid #ccc;
+    text-align: left;
+    border: transparent;
+    margin: 10px;
+  }
+  
+  .next-button {
+    margin-top: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+
+  
+  .next-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .next-button:focus {
+    outline: none;
+  }
+  
+  .no-interaction {
+    pointer-events: none; /* Disable any and all options of clicking on the Table of Contents */
+  }
+
+  .mcq-button {
+    margin-top: 10px;
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+  }  
+  
+  .table-of-contents {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px; /* Move the Table of Contents to the right */
+    border-left: 1px solid #ccc; /* Add a vertical line between the sections and the Table of Contents */
+    padding-left: 10px;
+  }
+  
+  .section-title {
+    cursor: pointer;
+    margin: 5px 0;
+  }
+  
+  .highlighted {
+    color: #007BFF;
+    font-weight: bold;
+  }
+  
+  .greyed-out {
+    color: #ccc;
+  }

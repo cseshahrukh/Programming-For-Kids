@@ -1,108 +1,79 @@
 
-from flask import Flask, render_template, url_for, redirect
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
-from flask_bcrypt import Bcrypt
-
-app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = 'thisisasecretkey'
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+@app.route('/api/courses/progress', methods=['GET'])
+def get_course_progress():
+    # Get the student_id of the current user (you can get it from the authentication)
+    student_id = 1  # Replace this with the actual method to get the student_id
+    student_id=current_user.id
+    print("Student ID is ", student_id)
+    # Check if the student exists
+    student = Student.query.get(student_id)
+    if not student:
+        return jsonify({'error': 'Student not found.'}), 404
+
+    # Get the current course and current weekly module for the student
+    current_course_id = student.current_course
+    current_weekly_module_id = student.currentweekly_module
+
+    if not current_course_id or not current_weekly_module_id:
+        return jsonify({'error': 'Course progress not found.'}), 404
+
+    return jsonify({
+        'course_id': current_course_id,
+        'currentweekly_module': current_weekly_module_id
+    }), 200
 
 
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), nullable=False, unique=True)
-    password = db.Column(db.String(80), nullable=False)
+@app.route('/api/courses/progress', methods=['POST'])
+def complete_weekly_module():
+    # Get the student_id of the current user (you can get it from the authentication)
+    student_id = 1  # Replace this with the actual method to get the student_id
+    student_id=current_user.id
+    # Check if the student exists
+    student = Student.query.get(student_id)
+    if not student:
+        return jsonify({'error': 'Student not found.'}), 404
+
+    # Check if the current weekly module is valid and can be incremented
+    current_module_id = student.currentweekly_module
+    if current_module_id is None:
+        return jsonify({'error': 'Invalid module completion operation.'}), 400
+
+    # Increment the current weekly module by one
+    student.currentweekly_module += 1
+    db.session.commit()
+
+    return jsonify({'message': 'Successfully completed the module.'}), 200
 
 
-class RegisterForm(FlaskForm):
-    username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+@app.route('/api/courses/update_course_completion', methods=['POST'])
+def update_course_completion():
 
-    password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+    student_id = 1  # Replace this with the actual method to get the student_id
+    current_user.username
 
-    submit = SubmitField('Register')
+    # Check if the student exists
+    student = Student.query.get(student_id)
+    if not student:
+        return jsonify({'error': 'Student not found.'}), 404
 
-    def validate_username(self, username):
-        existing_user_username = User.query.filter_by(
-            username=username.data).first()
-        if existing_user_username:
-            raise ValidationError(
-                'That username already exists. Please choose a different one.')
+    course_id = student.current_course
 
+    if not course_id:
+        return jsonify({'error': 'Student has no current course to complete.'}), 400
 
-class LoginForm(FlaskForm):
-    username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+    # Update the current_course and currentweekly_module fields in the Student table
+    student.current_course = None
+    student.currentweekly_module = None
+    db.session.commit()
 
-    password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+    # Update the is_completed field in the StudentCourse table
+    student_course = StudentCourse.query.filter_by(student_id=student_id, course_id=course_id).first()
+    if not student_course:
+        return jsonify({'error': 'Student course not found.'}), 404
 
-    submit = SubmitField('Login')
+    student_course.is_completed = True
+    db.session.commit()
 
-
-@app.route('/')
-def home():
-    print('Inside home function')
-    return render_template('home.html')
-
-
-@app.route('/login/', methods=['GET', 'POST'])
-def login():
-    print('Inside login function')
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            if bcrypt.check_password_hash(user.password, form.password.data):
-                login_user(user)
-                return redirect(url_for('dashboard'))
-    return render_template('login.html', form=form)
-
-
-@app.route('/dashboard/', methods=['GET', 'POST'])
-@login_required
-def dashboard():
-    return render_template('dashboard.html')
-
-
-@app.route('/logout/', methods=['GET', 'POST'])
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-
-@ app.route('/register/', methods=['GET', 'POST'])
-def register():
-    form = RegisterForm()
-
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for('login'))
-
-    return render_template('register.html', form=form)
-
-
-if __name__ == "__main__":
-    print('Hello')
-    app.run(debug=True)
+    return jsonify({'message': 'Successfully completed the course.'}), 200

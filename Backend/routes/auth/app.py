@@ -218,11 +218,15 @@ def register():
         #hashed_password = hashed_password.decode("utf-8", "ignore")
         
         new_user = User(username=form.username.data, password=hashed_password)
-
-        new_student = Student(name=form.name.data, school_name=form.school_name.data, level=form.class_Study.data, total_points=0)
+        #print("New user id is ", new_user.id)
+        #new_student = Student(name=form.name.data, school_name=form.school_name.data, level=form.class_Study.data, total_points=0)
         
         print('Inside register function before adding to database')
         db.session.add(new_user)
+        user=User.query.filter_by(
+            username=form.name.data).first()
+        print("user id is " + str(user.id))
+        new_student = Student(student_id=user.id, name=form.name.data, school_name=form.school_name.data, level=form.class_Study.data, total_points=0)
         db.session.add(new_student)
 
         db.session.commit()
@@ -302,6 +306,8 @@ def get_recommended_courses():
     print("Before Printing recom courses")
     print(recommended_courses)
 
+    #print 
+
 
     #if not recommended_courses:
         #return jsonify({'error': 'No recommended courses found for new users.'}), 404
@@ -313,10 +319,11 @@ def get_recommended_courses():
         return render_template('dashboard_newuser.html')
 
 
-@app.route('/api/dashboard/incomplete', methods=['GET'])
+@app.route('/dashboard/incomplete', methods=['GET'])
 @login_required
 def get_incomplete_courses():
     student_id = 1  # We have to replace this with the student_id of the current user (we can get it from the authentication)
+    student_id=current_user.id
 
     student = Student.query.get(student_id)
     if not student:
@@ -347,7 +354,7 @@ def get_incomplete_courses():
 
 
 
-@app.route('/api/dashboard/completed', methods=['GET'])
+@app.route('/dashboard/completed', methods=['GET'])
 @login_required
 def get_completed_courses():
     student_id = 1  # Replace this with the student_id of the current user (you can get it from the authentication)
@@ -377,7 +384,7 @@ def get_completed_courses():
 
 
 
-@app.route('/api/search-course', methods=['GET'])
+@app.route('/search-course', methods=['GET'])
 @login_required
 def search_course():
     keyword = request.args.get('keyword', '').strip()
@@ -404,12 +411,12 @@ def search_course():
 
     return jsonify({'courses': response_courses}), 200
 
-@app.route('/api/courses/progress', methods=['GET'])
+@app.route('/progress', methods=['GET'])
 @login_required
 def get_course_progress():
     # Get the student_id of the current user (you can get it from the authentication)
     student_id = 1  # Replace this with the actual method to get the student_id
-    student_id=current_user.id
+    #student_id=current_user.id
     print("Student ID is ", student_id)
     # Check if the student exists
     student = Student.query.get(student_id)
@@ -428,16 +435,19 @@ def get_course_progress():
         'currentweekly_module': current_weekly_module_id
     }), 200
 
+
 @app.route('/api/courses/<int:course_id>/register', methods=['POST'])
 def enroll_student(course_id):
-    data = request.json
+    #data = request.json
 
-    if not data or 'course_id' not in data:
-        return jsonify({'error': 'Invalid course registration request.'}), 400
+    #if not data or 'course_id' not in data:
+        #return jsonify({'error': 'Invalid course registration request.'}), 400
+    
+    
 
     student_id = 1  # Replace this with the student_id of the current user (you can get it from the authentication)
-    course_id = data['course_id']
-
+    #course_id = data['course_id']
+    student_id=current_user.id
     # Check if the course exists and the student is not already registered for this course
     course = Course.query.get(course_id)
     if not course:
@@ -458,84 +468,6 @@ def enroll_student(course_id):
 
     return jsonify({'message': 'Successfully registered for the course.'}), 200
 
-
-
-@app.route('/api/courses/progress', methods=['GET'])
-def get_course_progress():
-    # Get the student_id of the current user (you can get it from the authentication)
-    student_id = 1  # Replace this with the actual method to get the student_id
-    student_id=current_user.id
-    print("Student ID is ", student_id)
-    # Check if the student exists
-    student = Student.query.get(student_id)
-    if not student:
-        return jsonify({'error': 'Student not found.'}), 404
-
-    # Get the current course and current weekly module for the student
-    current_course_id = student.current_course
-    current_weekly_module_id = student.currentweekly_module
-
-    if not current_course_id or not current_weekly_module_id:
-        return jsonify({'error': 'Course progress not found.'}), 404
-
-    return jsonify({
-        'course_id': current_course_id,
-        'currentweekly_module': current_weekly_module_id
-    }), 200
-
-
-@app.route('/api/courses/progress', methods=['POST'])
-def complete_weekly_module():
-    # Get the student_id of the current user (you can get it from the authentication)
-    student_id = 1  # Replace this with the actual method to get the student_id
-
-    # Check if the student exists
-    student = Student.query.get(student_id)
-    if not student:
-        return jsonify({'error': 'Student not found.'}), 404
-
-    # Check if the current weekly module is valid and can be incremented
-    current_module_id = student.currentweekly_module
-    if current_module_id is None:
-        return jsonify({'error': 'Invalid module completion operation.'}), 400
-
-    # Increment the current weekly module by one
-    student.currentweekly_module += 1
-    db.session.commit()
-
-    return jsonify({'message': 'Successfully completed the module.'}), 200
-
-
-@app.route('/api/courses/update_course_completion', methods=['POST'])
-def update_course_completion():
-
-    student_id = 1  # Replace this with the actual method to get the student_id
-    current_user.username
-
-    # Check if the student exists
-    student = Student.query.get(student_id)
-    if not student:
-        return jsonify({'error': 'Student not found.'}), 404
-
-    course_id = student.current_course
-
-    if not course_id:
-        return jsonify({'error': 'Student has no current course to complete.'}), 400
-
-    # Update the current_course and currentweekly_module fields in the Student table
-    student.current_course = None
-    student.currentweekly_module = None
-    db.session.commit()
-
-    # Update the is_completed field in the StudentCourse table
-    student_course = StudentCourse.query.filter_by(student_id=student_id, course_id=course_id).first()
-    if not student_course:
-        return jsonify({'error': 'Student course not found.'}), 404
-
-    student_course.is_completed = True
-    db.session.commit()
-
-    return jsonify({'message': 'Successfully completed the course.'}), 200
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

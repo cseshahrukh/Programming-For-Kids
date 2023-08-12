@@ -1,0 +1,163 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #272c34;
+  /* min-height: 100vh; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+  
+  .mcq-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .mcq-section {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    font-size: 20px;
+  }
+  
+  .question-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  
+  .mcq-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .mcq-options input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    background-origin: content-box;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  
+  .mcq-options input[type="radio"]:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .mcq-options input[type="radio"]::before {
+    content: "";
+    display: block;
+    width: 70%;
+    height: 70%;
+    margin: 15%;
+    border-radius: 50%;
+    background-color: #007bff;
+    transform: scale(0);
+    transition: transform 0.3s;
+  }
+  
+  .mcq-options input[type="radio"]:checked::before {
+    transform: scale(1);
+  }
+  
+  .mcq-options input[type="radio"]:focus {
+    outline: none;
+  }
+  
+  .option-label {
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #ccc; /* Add border around each option */
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s;
+  }
+  
+  .option-radio {
+    flex-shrink: 0;
+    margin-right: 10px;
+    margin-left: 0;
+    width: 1em;
+    height: 1em;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+  }
+  
+  .option-text {
+    flex-grow: 1;
+  }
+  
+  .option-label:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .mcq-button-container {
+    margin-top: 20px;
+  }
+  
+  .mcq-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+  }
+  
+
+  
+  .result-text {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #28a745; /* Green color for correct answer */
+  }
+  
+  .green {
+    background-color: #28a745 !important;
+  }
+  
+  .red {
+    background-color: #dc3545 !important;
+  }
+  

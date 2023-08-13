@@ -21,6 +21,7 @@ export default function AddCourse() {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control the visibility of the modal
   const [selectedWeek, setSelectedWeek] = useState(null); // State to keep track of the selected week index
   const [selectedLesson, setSelectedLesson] = useState(null); // State to keep track of the selected lesson index
+  const [collectedData, setCollectedData] = useState(null);
 
   const handleAddWeek = () => {
     // Add a new empty week to the weeks state
@@ -110,61 +111,94 @@ export default function AddCourse() {
     setWeeks(updatedWeeks);
   };
 
-  const handleData = () => {
-    console.log("DONE")
-  }
+  const handleData = async () => {
+    const collectedData = weeks.map((week, weekIndex) => ({
+      weekNumber: weekIndex + 1,
+      lessons: week.lessons.map((lesson, lessonIndex) => ({
+        lessonNumber: lessonIndex + 1,
+        readingMaterials: lesson.readingMaterials,
+        mcqs: lesson.mcqs.map((mcq) => ({
+          question: mcq.question,
+          choices: mcq.choices,
+          correctAnswer: mcq.correctAnswer,
+        })),
+        programmingProblems: lesson.programmingProblems,
+      })),
+    }));
+    setCollectedData(collectedData);
+
+    console.log(collectedData)
+    try {
+      const response = await fetch('/save_data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(collectedData),
+      });
+
+      if (response.ok) {
+        console.log('Data sent successfully');
+      } else {
+        console.error('Error sending data');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
 
   return (
     <div className="App">
       <header className="App-header">
         <h1 style={{ color: '#ffffff' }}>Add Course Materials</h1>
         {/* Display the form fields for each week */}
-        </header>
-        <div className="body-container">
-          <div className="week-tabs-container">
-            {weeks.map((week, weekIndex) => (
-              <div key={weekIndex} className="week-tab-container">
-                <div className="week-tab-label">
-                  <div className="week-tab-button" onClick={() => handleLessonClick(weekIndex)}>
-                    Week {weekIndex + 1}
-                  </div>
-                </div>
-                <div className="week-tab-content">
-                  {week.lessons.map((lesson, lessonIndex) => (
-                    <div
-                      key={lessonIndex}
-                      className="lesson-tab"
-                      onClick={() => handleLessonClick(weekIndex, lessonIndex)} // Call the handleLessonClick function when a lesson is clicked
-                    >
-                      <label className="lesson-tab-label">
-                        Lesson {lessonIndex + 1}
-                      </label>
-                      <div className="lesson-tab-content">
-                        {/* Rest of the code for Reading Materials, MCQs, and Programming Problem Questions */}
-                      </div>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => handleAddLesson(weekIndex)}
-                    className="btn btn-secondary btn-lg btn-block mb-3"
-                  >
-                    <i className="bi bi-plus"></i> Add Another Lesson
-                  </button>
-                  <br />
+      </header>
+      <div className="body-container">
+        <div className="week-tabs-container">
+          {weeks.map((week, weekIndex) => (
+            <div key={weekIndex} className="week-tab-container">
+              <div className="week-tab-label">
+                <div className="week-tab-button" onClick={() => handleLessonClick(weekIndex)}>
+                  Week {weekIndex + 1}
                 </div>
               </div>
-            ))}
-          </div>
-          <div className="button-space" ></div>
-          <button onClick={handleAddWeek} className="btn btn-primary btn-lg btn-block">
-            <i className="bi bi-plus"></i> Add Another Week
-          </button>
-          <div className="button-space" ></div>
-          <div className="button-space" ></div>
-          <div className="done-button-space" ></div>
-          <button onClick={handleData} className="btn btn-primary">
-                DONE
-          </button>
+              <div className="week-tab-content">
+                {week.lessons.map((lesson, lessonIndex) => (
+                  <div
+                    key={lessonIndex}
+                    className="lesson-tab"
+                    onClick={() => handleLessonClick(weekIndex, lessonIndex)} // Call the handleLessonClick function when a lesson is clicked
+                  >
+                    <label className="lesson-tab-label">
+                      Lesson {lessonIndex + 1}
+                    </label>
+                    <div className="lesson-tab-content">
+                      {/* Rest of the code for Reading Materials, MCQs, and Programming Problem Questions */}
+                    </div>
+                  </div>
+                ))}
+                <button
+                  onClick={() => handleAddLesson(weekIndex)}
+                  className="btn btn-secondary btn-lg btn-block mb-3"
+                >
+                  <i className="bi bi-plus"></i> Add Another Lesson
+                </button>
+                <br />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="button-space" ></div>
+        <button onClick={handleAddWeek} className="btn btn-primary btn-lg btn-block">
+          <i className="bi bi-plus"></i> Add Another Week
+        </button>
+        <div className="button-space" ></div>
+        <div className="button-space" ></div>
+        <div className="done-button-space" ></div>
+        <button onClick={handleData} className="btn btn-primary">
+          DONE
+        </button>
 
         {/* Modal for Lesson content */}
         <Modal

@@ -1,26 +1,31 @@
-# Import flask and datetime module for showing date and time
-from flask import Flask, jsonify
-
+from flask import Flask, request, jsonify
+from logging import FileHandler,WARNING
 
 import datetime
 
 x = datetime.datetime.now()
 
-# Initializing flask app
-app = Flask(__name__)
+app = Flask(__name__, template_folder = 'template')
 
 # Route for seeing a data
-@app.route('/data')
-def get_time():
+# @app.route('/data')
+# def get_time():
     
-    data = {
-        'project_name': "Programming For Kidz",
-        'members': "Md. Shahrukh Islam\nMd. Sohidul Islam\nMd. Ahanaf Tahmid",
-        'first_code_date': datetime.datetime.now(),
-        'front_end': "React",
-        'back_end': "Flask"
-    }
-    return jsonify(data)
+#     data = {
+#         'project_name': "Programming For Kidz",
+#         'members': "Md. Shahrukh Islam\nMd. Sohidul Islam\nMd. Ahanaf Tahmid",
+#         'first_code_date': datetime.datetime.now(),
+#         'front_end': "React",
+#         'back_end': "Flask"
+#     }
+#     return jsonify(data)
+
+@app.route('/save_data', methods=['POST'])
+def save_data():
+    data = request.json  # Get the JSON data sent from the frontend
+    # Process and store the data as needed
+    print(data)
+    return jsonify(message="Data received successfully")
 
 	
 # Running app

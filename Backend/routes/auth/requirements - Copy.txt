@@ -29,3 +29,11 @@ pip install python-dotenv
 flask db init 
 flask db migrate 
 flask db upgrade
+
+
+For frontend 
+npm install react-scripts --savenpm 
+npm install react-modal
+npm install bootstrap
+npm install bootstrap-icons
+npm install react-split-pane

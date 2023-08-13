@@ -40,7 +40,7 @@ CREATE TABLE Student
  level                varchar(50) NOT NULL,
  current_course       int8range NULL,
  total_points         int8range NOT NULL,
- currentweekly_module int8range NOT NULL,
+ currentweekly_module int8range NULL,
  CONSTRAINT PK_1 PRIMARY KEY ( student_id ),
  CONSTRAINT FK_6 FOREIGN KEY ( currentweekly_module ) REFERENCES WeeklyModules ( weeklymodule_id )
 );
@@ -112,8 +112,7 @@ CREATE INDEX FK_1 ON WeeklyModules
 
 
 
-
-
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 
 

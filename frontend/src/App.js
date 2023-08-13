@@ -14,7 +14,7 @@ function App() {
       <body>
         <AddCourses />
         {/* <ReadingMaterial /> */}
-        {/* <Mcq /> */}
+        <Mcq />
         {/* <ProgrammingProb /> */}
         {/* <Compiler /> */}
         

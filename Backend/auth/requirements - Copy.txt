@@ -25,6 +25,8 @@ pip install flask_restful
 pip install flask_migrate
 pip install psycopg2
 pip install python-dotenv
+pip install flask_restx
+pip install flask_cors
 
 flask db init 
 flask db migrate 

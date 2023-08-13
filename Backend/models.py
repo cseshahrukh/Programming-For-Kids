@@ -1,4 +1,11 @@
-from backendapp import db
+from Backend import db
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), nullable=False, unique=True)
+    password = db.Column(db.String(200), nullable=False)
+
+
 
 class Course(db.Model):
     # Define the columns for the Course table

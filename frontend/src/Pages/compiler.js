@@ -5,30 +5,30 @@ export default class Compiler extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      input: localStorage.getItem('input')||``,
+      input: localStorage.getItem('input') || ``,
       output: ``,
-      language_id:localStorage.getItem('language_Id')|| 2,
+      language_id: localStorage.getItem('language_Id') || 2,
       user_input: ``,
     };
   }
-  input = (event) => { 
+  input = (event) => {
     event.preventDefault();
     this.setState({ input: event.target.value });
-    localStorage.setItem('input', event.target.value) 
+    localStorage.setItem('input', event.target.value)
   };
-  
+
   userInput = (event) => {
     event.preventDefault();
     this.setState({ user_input: event.target.value });
   };
-  
-  language = (event) => {  
+
+  language = (event) => {
     event.preventDefault();
     this.setState({ language_id: event.target.value });
-    localStorage.setItem('language_Id',event.target.value)
-   
+    localStorage.setItem('language_Id', event.target.value)
+
   };
-  
+
   submit = async (e) => {
     e.preventDefault();
     let outputText = document.getElementById("output");
@@ -40,7 +40,7 @@ export default class Compiler extends Component {
         method: "POST",
         headers: {
           "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-          "x-rapidapi-key": "3da06143b6mshc35c4a4d63d2515p11fc9djsn207a4b3da767", 
+          "x-rapidapi-key": "3da06143b6mshc35c4a4d63d2515p11fc9djsn207a4b3da767",
           "content-type": "application/json",
           accept: "application/json",
         },
@@ -51,7 +51,7 @@ export default class Compiler extends Component {
         }),
       }
     );
-    
+
     outputText.innerHTML += "Submission Created ...\n";
     const jsonResponse = await response.json();
     let jsonGetSolution = {
@@ -71,14 +71,14 @@ export default class Compiler extends Component {
           method: "GET",
           headers: {
             "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-            "x-rapidapi-key": "3da06143b6mshc35c4a4d63d2515p11fc9djsn207a4b3da767", 
+            "x-rapidapi-key": "3da06143b6mshc35c4a4d63d2515p11fc9djsn207a4b3da767",
             "content-type": "application/json",
           },
         });
         jsonGetSolution = await getSolution.json();
       }
     }
-    
+
     if (jsonGetSolution.stdout) {
       const output = atob(jsonGetSolution.stdout);
       outputText.innerHTML = "";
@@ -93,8 +93,8 @@ export default class Compiler extends Component {
       outputText.innerHTML += `\n Error :${compilation_error}`;
     }
   };
-  
-  render() { 
+
+  render() {
     return (
       <>
         <div className="row container-fluid">
@@ -144,10 +144,8 @@ export default class Compiler extends Component {
             </div>
           </div>
         </div>
-        <div className="mt-2 ml-5">
-          <span className="badge badge-primary heading my-2 ">
-            <i className="fas fa-user fa-fw fa-md"></i> User Input
-          </span>
+        <div className="mt-2 ml-5 user-input-container">
+          <i className="fas fa-user fa-fw fa-md"></i> User Input
           <br />
           <textarea id="input" onChange={this.userInput}></textarea>
         </div>

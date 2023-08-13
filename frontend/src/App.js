@@ -12,11 +12,11 @@ function App() {
       <header className="App-header">
       </header>
       <body>
-        <AddCourses />
+        {/* <AddCourses /> */}
         {/* <ReadingMaterial /> */}
-        <Mcq />
+        {/* <Mcq /> */}
         {/* <ProgrammingProb /> */}
-        {/* <Compiler /> */}
+        <Compiler />
         
       </body>
     </div>

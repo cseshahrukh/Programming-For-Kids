@@ -31,3 +31,8 @@
   .language {
     width: 150px;
   }
+
+  .user-input-container {
+    margin-left: -25%; /* Adjust this value to control the left margin */
+    margin-right: 25%;
+  }

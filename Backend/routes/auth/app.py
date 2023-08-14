@@ -74,6 +74,7 @@ class Course(db.Model):
     course_name = db.Column(db.String(50), nullable=False)
     course_level = db.Column(db.String(50), nullable=False)
     short_description = db.Column(db.String(500))
+    teacher_id = db.Column(db.Integer, db.ForeignKey('Teacher.teacher_id'), nullable=False)
 
     def __repr__(self):
         return f"Course(course_id={self.course_id}, course_name={self.course_name})"
@@ -85,7 +86,7 @@ class CoursePrerequisite(db.Model):
 
     # Define the columns for the Course_Prerequisite table
     course_id= db.Column(db.Integer, primary_key=True, nullable=False)
-    prerequisite_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    prerequisite_id = db.Column(db.Integer, db.ForeignKey("Course.course_id"), primary_key=True, nullable=False)
 
      #Define foreign key constraints
     #__table_args__ = (
@@ -121,8 +122,10 @@ class StudentCourse(db.Model):
     # Define the table name (optional, by default it uses the class name in lowercase)
     __tablename__ = 'Student_Course'
     # Define the columns for the Student_Course table
-    student_id = db.Column(db.Integer, primary_key=True, nullable=False)
-    course_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("Student.student_id"), primary_key=True, nullable=False)
+    course_id = db.Column(db.Integer, db.ForeignKey("Course.course_id"), primary_key=True, nullable=False)
+    #student_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    #course_id = db.Column(db.Integer, primary_key=True, nullable=False)
     achieved_score = db.Column(db.Integer, nullable=False)
     is_completed = db.Column(db.Boolean, nullable=False)
 

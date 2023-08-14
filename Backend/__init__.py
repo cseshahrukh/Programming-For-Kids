@@ -19,4 +19,4 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-from auth.routes import *
+from Backend.routes import *

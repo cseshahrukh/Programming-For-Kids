@@ -1,14 +1,14 @@
 from flask import request,jsonify
 from sqlalchemy import func
-from auth import db
-from auth import api
+from Backend import db
+from Backend import api
 import datetime
 from flask_restx import Resource
 #from flask_jwt_extended import jwt_required, get_jwt_identity
 #from your_auth_module import jwt
 
-from auth.models.student import * 
-from auth.models.course import * 
+from Backend.models.student import * 
+from Backend.models.course import * 
 
 #this class is for adding new comment into database
 class Create_course(Resource):

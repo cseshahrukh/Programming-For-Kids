@@ -1,4 +1,4 @@
-from auth import db
+from Backend import db
 class Student(db.Model):
     # Define the columns for the Student table
     student_id = db.Column(db.Integer, primary_key=True, nullable=False)

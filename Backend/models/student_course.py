@@ -1,4 +1,4 @@
-from backend import db
+from Backend import db
 
 class StudentCourse(db.Model):
     # Define the table name (optional, by default it uses the class name in lowercase)

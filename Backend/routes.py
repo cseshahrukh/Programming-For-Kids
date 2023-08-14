@@ -7,7 +7,7 @@
 # from newsfeed.apis.Delete_post import *
 # from newsfeed.apis.Get_own_posts import *
 # from newsfeed.apis.Edit_comment import *
-from auth.apis.create_course import *
+from Backend.apis.create_course import *
 
 Backend = api.namespace('api/backend')
 

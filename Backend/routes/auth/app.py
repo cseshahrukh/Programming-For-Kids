@@ -75,27 +75,11 @@ class Course(db.Model):
     course_level = db.Column(db.String(50), nullable=False)
     short_description = db.Column(db.String(500))
     teacher_id = db.Column(db.Integer, db.ForeignKey('Teacher.teacher_id'), nullable=False)
+    prerequisite_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
 
     def __repr__(self):
         return f"Course(course_id={self.course_id}, course_name={self.course_name})"
     
-    
-class CoursePrerequisite(db.Model):
-    # Define the table name (optional, by default it uses the class name in lowercase)
-    __tablename__ = 'Course_Prerequisite'
-
-    # Define the columns for the Course_Prerequisite table
-    course_id= db.Column(db.Integer, primary_key=True, nullable=False)
-    prerequisite_id = db.Column(db.Integer, db.ForeignKey("Course.course_id"), primary_key=True, nullable=False)
-
-     #Define foreign key constraints
-    #__table_args__ = (
-        #db.ForeignKeyConstraint(['CoursePrerequisite.course_id'], ['Course.course_id']),
-        #db.ForeignKeyConstraint([prerequisite_id], ['Course.course_id']),
-    #)
-
-    def __repr__(self):
-        return f"CoursePrerequisite(course_id={self.course_id}, prerequisite_id={self.prerequisite_id})"
 
 
 class Student(db.Model):
@@ -317,13 +301,12 @@ def get_recommended_courses():
     recommended_courses = []
 
     for course in beginner_courses:
-        if not CoursePrerequisite.query.filter_by(course_id=course.course_id).first():
-            recommended_courses.append({
-                'course_id': course.course_id,
-                'course_name': course.course_name,
-                'course_level': course.course_level,
-                'short_description': course.short_description
-            })
+        recommended_courses.append({
+            'course_id': course.course_id,
+            'course_name': course.course_name,
+            'course_level': course.course_level,
+            'short_description': course.short_description
+        })
     
     print("Before Printing recom courses")
     print(recommended_courses)

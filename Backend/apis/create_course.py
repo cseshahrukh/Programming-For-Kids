@@ -22,6 +22,7 @@ class Create_course(Resource):
 
         title = request.json.get('title')
         description = request.json.get('description')
+        course_level = request.json.get('course_level')
 
         if not title or not description:
             return jsonify({'error': 'Title and description are required'}), 400
@@ -29,12 +30,16 @@ class Create_course(Resource):
         new_course = Course(
             course_name=title,
             short_description=description,
-            teacher_id=current_teacher_id
+            teacher_id=current_teacher_id, 
+            course_level=course_level
         )
 
         db.session.add(new_course)
         db.session.commit()
 
-        return jsonify({'message': 'Course created successfully'}), 201
+        response = jsonify({'message': 'Course created successfully'})
+        response.status_code = 200 # or 400 or whatever
+        return response
+        
 
         

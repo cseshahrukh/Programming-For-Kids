@@ -8,11 +8,12 @@
 # from newsfeed.apis.Get_own_posts import *
 # from newsfeed.apis.Edit_comment import *
 from Backend.apis.create_course import *
-
+from Backend.apis.get_course import *
 Backend = api.namespace('api/backend')
 
 Backend.add_resource(Create_course,'/create_course')
-
+Backend.add_resource(Get_course, '/get_course')  # Add a new endpoint for the get method
+#Backend.add_resource(Get_course,'/get_course')
 # Newsfeed.add_resource(Get_all_post,'/get_posts') 
 # Newsfeed.add_resource(Get_Comment_of_a_post,'/<post_id>/get_comments')
 # Newsfeed.add_resource(Add_post,'/add_post')

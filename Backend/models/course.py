@@ -11,3 +11,7 @@ class Course(db.Model):
     prerequisite_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
     def __repr__(self):
         return f"Course(course_id={self.course_id}, course_name={self.course_name})"
+    
+    def json(self):
+        print("inside course json")
+        return {'course_id': self.course_id, 'course_name': self.course_name, 'course_level': self.course_level, 'short_description': self.short_description, 'teacher_id': self.teacher_id, 'prerequisite_id': self.prerequisite_id}

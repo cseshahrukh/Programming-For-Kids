@@ -9,6 +9,7 @@ from flask_restx import Resource
 
 from Backend.models.student import * 
 from Backend.models.course import * 
+from Backend.models.teacher import *
 
 #this class is for adding new comment into database
 class Create_course(Resource):
@@ -26,8 +27,8 @@ class Create_course(Resource):
             return jsonify({'error': 'Title and description are required'}), 400
 
         new_course = Course(
-            title=title,
-            description=description,
+            course_name=title,
+            short_description=description,
             teacher_id=current_teacher_id
         )
 

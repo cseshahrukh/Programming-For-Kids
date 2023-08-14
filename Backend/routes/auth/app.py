@@ -62,6 +62,7 @@ def load_user(user_id):
 
 
 class User(db.Model, UserMixin):
+    __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=False)
@@ -97,6 +98,7 @@ class CoursePrerequisite(db.Model):
 
 
 class Student(db.Model):
+    __tablename__ = 'Student'
     # Define the columns for the Student table
     student_id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String(50), nullable=False)
@@ -133,6 +135,27 @@ class StudentCourse(db.Model):
     def __repr__(self):
         return f"StudentCourse(student_id={self.student_id}, course_id={self.course_id})"
 
+
+class Teacher(db.Model):
+    __tablename__ = 'Teacher'
+    
+    teacher_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    subject = db.Column(db.String(50), nullable=False)
+    
+    # Define a one-to-many relationship between Teacher and Course
+    #courses = db.relationship('Course', backref='teacher', lazy=True) 
+    courses = db.relationship('Course', backref='Teacher', cascade='all, delete')
+
+    def __repr__(self):
+        return f"Teacher(teacher_id={self.teacher_id}, name={self.name}, subject={self.subject})"
+    
+    def json(self):
+        return {
+            'teacher_id': self.teacher_id,
+            'name': self.name,
+            'subject': self.subject
+        }
 
 
 class WeeklyModules(db.Model):
@@ -460,28 +483,6 @@ def enroll_student(course_id):
 
 
 
-@app.route('/api/courses/progress', methods=['GET'])
-def get_course_progress():
-    # Get the student_id of the current user (you can get it from the authentication)
-    student_id = 1  # Replace this with the actual method to get the student_id
-    student_id=current_user.id
-    print("Student ID is ", student_id)
-    # Check if the student exists
-    student = Student.query.get(student_id)
-    if not student:
-        return jsonify({'error': 'Student not found.'}), 404
-
-    # Get the current course and current weekly module for the student
-    current_course_id = student.current_course
-    current_weekly_module_id = student.currentweekly_module
-
-    if not current_course_id or not current_weekly_module_id:
-        return jsonify({'error': 'Course progress not found.'}), 404
-
-    return jsonify({
-        'course_id': current_course_id,
-        'currentweekly_module': current_weekly_module_id
-    }), 200
 
 
 @app.route('/api/courses/progress', methods=['POST'])

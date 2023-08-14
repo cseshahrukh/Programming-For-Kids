@@ -9,9 +9,9 @@
 # from newsfeed.apis.Edit_comment import *
 from auth.apis.create_course import *
 
-Newsfeed = api.namespace('api/newsfeed')
+Backend = api.namespace('api/backend')
 
-Newsfeed.add_resource(Create_course,'/create_course')
+Backend.add_resource(Create_course,'/create_course')
 
 # Newsfeed.add_resource(Get_all_post,'/get_posts') 
 # Newsfeed.add_resource(Get_Comment_of_a_post,'/<post_id>/get_comments')

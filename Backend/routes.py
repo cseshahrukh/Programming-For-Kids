@@ -8,10 +8,17 @@
 # from newsfeed.apis.Get_own_posts import *
 # from newsfeed.apis.Edit_comment import *
 from Backend.apis.create_course import *
+from Backend.apis.student_dashboard import *
+from Backend.apis.get_course import *
 
 Backend = api.namespace('api/backend')
 
 Backend.add_resource(Create_course,'/create_course')
+Backend.add_resource(GetNewuserRecommCourses,'/dashboard/new_course_recommendation')
+Backend.add_resource(Get_course,'/get_course')
+Backend.add_resource(GetCurrentCourse,'/dashboard/current_course')
+Backend.add_resource(GetCourseSearch,'/dashboard/search_course/<string:keyword>')
+
 
 # Newsfeed.add_resource(Get_all_post,'/get_posts') 
 # Newsfeed.add_resource(Get_Comment_of_a_post,'/<post_id>/get_comments')

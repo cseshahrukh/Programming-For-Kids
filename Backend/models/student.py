@@ -1,5 +1,6 @@
 from Backend import db
 class Student(db.Model):
+    __tablename__='Student'
     # Define the columns for the Student table
     student_id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String(50), nullable=False)

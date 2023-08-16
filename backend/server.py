@@ -91,6 +91,37 @@ def fetch_courses():
     all_courses = course.query.all()
 
 
+@app.route('/courses/mcqs/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
+def get_mcqs(course_id, week_no, lesson_id):
+    # Query the database for MCQ questions
+    queried_mcqs = mcqs.query.filter_by(course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
+
+    if not queried_mcqs:
+        response=jsonify({'error': 'No MCQ questions found.'})
+        response.status_code=404
+        return response
+
+    # Limit to 3 questions if available, otherwise return all
+    selected_mcqs = queried_mcqs[:3] if len(queried_mcqs) >= 3 else queried_mcqs
+
+    # Convert the selected MCQs to a list of dictionaries
+    mcq_list = [
+        {
+            'question': mcq.question,
+            'option_1': mcq.option_1,
+            'option_2': mcq.option_2,
+            'option_3': mcq.option_3,
+            'option_4': mcq.option_4,
+            'correct': mcq.correct
+        }
+        for mcq in selected_mcqs
+    ]
+
+    response=jsonify({'mcqs': mcq_list})
+    response.status_code=200
+    return response
+
+
 # Running app
 if __name__ == '__main__':
     app.run(debug=True)

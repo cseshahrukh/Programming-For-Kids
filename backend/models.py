@@ -26,6 +26,7 @@ class problems(db.Model):
     examples = db.Column(db.String, nullable=False)
 
 class mcqs(db.Model):
+    __tablename__="mcqs"
     course_id = db.Column(db.Integer, primary_key=True)
     week_no = db.Column(db.Integer, primary_key=True)
     lesson_id = db.Column(db.Integer, primary_key=True)
@@ -35,6 +36,10 @@ class mcqs(db.Model):
     option_3 = db.Column(db.String, nullable=False)
     option_4 = db.Column(db.String, nullable=False)
     correct = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f"mcqs(course_id={self.course_id}, week_no={self.week_no}, lesson_id={self.lesson_id}, question={self.question})"
+
 
 class weekly_modules(db.Model):
     course_id = db.Column(db.Integer, primary_key=True)

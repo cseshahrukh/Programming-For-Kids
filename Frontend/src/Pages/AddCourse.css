@@ -1,0 +1,107 @@
+.button-space {
+  margin-top: 2rem; /* Adjust the value as needed */
+}
+
+.done-button-space {
+  margin-top: 5rem; /* Adjust the value as needed */
+}
+
+.body-container {
+  margin-top: 2rem;
+}
+
+.week-tabs-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.week-tab-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 300px; /* Set a fixed width for each Week container */
+  border-radius: 5px;
+}
+
+/* Style the week tab label like a header */
+.week-tab-label {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+/* Style the week tab button */
+.week-tab-button {
+  cursor: pointer;
+  padding: 10px;
+}
+
+.lesson-tab.selected {
+  background-color: #f0f0f0;
+}
+
+
+/* Adjust the layout inside the modal */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.reading-materials-section textarea {
+  box-sizing: border-box; /* Add box-sizing to include padding and border in the width */
+}
+
+.mcq-section {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.mcq-question-wrapper {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.mcq-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mcq-choice {
+  flex: 1 1 50%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 400px;
+}
+
+.reading-materials-section textarea {
+  width: 100%;
+}
+
+/* Make the Programming Problem text box span the entire width */
+.programming-problem-section textarea {
+  width: 100%;
+}
+
+
+.programming-problem-section {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Additional styling for section headers */
+.section-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+

@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import './MCQs.css';
 import Navbar from "./Navbar";
+import Footer from './Footer';
 
 let currentNum = 1;
 
@@ -112,6 +113,9 @@ const Mcq = () => {
             </button>
             {resultText && <p className="result-text">{resultText}</p>}
           </div>
+        </div>
+        <div>
+          <Footer />
         </div>
       </div>
     </div>

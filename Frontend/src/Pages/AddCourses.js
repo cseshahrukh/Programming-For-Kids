@@ -4,6 +4,7 @@ import './AddCourse.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 function AddCourse() {
   const [weeks, setWeeks] = useState([
@@ -319,6 +320,9 @@ function AddCourse() {
             </div>
           )}
         </Modal>
+        <div>
+          <Footer />
+        </div>
       </div>
     </div>
   );

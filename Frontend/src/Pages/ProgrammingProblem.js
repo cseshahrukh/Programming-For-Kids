@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './ProgrammingProblem.css';
 import Navbar from './Navbar';
+import Footer from './Footer';
+import CodeEditor from './CodeEditor';
 
 const ProgrammingProb = () => {
-  const [leftWidth, setLeftWidth] = useState('50%');
-
-  const handleDrag = (size) => {
-    setLeftWidth(size);
-  };
 
   return (
     <div className="App">
@@ -24,31 +21,37 @@ const ProgrammingProb = () => {
           </div>
           <div className="test-case-container">
             <h3>Test Cases</h3>
-            <div className="test-case">
-              <p><strong>Input:</strong></p>
-              <pre>[2, 4, 6, 2, 5]</pre>
-              <p><strong>Output:</strong></p>
-              <pre>13</pre>
-            </div>
-            <div className="test-case">
-              <p><strong>Input:</strong></p>
-              <pre>[5, 1, 1, 5]</pre>
-              <p><strong>Output:</strong></p>
-              <pre>10</pre>
+            <div className="test-cases">
+              <div className="test-case">
+                <div className="test-input">
+                  <p><strong>Input:</strong></p>
+                  <pre>[2, 4, 6, 2, 5]</pre>
+                </div>
+                <div className="test-output">
+                  <p><strong>Output:</strong></p>
+                  <pre>13</pre>
+                </div>
+              </div>
+              <div className="test-case">
+                <div className="test-input">
+                  <p><strong>Input:</strong></p>
+                  <pre>[5, 1, 1, 5]</pre>
+                </div>
+                <div className="test-output">
+                  <p><strong>Output:</strong></p>
+                  <pre>10</pre>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div className="right-pane">
           <div className="code-editor">
-            <h2>Code Editor</h2>
-            <textarea className="code-input" placeholder="Write your code here..." />
-          </div>
-          <div className="output-container">
-            <h2>Output</h2>
-            <pre className="output">Compiled Output will appear here...</pre>
+            <CodeEditor />
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

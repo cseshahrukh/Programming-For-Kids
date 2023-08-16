@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './readingMaterials.css';
 import Navbar from "./Navbar";
+import Footer from './Footer';
 
 const sampleReadingMaterials = [
   `Section 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -85,6 +86,9 @@ const ReadingMat = () => {
           Go To MCQ
         </button>
       )}
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 };

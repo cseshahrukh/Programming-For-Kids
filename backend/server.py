@@ -1,6 +1,7 @@
 from flask import request, jsonify, render_template
 from models import *
 from dbInserters import *
+from compiler import *
 
 def problemTextFormatter(input_text):
 
@@ -85,6 +86,34 @@ def save_data():
 def index():
     materials = reading_materials.query.all()
     return render_template('index.html', students=materials)
+
+@app.route('/compile', methods=['POST'])
+def handle_submission():
+    try:
+        data = request.get_json()
+        code = data.get('code')
+        language = data.get('selectedLanguage')
+        
+        if code:
+            response = compile(code, language)
+            if response['stderr'] == '':
+                response_data = {
+                    'status': 'Accepted'
+                }
+            else:
+                response_data = {
+                    'status': 'Rejected',
+                    'error': response['stderr']
+                }
+        else:
+            response_data = {
+                'status': 'Error: No code provided'
+            }
+        
+        return jsonify(response_data)
+    
+    except Exception as e:
+        return jsonify({'status': f'Error: {str(e)}'})
 
 @app.route('/courses')
 def fetch_courses():

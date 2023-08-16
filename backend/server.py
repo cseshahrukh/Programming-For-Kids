@@ -121,6 +121,28 @@ def get_mcqs(course_id, week_no, lesson_id):
     response.status_code=200
     return response
 
+
+
+@app.route('/courses/reading_materials/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
+def get_reading_materials(course_id, week_no, lesson_id):
+    materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
+
+    if not materials:
+        response=jsonify({'error': 'No reading materials found.'})
+        response.status_code=404
+        return response
+
+    response_materials = []
+    for material in materials:
+        response_materials.append({
+            'section_title': material.section_title,
+            'section_content': material.section_content
+        })
+
+    response=jsonify({'reading_materials': response_materials})
+    response.status_code=200
+    return response
+
 # Create the API endpoint for retrieving problems based on criteria
 @app.route('/courses/problems/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_problems(course_id, week_no, lesson_id):

@@ -116,22 +116,22 @@ def handle_submission():
 
 @app.route('/courses')
 def fetch_courses():
-    all_courses = course.query.all()
+    all_courses = Course.query.all()
 
 
 @app.route('/courses/check-course/<string:course_name>', methods=['GET'])
 def check_course(course_name):
     course_name = course_name.strip()
-
+    
     # Check if a course with the given course_name exists (case-insensitive)
     existing_course = Course.query.filter(func.lower(Course.course_name) == course_name.lower()).first()
 
     if existing_course:
-        response=jsonify({'message': 'Course with the same name exists.'})
+        response=jsonify({'message': 'Course with the same name exists.','courseExists':'true'})
         response.status_code=200
         return response
     else:
-        response=jsonify({'message': 'Course with the same name does not exist.'})
+        response=jsonify({'message': 'Course with the same name does not exist.','courseExists':'false'})
         response.status_code=404
         return response
 
@@ -226,26 +226,6 @@ def get_problems(course_id, week_no, lesson_id):
     return jsonify({'problems': problems_list})
 
 
-
-    
-@app.route("/check-course", methods=["POST"])
-def check_course():
-    data = request.get_json()
-    course_name = data.get("courseName")
-    courseExists = 'true'
-
-    ## Check if a similarly named course already exists in Database
-
-    existing_courses = ["Math", "History", "Science"]
-
-    if course_name in existing_courses:
-        message = f"Course '{course_name}' already exists."
-        courseExists = "true"
-    else:
-        message = f"Course does not exist."
-        courseExists = "false"
-
-    return jsonify({"message": message, "courseExists" : courseExists})
 
 # Running app
 if __name__ == '__main__':

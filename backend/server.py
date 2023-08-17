@@ -120,6 +120,24 @@ def fetch_courses():
     all_courses = course.query.all()
 
 
+@app.route('/courses/check-course/<string:course_name>', methods=['GET'])
+def check_course(course_name):
+    course_name = course_name.strip()
+
+    # Check if a course with the given course_name exists (case-insensitive)
+    existing_course = Course.query.filter(func.lower(Course.course_name) == course_name.lower()).first()
+
+    if existing_course:
+        response=jsonify({'message': 'Course with the same name exists.'})
+        response.status_code=200
+        return response
+    else:
+        response=jsonify({'message': 'Course with the same name does not exist.'})
+        response.status_code=404
+        return response
+
+
+
 @app.route('/courses/mcqs/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_mcqs(course_id, week_no, lesson_id):
     # Query the database for MCQ questions
@@ -207,6 +225,9 @@ def get_problems(course_id, week_no, lesson_id):
         })
 
     return jsonify({'problems': problems_list})
+
+
+
     
 # Running app
 if __name__ == '__main__':

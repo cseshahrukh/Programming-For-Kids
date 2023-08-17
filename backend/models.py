@@ -60,6 +60,6 @@ class course(db.Model):
     course_level = db.Column(db.String(50), nullable=False)
     short_description = db.Column(db.String(500))
     proper_description = db.Column(db.String)
-    # teacher_id = db.Column(db.Integer, db.ForeignKey('Teacher.teacher_id'), nullable=False)
-    # prerequisite_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
+    teacher_id = db.Column(db.Integer, db.ForeignKey('Teacher.teacher_id'), nullable=False)
+    prerequisite_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
 

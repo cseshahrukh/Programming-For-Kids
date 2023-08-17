@@ -53,13 +53,8 @@ class weekly_modules(db.Model):
 
 class course(db.Model):
 
-    __tablename__ = 'Course'
-    # Define the columns for the Course table
     course_id = db.Column(db.Integer, primary_key=True, nullable=False)
     course_name = db.Column(db.String(50), nullable=False)
     course_level = db.Column(db.String(50), nullable=False)
     short_description = db.Column(db.String(500))
     proper_description = db.Column(db.String)
-    # teacher_id = db.Column(db.Integer, db.ForeignKey('Teacher.teacher_id'), nullable=False)
-    # prerequisite_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
-

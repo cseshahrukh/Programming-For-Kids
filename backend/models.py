@@ -51,19 +51,13 @@ class weekly_modules(db.Model):
     lesson_id = db.Column(db.Integer, primary_key=True)
     topics = db.Column(db.String)
 
-<<<<<<< HEAD
 class Course(db.Model):
     __tablename__ = 'Course'
     # Define the columns for the Course table
-=======
-class course(db.Model):
-
->>>>>>> 5d7c062e007e45df0e11fc12b912a95f741e43e9
     course_id = db.Column(db.Integer, primary_key=True, nullable=False)
     course_name = db.Column(db.String(50), nullable=False)
     course_level = db.Column(db.String(50), nullable=False)
     short_description = db.Column(db.String(500))
-<<<<<<< HEAD
     #proper_description = db.Column(db.String)
     #teacher_id = db.Column(db.Integer, db.ForeignKey('Teacher.teacher_id'), nullable=False)
     #prerequisite_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
@@ -73,6 +67,3 @@ class course(db.Model):
     def __repr__(self):
         return f"Course(course_id={self.course_id}, course_name={self.course_name})"
 
-=======
-    proper_description = db.Column(db.String)
->>>>>>> 5d7c062e007e45df0e11fc12b912a95f741e43e9

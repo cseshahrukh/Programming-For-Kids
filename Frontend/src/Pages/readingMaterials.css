@@ -122,3 +122,7 @@
   .greyed-out {
     color: #ccc;
   }
+
+  .code-editor {
+    margin-top: 5%;
+  }

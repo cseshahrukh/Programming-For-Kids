@@ -22,7 +22,7 @@ function Navbar() {
                             <a className="nav-link active" aria-current="page" href="/dashboard">Dashboard</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link active" href="/compiler">Compiler</a>
+                            <a className="nav-link active" href="/problems">Playground</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link active" href="/mcq">MCQ</a>

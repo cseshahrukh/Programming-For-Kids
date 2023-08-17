@@ -4,7 +4,7 @@ import {
 } from "react-router-dom";
 import './App.css';
 import AddCourse from './Pages/AddCourses';
-import Compiler from './Pages/compiler';
+import CodeEditor from "./Pages/CodeEditor";
 import Mcq from './Pages/MCQs';
 import ProgrammingProb from './Pages/ProgrammingProblem';
 import ReadingMat from "./Pages/readingMaterials";
@@ -24,8 +24,8 @@ const router = createBrowserRouter([
     element: <Mcq />,
   },
   {
-    path: "/compiler",
-    element: <Compiler />,
+    path: "/editor",
+    element: <CodeEditor />,
   },
   {
     path: "/problems",

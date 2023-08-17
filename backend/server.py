@@ -93,7 +93,6 @@ def handle_submission():
         data = request.get_json()
         code = data.get('code')
         language = data.get('selectedLanguage')
-        
         if code:
             response = compile(code, language)
             if response['stderr'] == '':
@@ -229,6 +228,25 @@ def get_problems(course_id, week_no, lesson_id):
 
 
     
+@app.route("/check-course", methods=["POST"])
+def check_course():
+    data = request.get_json()
+    course_name = data.get("courseName")
+    courseExists = 'true'
+
+    ## Check if a similarly named course already exists in Database
+
+    existing_courses = ["Math", "History", "Science"]
+
+    if course_name in existing_courses:
+        message = f"Course '{course_name}' already exists."
+        courseExists = "true"
+    else:
+        message = f"Course does not exist."
+        courseExists = "false"
+
+    return jsonify({"message": message, "courseExists" : courseExists})
+
 # Running app
 if __name__ == '__main__':
     app.run(debug=True)

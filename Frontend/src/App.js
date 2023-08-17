@@ -9,6 +9,7 @@ import Mcq from './Pages/MCQs';
 import ProgrammingProb from './Pages/ProgrammingProblem';
 import ReadingMat from "./Pages/readingMaterials";
 import Home from "./Pages/Home";
+import Form from "./Pages/AddCourseBegin";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/addCourse",
-    element: <AddCourse />,
+    element: <Form />,
   },
   {
     path: "/mcq",

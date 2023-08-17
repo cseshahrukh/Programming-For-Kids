@@ -1,0 +1,75 @@
+/* AddCourse.css */
+
+/* Style for the header */
+.App-header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Style for the main content container */
+  .body-container {
+    padding: 20px;
+  }
+  
+  /* Style for the main heading */
+  h1 {
+    color: #000000;
+  }
+  
+  /* Style for the "Add Another Week" and "DONE" buttons */
+  .button-space {
+    margin-top: 20px;
+  }
+  
+  .done-button-space {
+    margin-top: 40px;
+  }
+  
+  /* Style for the week tabs container */
+  .week-tabs-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  /* Style for each week tab */
+  .week-tab-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    width: calc(33.33% - 20px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style for week tab label and content */
+  .week-tab-label {
+    background-color: #f0f0f0;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .week-tab-button {
+    cursor: pointer;
+  }
+  
+  .week-tab-content {
+    margin-top: 10px;
+  }
+  
+  /* Style for lesson tab */
+  .lesson-tab {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .lesson-tab:hover {
+    background-color: #f0f0f0;
+  }
+  

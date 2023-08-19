@@ -5,32 +5,32 @@ import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 function CourseDetails() {
-    const { course_id } = useParams(); // Get the courseId from URL params
+    const { course_id } = useParams();
     const [courseDetails, setCourseDetails] = useState({});
 
     useEffect(() => {
         fetch(`/courses/${course_id}`)
             .then(response => response.json())
-            .then(data => setCourseDetails(data))
+            .then(data => setCourseDetails(data.course))
             .catch(error => console.error('Error fetching course details:', error));
     }, [course_id]);
 
+    // Render a loading message if courseDetails is empty
+    if (Object.keys(courseDetails).length === 0) {
+        return <p>Loading...</p>;
+    }
+
     return (
         <div className="App">
-            <div>
-                <Navbar />
-                <div>
-                    <p>HELOOOLLLLOO</p>
-                    <h1>hoooo</h1>
-                    <h1>{course_id}</h1>
-                    <h1>{courseDetails.course_name}</h1>
-                    <p>{courseDetails.short_description}</p>
-                    <p>{courseDetails.long_description}</p>
-                </div>
-                <Footer />
-            </div>
+            <Navbar />
+            <h1>{course_id}</h1>
+            <h1>{courseDetails.course_name}</h1>
+            <p>{courseDetails.short_description}</p>
+            <p>{courseDetails.long_description}</p>
+            <Footer />
         </div>
     );
 }
+
 
 export default CourseDetails;

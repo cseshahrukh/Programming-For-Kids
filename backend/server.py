@@ -114,9 +114,20 @@ def handle_submission():
     except Exception as e:
         return jsonify({'status': f'Error: {str(e)}'})
 
-@app.route('/courses')
+@app.route('/courses', methods=['GET'])
 def fetch_courses():
     all_courses = Course.query.all()
+
+    course_list = []
+    for course in all_courses:
+        course_data = {
+            'course_id': course.course_id,
+            'course_name': course.course_name,
+            'short_description': course.short_description
+        }
+        course_list.append(course_data)
+
+    return jsonify({'courses': course_list})
 
 
 @app.route('/courses/check-course/<string:course_name>', methods=['GET'])
@@ -135,7 +146,28 @@ def check_course(course_name):
         response.status_code=404
         return response
 
+# Create the API endpoint for retrieving course details
+@app.route('/courses/<int:course_id>', methods=['GET'])
+def get_course_details(course_id):
+    # Query the database for the course
+    queried_course = Course.query.filter_by(course_id=course_id).first()
 
+    if not queried_course:
+        response=jsonify({'error': 'Course not found.'})
+        response.status_code=404
+        return response
+
+    # Convert the course object to a dictionary
+    course_details = {
+        'course_id': queried_course.course_id,
+        'course_name': queried_course.course_name,
+        'short_description': queried_course.short_description,
+        'long_description': queried_course.long_description,
+    }
+
+    response=jsonify({'course': course_details})
+    response.status_code=200
+    return response
 
 @app.route('/courses/mcqs/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_mcqs(course_id, week_no, lesson_id):

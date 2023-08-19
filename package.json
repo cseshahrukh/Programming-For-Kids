@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "ace-builds": "^1.24.1",
+    "react-ace": "^10.1.0",
+    "react-bootstrap": "^2.8.0"
+  }
+}

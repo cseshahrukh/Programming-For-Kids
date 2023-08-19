@@ -1,0 +1,12 @@
+<div className="App">
+            <div>
+                <Navbar />
+                <div>
+                    <p>HELOOOLLLLOO</p>
+                    <h1>{courseDetails.course_name}</h1>
+                    <p>{courseDetails.short_description}</p>
+                    <p>{courseDetails.long_description}</p>
+                </div>
+                <Footer />
+            </div>
+        </div>

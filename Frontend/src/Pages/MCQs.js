@@ -1,45 +1,55 @@
-import React from 'react';
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import './MCQs.css';
 import Navbar from "./Navbar";
 import Footer from './Footer';
 
-let currentNum = 1;
-
-const mcqs = [
-  {
-    question: 'What is the capital of France?',
-    options: ['Paris', 'Berlin', 'Madrid', 'Rome'],
-    correctAnswer: 'Paris',
-  },
-  {
-    question: 'Which planet is known as the Red Planet?',
-    options: ['Earth', 'Mars', 'Jupiter', 'Venus'],
-    correctAnswer: 'Mars',
-  },
-  {
-    question: 'What is the capital of Germany?',
-    options: ['Paris', 'Berlin', 'Madrid', 'Rome'],
-    correctAnswer: 'Berlin',
-  },
-  {
-    question: 'What is the capital of Italy?',
-    options: ['Paris', 'Berlin', 'Madrid', 'Rome'],
-    correctAnswer: 'Rome',
-  },
-  // Add more MCQ objects here
-];
-
 const Mcq = () => {
+  const [mcqList, setMcqList] = useState([]);
   const [currentMCQIndex, setCurrentMCQIndex] = useState(0);
-  const currentMCQ = mcqs[currentMCQIndex];
   const [selectedOption, setSelectedOption] = useState('');
   const [buttonText, setButtonText] = useState('Next');
   const [buttonColor, setButtonColor] = useState('');
   const [resultText, setResultText] = useState('');
   const [optionsDisabled, setOptionsDisabled] = useState(false);
+  const [error, setError] = useState(false); // State to track fetch error
 
-  const maxMCQsToShow = 2;
+  useEffect(() => {
+    // Fetch MCQs from backend based on course_id, week_no, and lesson_id
+    fetch('/courses/mcqs/101/1/1')  // Replace with actual course_id, week_no, and lesson_id
+      .then(response => {
+        if (!response.ok) {
+          setError(true); // Set error state if response status is not ok
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setMcqList(data.mcqs);
+        setError(false); // Clear error state if fetch is successful
+      })
+      .catch(error => {
+        console.error(error);
+        setError(true); // Set error state if any error occurs
+      });
+  }, []);
+
+  if (error) {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <Navbar />
+        </header>
+        <div className="mcq-container">
+          <h1>Error</h1>
+          <p> MCQ questions not available.</p>
+          <Footer />
+        </div>
+      </div>
+    );
+  }
+
+
+  const currentMCQ = mcqList[currentMCQIndex];
 
   const handleOptionChange = (option) => {
     if (!optionsDisabled) {
@@ -51,7 +61,7 @@ const Mcq = () => {
   const handleButtonClick = () => {
     if (buttonText === 'Next') {
       if (selectedOption) {
-        if (currentNum <= maxMCQsToShow) {
+        if (currentMCQIndex < mcqList.length - 1) { // Check against total number of MCQs
           setCurrentMCQIndex(currentMCQIndex + 1);
           setSelectedOption('');
           setResultText('');
@@ -61,16 +71,15 @@ const Mcq = () => {
       }
     } else if (buttonText === 'Check') {
       setOptionsDisabled(true);
-      if (selectedOption === currentMCQ.correctAnswer) {
+      if (selectedOption === currentMCQ.correct) {
         setResultText('Correct!');
         setButtonColor('green');
-        currentNum += 1;
       } else {
-        setResultText(`Correct answer: ${currentMCQ.correctAnswer}`);
+        setResultText(`Correct answer: ${currentMCQ.correct}`);
         setButtonColor('red');
       }
-      if (currentNum > maxMCQsToShow) {
-        setButtonText('Go To Problems'); // Change button text when no more MCQs
+      if (currentMCQIndex >= mcqList.length - 1) {
+        setButtonText('Go To Problems');
       } else {
         setButtonText('Next');
       }
@@ -86,23 +95,57 @@ const Mcq = () => {
         <h1>Multiple Choice Questions</h1>
         <div className="mcq-section">
           <div className="mcq-question">
-            <p className="question-text">{currentMCQ.question}</p>
+            <p className="question-text">{currentMCQ?.question}</p>
           </div>
           <div className="mcq-options">
-            {currentMCQ.options.map((option, index) => (
-              <label key={index} className="option-label">
-                <input
-                  type="radio"
-                  name="option"
-                  value={option}
-                  checked={selectedOption === option}
-                  onChange={() => handleOptionChange(option)}
-                  disabled={optionsDisabled}
-                />
-                <span className="option-radio"></span>
-                <span className="option-text">{option}</span>
-              </label>
-            ))}
+            <label className="option-label">
+              <input
+                type="radio"
+                name="option"
+                value="option_1"
+                checked={selectedOption === 'option_1'}
+                onChange={() => handleOptionChange('option_1')}
+                disabled={optionsDisabled}
+              />
+              <span className="option-radio"></span>
+              <span className="option-text">{currentMCQ?.option_1}</span>
+            </label>
+            <label className="option-label">
+              <input
+                type="radio"
+                name="option"
+                value="option_2"
+                checked={selectedOption === 'option_2'}
+                onChange={() => handleOptionChange('option_2')}
+                disabled={optionsDisabled}
+              />
+              <span className="option-radio"></span>
+              <span className="option-text">{currentMCQ?.option_2}</span>
+            </label>
+            <label className="option-label">
+              <input
+                type="radio"
+                name="option"
+                value="option_3"
+                checked={selectedOption === 'option_3'}
+                onChange={() => handleOptionChange('option_3')}
+                disabled={optionsDisabled}
+              />
+              <span className="option-radio"></span>
+              <span className="option-text">{currentMCQ?.option_3}</span>
+            </label>
+            <label className="option-label">
+              <input
+                type="radio"
+                name="option"
+                value="option_4"
+                checked={selectedOption === 'option_4'}
+                onChange={() => handleOptionChange('option_4')}
+                disabled={optionsDisabled}
+              />
+              <span className="option-radio"></span>
+              <span className="option-text">{currentMCQ?.option_4}</span>
+            </label>
           </div>
           <div className="mcq-button-container">
             <button
@@ -121,6 +164,5 @@ const Mcq = () => {
     </div>
   );
 };
-
 
 export default Mcq;

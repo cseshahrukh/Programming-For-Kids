@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">{% block title %} Materials {% endblock %}</h1>
+    <div class="content">
+        {% for student in students %}
+            <div class="student">
+                <p><b>#{{ student.course_id }}</b></p>
+                <p><b>#{{ student.week_no }}</b></p>
+                <p><b>#{{ student.lesson_id }}</b></p>
+                <b>
+                    <p class="name">{{ student.section_title }}</p>
+                </b>
+                <div class="bio">
+                    <h4>Content:</h4>
+                    <p>{{ student.section_content }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

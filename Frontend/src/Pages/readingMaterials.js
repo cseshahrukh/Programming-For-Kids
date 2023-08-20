@@ -5,14 +5,14 @@ import Navbar from "./Navbar";
 import Footer from './Footer';
 
 const ReadingMat = () => {
-  const { course_id, week_no } = useParams();
+  const { course_id, week_no, lesson_no } = useParams();
   const [readingMaterials, setReadingMaterials] = useState([]);
   const [displayedSections, setDisplayedSections] = useState([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [showMCQButton, setShowMCQButton] = useState(false);
 
   useEffect(() => {
-    fetch(`/courses/reading_materials/${course_id}/${week_no}`)
+    fetch(`/courses/reading_materials/${course_id}/${week_no}/${lesson_no}`)
       .then(response => response.json())
       .then(data => {
         setReadingMaterials(data.reading_materials);
@@ -41,15 +41,6 @@ const ReadingMat = () => {
       setDisplayedSections((prevSections) => [...prevSections, readingMaterials[index]]);
     }
   };
-
-  const handleGoToMCQ = () => {
-    // Code to navigate to the MCQ page
-    // You can use React Router or any other method for navigation
-  };
-
-  if (currentSectionIndex === readingMaterials.length) {
-    // Render the MCQ page when all sections are displayed
-  }
 
   return (
     <div className="App">
@@ -90,9 +81,11 @@ const ReadingMat = () => {
         </button>
       )}
       {showMCQButton && (
-        <button onClick={handleGoToMCQ} className="mcq-button">
-          Go To MCQ
-        </button>
+        <Link to={`/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/mcqs`}>
+          <button className="mcq-button">
+            Go To MCQ
+          </button>
+        </Link>
       )}
       <div>
         <Footer />

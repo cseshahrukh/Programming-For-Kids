@@ -34,12 +34,10 @@ const router = createBrowserRouter([
     element: <ReadingMat />,
   },
   {
-    
-    path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/mcqs`,
+    path: `/courses/mcq/:course_id/:week_no/:lesson_no`,
     element: <Mcq />,
   },
   {
-    
     path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/problems`,
     element: <ProgrammingProb />,
   },
@@ -56,17 +54,6 @@ const router = createBrowserRouter([
     element: <Form />,
   },
   {
-<<<<<<< HEAD
-    path: "/courses/mcq/:course_id/:week_no/:lesson_id",
-    element: <Mcq />,
-  },
-  {  
-    path: "/mcq",
-    element: <MyMCQ />,
-  },
-  {
-=======
->>>>>>> 679f51354a7b09d3605723b63a692675526f128e
     path: "/editor",
     element: <CodeEditor />,
   },

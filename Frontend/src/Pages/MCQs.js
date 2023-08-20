@@ -1,47 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from "react-router-dom";
 import './MCQs.css';
 import Navbar from "./Navbar";
 import Footer from './Footer';
 
-let currentNum = 1;
-
-const MyMCQ = () => {
-  const { course_id, week_no, lesson_no } = useParams();
+const Mcq = () => {
   const [mcqList, setMcqList] = useState([]);
   const [currentMCQIndex, setCurrentMCQIndex] = useState(0);
-  const currentMCQ = mcqList[currentMCQIndex];
   const [selectedOption, setSelectedOption] = useState('');
   const [buttonText, setButtonText] = useState('Next');
   const [buttonColor, setButtonColor] = useState('');
   const [resultText, setResultText] = useState('');
   const [optionsDisabled, setOptionsDisabled] = useState(false);
-  const [error, setError] = useState(false);
-
-  const maxMCQsToShow = 2;
+  const [error, setError] = useState(false); // State to track fetch error
 
   useEffect(() => {
-    fetch(`/courses/mcqs/${course_id}/${week_no}/${lesson_no}`)
+    // Fetch MCQs from backend based on course_id, week_no, and lesson_id
+    fetch('/courses/mcqs/102/1/1')  // Replace with actual course_id, week_no, and lesson_id
       .then(response => {
         if (!response.ok) {
-          setError(true);
+          setError(true); // Set error state if response status is not ok
           throw new Error('Network response was not ok');
         }
         return response.json();
       })
       .then(data => {
         setMcqList(data.mcqs);
-        setError(false);
+        setError(false); // Clear error state if fetch is successful
       })
       .catch(error => {
         console.error(error);
-        setError(true);
+        setError(true); // Set error state if any error occurs
       });
-  }, [course_id, week_no, lesson_no]);
+  }, []);
 
-  if (Object.keys(mcqList).length === 0) {
-    return <p>Loading...</p>;
+  if (error) {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <Navbar />
+        </header>
+        <div className="mcq-container">
+          <h1>Error</h1>
+          <p> MCQ questions not available.</p>
+          <Footer />
+        </div>
+      </div>
+    );
   }
+
+
+  const currentMCQ = mcqList[currentMCQIndex];
 
   const handleOptionChange = (option) => {
     if (!optionsDisabled) {
@@ -53,7 +61,7 @@ const MyMCQ = () => {
   const handleButtonClick = () => {
     if (buttonText === 'Next') {
       if (selectedOption) {
-        if (currentNum <= maxMCQsToShow) {
+        if (currentMCQIndex < mcqList.length - 1) { // Check against total number of MCQs
           setCurrentMCQIndex(currentMCQIndex + 1);
           setSelectedOption('');
           setResultText('');
@@ -63,19 +71,14 @@ const MyMCQ = () => {
       }
     } else if (buttonText === 'Check') {
       setOptionsDisabled(true);
-      const selectedOptionNumber = parseInt(selectedOption.split('_')[1]);
-      console.log(selectedOptionNumber);
-      console.log(currentMCQ.correct);
-      if (selectedOptionNumber === currentMCQ.correct) {
+      if (selectedOption === currentMCQ.correct) {
         setResultText('Correct!');
         setButtonColor('green');
-        currentNum += 1;
       } else {
-        const correctOptionText = mcqList[currentMCQIndex][`option_${currentMCQ.correct}`];
-        setResultText(`Correct answer: ${correctOptionText}`);
+        setResultText(`Correct answer: ${currentMCQ.correct}`);
         setButtonColor('red');
       }
-      if (currentNum > maxMCQsToShow) {
+      if (currentMCQIndex >= mcqList.length - 1) {
         setButtonText('Go To Problems');
       } else {
         setButtonText('Next');
@@ -92,7 +95,7 @@ const MyMCQ = () => {
         <h1>Multiple Choice Questions</h1>
         <div className="mcq-section">
           <div className="mcq-question">
-            <p className="question-text">{currentMCQ.question}</p>
+            <p className="question-text">{currentMCQ?.question}</p>
           </div>
           <div className="mcq-options">
             <label className="option-label">
@@ -145,21 +148,12 @@ const MyMCQ = () => {
             </label>
           </div>
           <div className="mcq-button-container">
-            {buttonText === 'Go To Problems' ? (
-              <Link
-                to={`/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/problems`}
-                className={`mcq-button ${buttonColor}`}
-              >
-                {buttonText}
-              </Link>
-            ) : (
-              <button
-                className={`mcq-button ${buttonColor}`}
-                onClick={handleButtonClick}
-              >
-                {buttonText}
-              </button>
-            )}
+            <button
+              className={`mcq-button ${buttonColor}`}
+              onClick={handleButtonClick}
+            >
+              {buttonText}
+            </button>
             {resultText && <p className="result-text">{resultText}</p>}
           </div>
         </div>
@@ -171,4 +165,4 @@ const MyMCQ = () => {
   );
 };
 
-export default MyMCQ;
+export default Mcq;

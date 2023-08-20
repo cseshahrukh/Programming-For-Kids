@@ -77,7 +77,7 @@ const ReadingMat = () => {
         </div>
       </div>
       {currentSectionIndex < sampleReadingMaterials.length - 1 && !showMCQButton && (
-        <button onClick={handleNext} className="next-button">
+        <button onClick={handleNext} className="next-button btn-dark">
           Next
         </button>
       )}

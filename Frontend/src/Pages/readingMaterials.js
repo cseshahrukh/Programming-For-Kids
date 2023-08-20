@@ -81,7 +81,7 @@ const ReadingMat = () => {
         </button>
       )}
       {showMCQButton && (
-        <Link to={`/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/mcqs`}>
+        <Link to={`/courses/mcq/${course_id}/${week_no}/${lesson_no}`}>
           <button className="mcq-button">
             Go To MCQ
           </button>

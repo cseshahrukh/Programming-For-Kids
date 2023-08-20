@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from "react-router-dom";
 import './MCQs.css';
 import Navbar from "./Navbar";
 import Footer from './Footer';
 
-//const Mcq = () => {
-function Mcq() {
-
-  const { course_id, week_no,lesson_id } = useParams();
-
+const Mcq = () => {
   const [mcqList, setMcqList] = useState([]);
   const [currentMCQIndex, setCurrentMCQIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState('');
@@ -16,11 +11,11 @@ function Mcq() {
   const [buttonColor, setButtonColor] = useState('');
   const [resultText, setResultText] = useState('');
   const [optionsDisabled, setOptionsDisabled] = useState(false);
-  const [error, setError] = useState(false); // State to track fetch error
+
 
   useEffect(() => {
     // Fetch MCQs from backend based on course_id, week_no, and lesson_id
-    fetch(`/courses/mcqs/${course_id}/${week_no}/${lesson_id}`)  // Replace with actual course_id, week_no, and lesson_id
+    fetch('/courses/mcqs/101/1/1')  // Replace with actual course_id, week_no, and lesson_id
       .then(response => {
         if (!response.ok) {
           setError(true); // Set error state if response status is not ok
@@ -36,7 +31,7 @@ function Mcq() {
         console.error(error);
         setError(true); // Set error state if any error occurs
       });
-  }, [course_id,week_no,lesson_id]);
+  }, []);
 
   if (error) {
     return (
@@ -46,13 +41,12 @@ function Mcq() {
         </header>
         <div className="mcq-container">
           <h1>Error</h1>
-          <p> MCQ questions not available.</p>
+          <p>An error occurred while fetching MCQ questions.</p>
           <Footer />
         </div>
       </div>
     );
   }
-
 
   const currentMCQ = mcqList[currentMCQIndex];
 

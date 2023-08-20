@@ -163,6 +163,7 @@ def get_course_details(course_id):
         'course_name': queried_course.course_name,
         'short_description': queried_course.short_description,
         'long_description': queried_course.long_description,
+        'total_week': queried_course.total_week,
     }
 
     response=jsonify({'course': course_details})
@@ -198,6 +199,29 @@ def get_mcqs(course_id, week_no, lesson_id):
     response=jsonify({'mcqs': mcq_list})
     response.status_code=200
     return response
+
+
+@app.route('/courses/reading_materials/<int:course_id>/<int:week_no>', methods=['GET'])
+def get_reading_materials_whole(course_id, week_no):
+    materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no).order_by(reading_materials.lesson_id).all()
+
+    if not materials:
+        response = jsonify({'error': 'No reading materials found.'})
+        response.status_code = 404
+        return response
+
+    response_materials = []
+    for material in materials:
+        response_materials.append({
+            'lesson_id': material.lesson_id,
+            'section_title': material.section_title,
+            'section_content': material.section_content
+        })
+
+    response = jsonify({'reading_materials': response_materials})
+    response.status_code = 200
+    return response
+
 
 
 

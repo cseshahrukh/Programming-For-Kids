@@ -248,25 +248,23 @@ def get_problems(course_id, week_no, lesson_id):
     # Convert the list of problems to a list of dictionaries with examples
     problems_list = []
     for problem in selected_problems:
-    #     examples = problem.examples.split('\n\n')
-    #     print('Size of examples: ', len(examples))
-    #     example_list = []
-    #     print(examples)
-        
-    #     for i in range(0, len(examples), 3):
-    #         input_value = examples[i].replace('Input:', '').strip()
-    #         output_value = examples[i+1].replace('Output:', '').strip()
-    #         explanation = examples[i+2].replace('Explanation:', '').strip()
+        example_list = []
+        examples = problem.examples.split('\n\n')
+
+        for i in range(0, len(examples) - 1, 3):
+            input_value = examples[i].replace('Input:', '').strip()
+            output_value = examples[i+1].replace('Output:', '').strip()
+            explanation = examples[i+2].replace('Explanation:', '').strip()
             
-    #         example_list.append({
-    #             'Input': input_value,
-    #             'Output': output_value,
-    #             'Explanation': explanation
-    #         })
+            example_list.append({
+                'Input': input_value,
+                'Output': output_value,
+                'Explanation': explanation
+            })
         
         problems_list.append({
             'question': problem.question,
-            'examples': problem.examples
+            'examples': example_list
         })
 
     response = jsonify({'problems': problems_list})

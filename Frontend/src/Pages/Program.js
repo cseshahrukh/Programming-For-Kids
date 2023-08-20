@@ -13,7 +13,6 @@ const Programming = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    // fetch(`/courses/problems/${course_id}/${week_no}/${lesson_no}`)
     fetch(`/courses/problems/${course_id}/${week_no}/${lesson_no}`)
       .then(response => {
         if (!response.ok) {
@@ -36,6 +35,8 @@ const Programming = () => {
     return <p>Loading...</p>;
   }
 
+  console.log(problemsList)
+
   const currentProgram = problemsList[currentIndex]; // You should adjust this according to your data structure
 
   return (
@@ -48,21 +49,25 @@ const Programming = () => {
           <div className="problem-description">
             <h2>Problem Description</h2>
             <p>
-              {currentProgram.problemDescription}
+              {currentProgram.question}
             </p>
           </div>
           <div className="test-case-container">
             <h3>Test Cases</h3>
             <div className="test-cases">
-              {currentProgram.testCases.map((testCase, index) => (
+              {currentProgram.examples.map((examples, index) => (
                 <div className="test-case" key={index}>
                   <div className="test-input">
                     <p><strong>Input:</strong></p>
-                    <pre>{JSON.stringify(testCase.input)}</pre>
+                    <pre>{JSON.stringify(examples.Input, null, 2)}</pre>
                   </div>
                   <div className="test-output">
                     <p><strong>Output:</strong></p>
-                    <pre>{JSON.stringify(testCase.output)}</pre>
+                    <pre>{JSON.stringify(examples.Output, null, 2)}</pre>
+                  </div>
+                  <div className="test-explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>{examples.Explanation}</p>
                   </div>
                 </div>
               ))}

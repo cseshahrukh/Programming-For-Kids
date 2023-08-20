@@ -15,21 +15,21 @@ function Courses() {
     }, []);
 
     return (
-        <div>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <div>
                 <Navbar />
             </div>
-            <div>
-                <h1>Courses</h1>
+            <div >
+                <h1 style={{ margin: "30px", marginTop: "80px" }}>Courses</h1>
                 <ul>
                     {courses.map(course => (
                         <li key={course.course_id}>
-                            <button>
-                                <Link to={`/courses/${course.course_id}`}> {/* Use Link component to create dynamic route */}
+                            <div className="course-card">
+                                <Link to={`/courses/${course.course_id}`} className="course-link">
                                     <h3>{course.course_name}</h3>
                                 </Link>
-                            </button>
-                            <p>{course.short_description}</p>
+                                <p>{course.short_description}</p>
+                            </div>
                         </li>
                     ))}
                 </ul>

@@ -14,6 +14,7 @@ import CourseDetails from "./Pages/CourseDetails";
 import WeekDetails from "./Pages/WeekDetails";
 import ProgrammingList from "./Pages/ProgrammingList";
 import Mcq from "./Pages/MCQs"
+import Programming from "./Pages/Program";
 
 const router = createBrowserRouter([
   {
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/problems",
-    element: <ProgrammingProb />,
+    element: <Programming />,
   },
   {
     path: "/reading-materials",

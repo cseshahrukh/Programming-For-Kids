@@ -205,11 +205,6 @@ def get_mcqs(course_id, week_no, lesson_id):
 def get_reading_materials_whole(course_id, week_no):
     materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no).order_by(reading_materials.lesson_id).all()
 
-    if not materials:
-        response = jsonify({'error': 'No reading materials found.'})
-        response.status_code = 404
-        return response
-
     response_materials = []
     for material in materials:
         response_materials.append({

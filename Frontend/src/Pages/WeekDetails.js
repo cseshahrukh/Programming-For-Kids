@@ -20,20 +20,24 @@ function WeekDetails() {
             <Navbar />
             <div style={{ flex: 1 }}>
                 <h1>Week {week_no} Details</h1>
-                <ul>
-                    {readingMaterials.map((material, index) => (
-                        <li key={index}>
-                            <h3>{material.section_title}</h3>
-                            <p>{material.section_content}</p>
-                            <Link to={`/courses/${course_id}/${week_no}/${material.lesson_id}/mcq`}>
-                                <button className="btn btn-primary mr-2">MCQ Section</button>
-                            </Link>
-                            <Link to={`/courses/${course_id}/${week_no}/${material.lesson_id}/programming`}>
-                                <button className="btn btn-success" style={{ marginLeft: "10px" }}>Programming Problem</button>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
+                {readingMaterials.length > 0 ? (
+                    <ul>
+                        {readingMaterials.map((material) => (
+                            <li key={material.lesson_id}>
+                                <h3>{material.section_title}</h3>
+                                <p>{material.section_content}</p>
+                                <Link to={`/courses/${course_id}/${week_no}/${material.lesson_id}/mcq`}>
+                                    <button className="btn btn-primary mr-2">MCQ Section</button>
+                                </Link>
+                                <Link to={`/courses/${course_id}/${week_no}/${material.lesson_id}/programming`}>
+                                    <button className="btn btn-success" style={{ marginLeft: "10px" }}>Programming Problem</button>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No reading materials available for this week.</p>
+                )}
             </div>
             <Footer />
         </div>

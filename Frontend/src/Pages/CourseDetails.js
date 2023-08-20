@@ -38,7 +38,9 @@ function CourseDetails() {
                     <h1>{course_id}</h1>
                     <h1>{courseDetails.course_name}</h1>
                     <p>{courseDetails.short_description}</p>
-                    <p className="left-align">{courseDetails.long_description}</p>
+                    <p className="left-align" style={{ textAlign: "left" }}>
+                        {courseDetails.long_description}
+                    </p>
                     <Link to="/enroll">
                         <button className="btn btn-primary" style={{ backgroundColor: "green" }}>
                             Continue
@@ -57,6 +59,20 @@ function CourseDetails() {
                                 </Link>
                             </div>
                         ))}
+                    </div>
+
+                    {/* Discussion Option */}
+                    <div style={{ marginTop: "20px" }}>
+                        <Link to={`/courses/${course_id}/discussion`}>
+                            Discussion
+                        </Link>
+                    </div>
+
+                    {/* Grade Option */}
+                    <div style={{ marginTop: "20px" }}>
+                        <Link to={`/courses/${course_id}/grade`}>
+                            Grade
+                        </Link>
                     </div>
                 </div>
             </div>

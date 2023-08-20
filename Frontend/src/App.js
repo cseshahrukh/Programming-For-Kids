@@ -40,7 +40,7 @@ const router = createBrowserRouter([
     element: <Form />,
   },
   {
-    path: "/mcq",
+    path: "/courses/mcq/:course_id/:week_no/:lesson_id",
     element: <Mcq />,
   },
   {

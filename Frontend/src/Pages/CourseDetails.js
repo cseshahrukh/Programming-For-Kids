@@ -41,9 +41,9 @@ function CourseDetails() {
                     <p className="left-align" style={{ textAlign: "left" }}>
                         {courseDetails.long_description}
                     </p>
-                    <Link to="/enroll">
+                    <Link to={`/courses/${course_id}/week/1/readingMaterials`}>                     
                         <button className="btn btn-primary" style={{ backgroundColor: "green" }}>
-                            Continue
+                            Start
                         </button>
                     </Link>
                 </div>

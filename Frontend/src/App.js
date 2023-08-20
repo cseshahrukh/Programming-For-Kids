@@ -28,6 +28,10 @@ const router = createBrowserRouter([
     element: <CourseDetails />,
   },
   {
+    path: `/courses/:course_id/week/:week_no/readingMaterials`,
+    element: <ReadingMat />,
+  },
+  {
     path: '/courses/:course_id/:week_no',
     element: <WeekDetails />,
   },

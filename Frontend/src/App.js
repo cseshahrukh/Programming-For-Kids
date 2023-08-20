@@ -39,7 +39,7 @@ const router = createBrowserRouter([
   },
   {
     path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/problems`,
-    element: <ProgrammingProb />,
+    element: <Programming />,
   },
   {
     path: '/courses/:course_id/:week_no',
@@ -59,7 +59,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/problems",
-    element: <Programming />,
+    element: <ProgrammingProb />,
   },
   {
     path: "/reading-materials",

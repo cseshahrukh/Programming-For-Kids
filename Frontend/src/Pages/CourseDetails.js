@@ -41,7 +41,7 @@ function CourseDetails() {
                     <p className="left-align" style={{ textAlign: "left" }}>
                         {courseDetails.long_description}
                     </p>
-                    <Link to={`/courses/${course_id}/week/1/lesson/1/readingMaterials`}>                     
+                    <Link to={`/courses/${course_id}/week/1/lesson/1/readingMaterials`}>
                         <button className="btn btn-primary" style={{ backgroundColor: "green" }}>
                             Start
                         </button>
@@ -54,7 +54,7 @@ function CourseDetails() {
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "50px" }}>
                         {weekNumbers.map(weekNo => (
                             <div key={weekNo} style={{ marginBottom: "5px" }}>
-                                <Link to={`/courses/${course_id}/week/${weekNo}/lesson/1/readingMaterials`}>
+                                <Link to={`/courses/${course_id}/${weekNo}`}>
                                     Week {weekNo}
                                 </Link>
                             </div>

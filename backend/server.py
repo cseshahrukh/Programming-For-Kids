@@ -129,7 +129,6 @@ def fetch_courses():
 
     return jsonify({'courses': course_list})
 
-
 @app.route('/courses/check-course/<string:course_name>', methods=['GET'])
 def check_course(course_name):
     course_name = course_name.strip()
@@ -197,6 +196,21 @@ def get_mcqs(course_id, week_no, lesson_id):
     response.status_code=200
     return response
 
+@app.route('/courses/reading_materials/<int:course_id>/<int:week_no>', methods=['GET'])
+def get_reading_materials_prev(course_id, week_no):
+    materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no).order_by(reading_materials.section_id).all()
+
+    response_materials = []
+    for material in materials:
+        response_materials.append({
+            'lesson_id': material.lesson_id,
+            'section_title': material.section_title,
+            'section_content': material.section_content
+        })
+
+    response = jsonify({'reading_materials': response_materials})
+    response.status_code = 200
+    return response
 
 @app.route('/courses/reading_materials/<int:course_id>/<int:week_no>/<int:lesson_no>', methods=['GET'])
 def get_reading_materials_whole(course_id, week_no, lesson_no):
@@ -248,25 +262,23 @@ def get_problems(course_id, week_no, lesson_id):
     # Convert the list of problems to a list of dictionaries with examples
     problems_list = []
     for problem in selected_problems:
-    #     examples = problem.examples.split('\n\n')
-    #     print('Size of examples: ', len(examples))
-    #     example_list = []
-    #     print(examples)
-        
-    #     for i in range(0, len(examples), 3):
-    #         input_value = examples[i].replace('Input:', '').strip()
-    #         output_value = examples[i+1].replace('Output:', '').strip()
-    #         explanation = examples[i+2].replace('Explanation:', '').strip()
+        example_list = []
+        examples = problem.examples.split('\n\n')
+
+        for i in range(0, len(examples) - 1, 3):
+            input_value = examples[i].replace('Input:', '').strip()
+            output_value = examples[i+1].replace('Output:', '').strip()
+            explanation = examples[i+2].replace('Explanation:', '').strip()
             
-    #         example_list.append({
-    #             'Input': input_value,
-    #             'Output': output_value,
-    #             'Explanation': explanation
-    #         })
+            example_list.append({
+                'Input': input_value,
+                'Output': output_value,
+                'Explanation': explanation
+            })
         
         problems_list.append({
             'question': problem.question,
-            'examples': problem.examples
+            'examples': example_list
         })
 
     response = jsonify({'problems': problems_list})

@@ -25,10 +25,10 @@ function WeekDetails() {
                         <li key={index}>
                             <h3>{material.section_title}</h3>
                             <p>{material.section_content}</p>
-                            <Link to={`/courses/${course_id}/${week_no}/mcq`}>
+                            <Link to={`/courses/${course_id}/${week_no}/${material.lesson_id}/mcq`}>
                                 <button className="btn btn-primary mr-2">MCQ Section</button>
                             </Link>
-                            <Link to={`/courses/${course_id}/${week_no}/programming`}>
+                            <Link to={`/courses/${course_id}/${week_no}/${material.lesson_id}/programming`}>
                                 <button className="btn btn-success" style={{ marginLeft: "10px" }}>Programming Problem</button>
                             </Link>
                         </li>

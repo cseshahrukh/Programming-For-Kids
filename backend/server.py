@@ -248,6 +248,8 @@ def get_reading_materials(course_id, week_no, lesson_id):
 # Create the API endpoint for retrieving problems based on criteria
 @app.route('/courses/problems/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_problems(course_id, week_no, lesson_id):
+    print('Lesson ID: '+str(lesson_id))
+
     # Retrieve problems based on the provided criteria
     selected_problems = problems.query.filter_by(course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
 
@@ -272,6 +274,7 @@ def get_problems(course_id, week_no, lesson_id):
             })
         
         problems_list.append({
+            'problem_id': problem.problem_id, 
             'course_id': problem.course_id,
             'week_no': problem.week_no,
             'lesson_id': problem.lesson_id,
@@ -279,7 +282,10 @@ def get_problems(course_id, week_no, lesson_id):
             'examples': example_list
         })
 
-    return jsonify({'problems': problems_list})
+    response = jsonify({'problems': problems_list})
+    response.status_code = 200
+    return response
+    # return jsonify({'problems': problems_list})
 
 
 

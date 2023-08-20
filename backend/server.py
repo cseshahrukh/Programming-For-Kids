@@ -180,9 +180,6 @@ def get_mcqs(course_id, week_no, lesson_id):
         response.status_code=404
         return response
 
-    # Limit to 3 questions if available, otherwise return all
-    selected_mcqs = queried_mcqs[:3] if len(queried_mcqs) >= 3 else queried_mcqs
-
     # Convert the selected MCQs to a list of dictionaries
     mcq_list = [
         {
@@ -193,7 +190,7 @@ def get_mcqs(course_id, week_no, lesson_id):
             'option_4': mcq.option_4,
             'correct': mcq.correct
         }
-        for mcq in selected_mcqs
+        for mcq in queried_mcqs
     ]
 
     response=jsonify({'mcqs': mcq_list})

@@ -1,12 +1,13 @@
-<div className="App">
-            <div>
-                <Navbar />
-                <div>
-                    <p>HELOOOLLLLOO</p>
-                    <h1>{courseDetails.course_name}</h1>
-                    <p>{courseDetails.short_description}</p>
-                    <p>{courseDetails.long_description}</p>
-                </div>
-                <Footer />
-            </div>
-        </div>
+npm run start 
+
+<ul>
+                    {programmingProblems.map((problem, index) => (
+                        <li key={index}>
+                            <h3>{problem.question}</h3>
+                            
+                            <Link to={`/courses/${course_id}/${week_no}/${lesson_id}/programming/${problem.problem_id}`}>
+                                <button className="btn btn-success">Solve Problem</button>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>

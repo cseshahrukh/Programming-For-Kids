@@ -163,6 +163,7 @@ def get_course_details(course_id):
         'course_name': queried_course.course_name,
         'short_description': queried_course.short_description,
         'long_description': queried_course.long_description,
+        'total_week': queried_course.total_week,
     }
 
     response=jsonify({'course': course_details})
@@ -200,6 +201,24 @@ def get_mcqs(course_id, week_no, lesson_id):
     return response
 
 
+@app.route('/courses/reading_materials/<int:course_id>/<int:week_no>', methods=['GET'])
+def get_reading_materials_whole(course_id, week_no):
+    materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no).order_by(reading_materials.lesson_id).all()
+
+    response_materials = []
+    for material in materials:
+        response_materials.append({
+            'lesson_id': material.lesson_id,
+            'section_title': material.section_title,
+            'section_content': material.section_content
+        })
+
+    response = jsonify({'reading_materials': response_materials})
+    response.status_code = 200
+    return response
+
+
+
 
 @app.route('/courses/reading_materials/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_reading_materials(course_id, week_no, lesson_id):
@@ -224,6 +243,8 @@ def get_reading_materials(course_id, week_no, lesson_id):
 # Create the API endpoint for retrieving problems based on criteria
 @app.route('/courses/problems/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_problems(course_id, week_no, lesson_id):
+    print('Lesson ID: '+str(lesson_id))
+
     # Retrieve problems based on the provided criteria
     selected_problems = problems.query.filter_by(course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
 
@@ -248,6 +269,7 @@ def get_problems(course_id, week_no, lesson_id):
             })
         
         problems_list.append({
+            'problem_id': problem.problem_id, 
             'course_id': problem.course_id,
             'week_no': problem.week_no,
             'lesson_id': problem.lesson_id,
@@ -255,7 +277,10 @@ def get_problems(course_id, week_no, lesson_id):
             'examples': example_list
         })
 
-    return jsonify({'problems': problems_list})
+    response = jsonify({'problems': problems_list})
+    response.status_code = 200
+    return response
+    # return jsonify({'problems': problems_list})
 
 
 

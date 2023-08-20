@@ -12,7 +12,8 @@ import Home from "./Pages/Home";
 import Form from "./Pages/AddCourseBegin";
 import Courses from "./Pages/Courses";
 import CourseDetails from "./Pages/CourseDetails";
-
+import WeekDetails from "./Pages/WeekDetails";
+import ProgrammingList from "./Pages/ProgrammingList";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +27,14 @@ const router = createBrowserRouter([
     path: `/courses/:course_id`,
     element: <CourseDetails />,
   },
+  {
+    path: '/courses/:course_id/:week_no',
+    element: <WeekDetails />,
+  },
+  {
+    path: '/courses/:course_id/:week_no/:lesson_id/programming', 
+    element: <ProgrammingList />,
+  }, 
   {
     path: "/addCourse",
     element: <Form />,

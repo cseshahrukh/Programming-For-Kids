@@ -23,6 +23,7 @@ class reading_materials(db.Model):
 
 
 class problems(db.Model):
+    problem_id = db.Column(db.String , primary_key=True, nullable=False)
     course_id = db.Column(db.Integer)
     week_no = db.Column(db.Integer)
     lesson_id = db.Column(db.Integer)
@@ -63,6 +64,7 @@ class Course(db.Model):
     prerequisite_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
     #teacher_id = db.Column(db.Integer,nullable=False)
     #prerequisite_id = db.Column(db.Integer)
+    total_week = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f"Course(course_id={self.course_id}, course_name={self.course_name})"

@@ -1,0 +1,13 @@
+npm run start 
+
+<ul>
+                    {programmingProblems.map((problem, index) => (
+                        <li key={index}>
+                            <h3>{problem.question}</h3>
+                            
+                            <Link to={`/courses/${course_id}/${week_no}/${lesson_id}/programming/${problem.problem_id}`}>
+                                <button className="btn btn-success">Solve Problem</button>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>

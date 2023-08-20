@@ -19,7 +19,7 @@ const ReadingMat = () => {
         setDisplayedSections([data.reading_materials[0]]);
       })
       .catch(error => console.error('Error fetching reading materials:', error));
-  }, [course_id, week_no]);
+  }, [course_id, week_no, lesson_no]);
 
   if (readingMaterials.length === 0) {
     return <p>Loading...</p>;

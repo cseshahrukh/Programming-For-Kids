@@ -54,7 +54,7 @@ function CourseDetails() {
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "50px" }}>
                         {weekNumbers.map(weekNo => (
                             <div key={weekNo} style={{ marginBottom: "5px" }}>
-                                <Link to={`/courses/${course_id}/${weekNo}`}>
+                                <Link to={`/courses/${course_id}/week/${weekNo}/lesson/1/readingMaterials`}>
                                     Week {weekNo}
                                 </Link>
                             </div>

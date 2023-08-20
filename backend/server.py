@@ -180,9 +180,6 @@ def get_mcqs(course_id, week_no, lesson_id):
         response.status_code=404
         return response
 
-    # Limit to 3 questions if available, otherwise return all
-    selected_mcqs = queried_mcqs[:3] if len(queried_mcqs) >= 3 else queried_mcqs
-
     # Convert the selected MCQs to a list of dictionaries
     mcq_list = [
         {
@@ -193,7 +190,7 @@ def get_mcqs(course_id, week_no, lesson_id):
             'option_4': mcq.option_4,
             'correct': mcq.correct
         }
-        for mcq in selected_mcqs
+        for mcq in queried_mcqs
     ]
 
     response=jsonify({'mcqs': mcq_list})
@@ -219,8 +216,6 @@ def get_reading_materials_whole(course_id, week_no, lesson_no):
     return response
 
 
-
-
 @app.route('/courses/reading_materials/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_reading_materials(course_id, week_no, lesson_id):
     materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
@@ -244,44 +239,39 @@ def get_reading_materials(course_id, week_no, lesson_id):
 # Create the API endpoint for retrieving problems based on criteria
 @app.route('/courses/problems/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_problems(course_id, week_no, lesson_id):
-    print('Lesson ID: '+str(lesson_id))
 
     # Retrieve problems based on the provided criteria
-    selected_problems = problems.query.filter_by(course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
+    selected_problems = problems.query.filter_by(course_id=course_id, week_no=week_no, 
+                                                 lesson_id=lesson_id).order_by(problems.problem_id).all()
+    
 
     # Convert the list of problems to a list of dictionaries with examples
     problems_list = []
     for problem in selected_problems:
-        print(problem.examples)
-        examples = problem.examples.split('\n\n')
-        print('Size of examples: ', len(examples))
-        example_list = []
-        print(examples)
+    #     examples = problem.examples.split('\n\n')
+    #     print('Size of examples: ', len(examples))
+    #     example_list = []
+    #     print(examples)
         
-        for i in range(0, len(examples), 3):
-            input_value = examples[i].replace('Input:', '').strip()
-            output_value = examples[i+1].replace('Output:', '').strip()
-            explanation = examples[i+2].replace('Explanation:', '').strip()
+    #     for i in range(0, len(examples), 3):
+    #         input_value = examples[i].replace('Input:', '').strip()
+    #         output_value = examples[i+1].replace('Output:', '').strip()
+    #         explanation = examples[i+2].replace('Explanation:', '').strip()
             
-            example_list.append({
-                'Input': input_value,
-                'Output': output_value,
-                'Explanation': explanation
-            })
+    #         example_list.append({
+    #             'Input': input_value,
+    #             'Output': output_value,
+    #             'Explanation': explanation
+    #         })
         
         problems_list.append({
-            'problem_id': problem.problem_id, 
-            'course_id': problem.course_id,
-            'week_no': problem.week_no,
-            'lesson_id': problem.lesson_id,
             'question': problem.question,
-            'examples': example_list
+            'examples': problem.examples
         })
 
     response = jsonify({'problems': problems_list})
     response.status_code = 200
     return response
-    # return jsonify({'problems': problems_list})
 
 
 

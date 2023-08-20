@@ -13,8 +13,8 @@ import Courses from "./Pages/Courses";
 import CourseDetails from "./Pages/CourseDetails";
 import WeekDetails from "./Pages/WeekDetails";
 import ProgrammingList from "./Pages/ProgrammingList";
-import MyMCQ from "./Pages/myMCQs";
 import Mcq from "./Pages/MCQs"
+import Programming from "./Pages/Program";
 
 const router = createBrowserRouter([
   {
@@ -34,8 +34,14 @@ const router = createBrowserRouter([
     element: <ReadingMat />,
   },
   {
-    path: `/courses/:course_id/week/:week_no/mcqs`,
+    
+    path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/mcqs`,
     element: <Mcq />,
+  },
+  {
+    
+    path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/problems`,
+    element: <ProgrammingProb />,
   },
   {
     path: '/courses/:course_id/:week_no',
@@ -50,6 +56,7 @@ const router = createBrowserRouter([
     element: <Form />,
   },
   {
+<<<<<<< HEAD
     path: "/courses/mcq/:course_id/:week_no/:lesson_id",
     element: <Mcq />,
   },
@@ -58,12 +65,14 @@ const router = createBrowserRouter([
     element: <MyMCQ />,
   },
   {
+=======
+>>>>>>> 679f51354a7b09d3605723b63a692675526f128e
     path: "/editor",
     element: <CodeEditor />,
   },
   {
     path: "/problems",
-    element: <ProgrammingProb />,
+    element: <Programming />,
   },
   {
     path: "/reading-materials",

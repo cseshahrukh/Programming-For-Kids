@@ -5,7 +5,6 @@ import {
 import './App.css';
 import AddCourse from './Pages/AddCourses';
 import CodeEditor from "./Pages/CodeEditor";
-import Mcq from './Pages/MCQs';
 import ProgrammingProb from './Pages/ProgrammingProblem';
 import ReadingMat from "./Pages/readingMaterials";
 import Home from "./Pages/Home";
@@ -14,6 +13,9 @@ import Courses from "./Pages/Courses";
 import CourseDetails from "./Pages/CourseDetails";
 import WeekDetails from "./Pages/WeekDetails";
 import ProgrammingList from "./Pages/ProgrammingList";
+import MyMCQ from "./Pages/myMCQs";
+import Mcq from "./Pages/MCQs"
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +28,14 @@ const router = createBrowserRouter([
   {
     path: `/courses/:course_id`,
     element: <CourseDetails />,
+  },
+  {
+    path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/readingMaterials`,
+    element: <ReadingMat />,
+  },
+  {
+    path: `/courses/:course_id/week/:week_no/mcqs`,
+    element: <Mcq />,
   },
   {
     path: '/courses/:course_id/:week_no',
@@ -42,6 +52,10 @@ const router = createBrowserRouter([
   {
     path: "/courses/mcq/:course_id/:week_no/:lesson_id",
     element: <Mcq />,
+  },
+  {  
+    path: "/mcq",
+    element: <MyMCQ />,
   },
   {
     path: "/editor",

@@ -1,0 +1,65 @@
+Course Title: Easy Python
+
+Target Audience: Class 6-7 Students
+
+Week 1: Introduction to Programming and Python Basics
+
+Lesson 1: What is Programming?
+
+    Section 1: Understanding Programming and its Importance
+        Content: Programming involves giving instructions to computers to perform tasks. It's like creating a recipe for a computer to follow.
+
+    Section 2: Getting Started with Python
+        Content: Python is a beginner-friendly programming language. We'll learn how to write and run our first Python program.
+
+Lesson 2: Variables and Data Types
+
+    Section 1: Introduction to Variables
+        Content: Variables store data values that can be used later. We'll explore different data types like integers, floats, and strings.
+
+    Section 2: Working with Data
+        Content: Learn how to perform basic operations with variables, like arithmetic calculations and string concatenation.
+
+Week 2: Control Structures and Conditional Statements
+
+Lesson 3: Introduction to Control Structures
+
+    Section 1: Understanding Control Structures
+        Content: Control structures allow us to make decisions and repeat actions. We'll explore if statements and loops.
+
+Lesson 4: Conditional Statements
+
+    Section 1: Using if Statements
+        Content: Learn how to make decisions in your program using if statements to execute code conditionally.
+
+    Section 2: The else and elif Statements
+        Content: Extend your knowledge of conditional statements by using else and elif to cover different scenarios.
+
+Week 3: Functions and Libraries
+
+Lesson 5: Introduction to Functions
+
+    Section 1: Defining and Calling Functions
+        Content: Functions help us organize code into reusable blocks. Learn how to define and use functions.
+
+Lesson 6: Working with Libraries
+
+    Section 1: Introduction to Libraries
+        Content: Libraries provide pre-built functions and tools for various tasks. We'll explore using built-in and third-party libraries.
+
+Week 4: Data Structures and Project
+
+Lesson 7: Lists and Dictionaries
+
+    Section 1: Using Lists
+        Content: Lists store collections of data. We'll learn about indexing, slicing, and common list operations.
+
+    Section 2: Introduction to Dictionaries
+        Content: Dictionaries store data as key-value pairs. Explore how to create and manipulate dictionaries.
+
+Lesson 8: Final Project - Interactive Quiz Game
+
+    Section 1: Designing the Quiz Game
+        Content: Apply what you've learned to create an interactive quiz game using Python. Use functions, conditional statements, and data structures to build a fun and educational project.
+
+Note: Each section of a lesson will provide detailed explanations and examples to ensure a clear understanding of the concepts. The course aims to introduce young students to programming concepts using Python in an engaging and hands-on manner.

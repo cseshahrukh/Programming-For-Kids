@@ -33,6 +33,11 @@ const router = createBrowserRouter([
     element: <WeekDetails />,
   },
   {
+    path: '/courses/:course_id/:week_no/:lesson_id/mcq', 
+    element: <Mcq />,
+  }, 
+
+  {
     path: '/courses/:course_id/:week_no/:lesson_id/programming', 
     element: <ProgrammingList />,
   }, 

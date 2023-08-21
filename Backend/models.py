@@ -15,8 +15,10 @@ class reading_materials(db.Model):
     course_id = db.Column(db.Integer, primary_key=True)
     week_no = db.Column(db.Integer, primary_key=True)
     lesson_id = db.Column(db.Integer, primary_key=True)
+    lesson_title = db.Column(db.String, nullable=False)
     section_title = db.Column(db.String, primary_key=True, nullable=False)
     section_content = db.Column(db.String, nullable=False)
+    section_id = db.Column(db.Integer, primary_key=False, nullable=False)
 
     def __repr__(self):
         return f"ReadingMaterial(course_id={self.course_id}, week_no={self.week_no}, lesson_id={self.lesson_id}, section_title={self.section_title})"

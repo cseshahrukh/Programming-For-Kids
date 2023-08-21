@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, Link } from "react-router-dom";
 import './MCQs.css';
 import Navbar from "./Navbar";
 import Footer from './Footer';
 
 const Mcq = () => {
+  const { course_id, week_no,lesson_id } = useParams();
+
   const [mcqList, setMcqList] = useState([]);
   const [currentMCQIndex, setCurrentMCQIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState('');
@@ -15,7 +18,7 @@ const Mcq = () => {
 
   useEffect(() => {
     // Fetch MCQs from backend based on course_id, week_no, and lesson_id
-    fetch('/courses/mcqs/101/1/1')  // Replace with actual course_id, week_no, and lesson_id
+    fetch(`/courses/mcqs/${course_id}/${week_no}/${lesson_id}`)  // Replace with actual course_id, week_no, and lesson_id
       .then(response => {
         if (!response.ok) {
           setError(true); // Set error state if response status is not ok
@@ -31,7 +34,7 @@ const Mcq = () => {
         console.error(error);
         setError(true); // Set error state if any error occurs
       });
-  }, []);
+  }, [course_id,week_no,lesson_id]);
 
   if (error) {
     return (

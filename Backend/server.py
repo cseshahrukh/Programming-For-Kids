@@ -203,17 +203,35 @@ def get_mcqs(course_id, week_no, lesson_id):
 
 @app.route('/courses/reading_materials/<int:course_id>/<int:week_no>', methods=['GET'])
 def get_reading_materials_whole(course_id, week_no):
-    materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no).order_by(reading_materials.lesson_id).all()
+    materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no).order_by(reading_materials.lesson_id, reading_materials.section_id).all()
 
-    response_materials = []
+    response_lessons = []
+    current_lesson = None
+    current_lesson_sections = []
+
     for material in materials:
-        response_materials.append({
-            'lesson_id': material.lesson_id,
+        if current_lesson is None or current_lesson['lesson_id'] != material.lesson_id:
+            if current_lesson is not None:
+                current_lesson['sections'] = current_lesson_sections
+                response_lessons.append(current_lesson)
+
+            current_lesson = {
+                'lesson_title': material.lesson_title,
+                'lesson_id': material.lesson_id,
+                'sections': []
+            }
+            current_lesson_sections = []
+
+        current_lesson_sections.append({
             'section_title': material.section_title,
             'section_content': material.section_content
         })
 
-    response = jsonify({'reading_materials': response_materials})
+    if current_lesson is not None:
+        current_lesson['sections'] = current_lesson_sections
+        response_lessons.append(current_lesson)
+
+    response = jsonify(response_lessons)
     response.status_code = 200
     return response
 

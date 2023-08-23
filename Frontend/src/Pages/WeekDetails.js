@@ -26,7 +26,7 @@ function WeekDetails() {
                             <li key={material.lesson_id}>
                                 <h3>{material.section_title}</h3>
                                 <p>{material.section_content}</p>
-                                <Link to={`/courses/mcq/${course_id}/${week_no}/${material.lesson_id}`}>
+                                <Link to={`/courses/${course_id}/${week_no}/${material.lesson_id}/mcq`}>
                                     <button className="btn btn-primary mr-2">MCQ Section</button>
                                 </Link>
                                 <Link to={`/courses/${course_id}/${week_no}/${material.lesson_id}/programming`}>

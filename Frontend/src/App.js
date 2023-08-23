@@ -34,10 +34,12 @@ const router = createBrowserRouter([
     element: <ReadingMat />,
   },
   {
-    path: `/courses/mcq/:course_id/:week_no/:lesson_no`,
+    
+    path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/mcqs`,
     element: <Mcq />,
   },
   {
+    
     path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/problems`,
     element: <Programming />,
   },

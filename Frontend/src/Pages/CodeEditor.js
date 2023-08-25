@@ -6,11 +6,20 @@ import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-c_cpp";
 
-const CodeEditor = () => {
+const CodeEditor = ({ question, testCases }) => {
+  const inputs = [];
+  const outputs = [];
+  testCases.forEach((testCase) => {
+    inputs.push(testCase.Input);
+    outputs.push(testCase.Output);
+  });
   const [selectedLanguage, setSelectedLanguage] = useState("python");
   const [submissionStatus, setSubmissionStatus] = useState("Pending");
-  const [isStatusAccepted, setIsStatusAccepted] = useState(false); 
-  const editorRef = useRef(null); 
+  const [isStatusAccepted, setIsStatusAccepted] = useState(false);
+  const [submissionCount, setSubmissionCount] = useState(1);
+  const [prevCode, setPrevCode] = useState("");
+  const [stdinInput, setStdinInput] = useState("");
+  const editorRef = useRef(null);
 
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
@@ -22,15 +31,28 @@ const CodeEditor = () => {
       resetSubmissionStatus();
       setIsStatusAccepted(false);
     }
-    
+
   };
 
   const resetSubmissionStatus = () => {
     setSubmissionStatus("Pending");
   };
 
+  const handleStdinInputChange = (event) => {
+    setStdinInput(event.target.value);
+  };
+
   const handleSubmit = async () => {
     const code = editorRef.current.editor.getValue();
+
+    if (code === prevCode) {
+      if (submissionCount < 2) {
+        setSubmissionCount(submissionCount + 1);
+      }
+      // setSubmissionStatus("Error");
+      // window.alert(`Code is the same as the previous submission. Submitted ${submissionCount + 1} times.`);
+      // return;
+    }
 
     try {
       const response = await fetch('/compile', {
@@ -38,7 +60,7 @@ const CodeEditor = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ code, selectedLanguage }),
+        body: JSON.stringify({ code, selectedLanguage, stdinInput }),
       });
 
       if (response.ok) {
@@ -46,11 +68,16 @@ const CodeEditor = () => {
         if (data.status === 'Accepted') {
           setSubmissionStatus('Accepted');
           setIsStatusAccepted(true);
+          window.alert(data.output);
+          setSubmissionCount(1);
+        } else if (data.status === 'Rejected') {
+
         } else {
           setSubmissionStatus('Error');
           window.alert(data.error);
           setIsStatusAccepted(false);
         }
+        setPrevCode(code);
       } else {
         console.error('Error sending code to backend:', response.statusText);
       }
@@ -58,6 +85,9 @@ const CodeEditor = () => {
       console.error('Error sending code to backend:', error);
     }
   };
+
+  const handleSubmitForGrading = async () => {
+  }
 
   return (
     <div>
@@ -89,15 +119,30 @@ const CodeEditor = () => {
             height="396px"
             fontSize={14}
             fontColor="#666"
-            style={{ backgroundColor: "#555" }} 
+            style={{ backgroundColor: "#555" }}
             onChange={handleCodeChange}
+            question={question}
+            testCases={testCases}
+          />
+        </div>
+        <div style={stdinInputContainer}>
+          <label htmlFor="stdinInput">Input for stdin:</label>
+          <textarea
+            id="stdinInput"
+            value={stdinInput}
+            onChange={handleStdinInputChange}
+            rows={5}
+            cols={40}
           />
         </div>
       </div>
 
-      <div style={submitButtonContainerStyle} className="d-flex">
+      <div style={submitButtonContainer} className="d-flex">
         <button onClick={handleSubmit} type="button" className="btn btn-dark btn-me">
           Submit
+        </button>
+        <button onClick={handleSubmitForGrading} type="button" className="btn btn-success btn-me">
+          Submit for Grading
         </button>
       </div>
       {submissionStatus && (
@@ -124,11 +169,21 @@ const statusBoxStyle = {
 
 const submitButtonContainerStyle = {
   display: "flex",
-  justifyContent: "flex-start", // Align button to the right
+  justifyContent: "space-between", // Spread buttons apart
+  alignItems: "center", // Center buttons vertically
   marginTop: "10px",
 };
 
+const submitButtonContainer = {
+  display: "flex",
+  justifyContent: "space-between", // Align button to the right
+  alignItems: "center",
+  marginTop: "10px",
+};
 
+const gradingButtonStyle = {
+  marginLeft: "10px", // Add more spacing between the buttons
+};
 
 const editorContainerStyle = {
   display: "flex",
@@ -157,6 +212,10 @@ const editorTitleStyle = {
 
 const editorStyle = {
   flex: "1 1 auto", // Allow to grow and shrink, take remaining space
+};
+
+const stdinInputContainer = {
+  flex: "1 1 auto",
 };
 
 export default CodeEditor;

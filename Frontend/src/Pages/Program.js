@@ -76,7 +76,10 @@ const Programming = () => {
         </div>
         <div className="right-pane">
           <div className="code-editor">
-            <CodeEditor />
+            <CodeEditor
+              question={currentProgram.question}
+              testCases={currentProgram.examples}
+            />
           </div>
         </div>
       </div>

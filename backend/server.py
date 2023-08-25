@@ -2,6 +2,7 @@ from flask import request, jsonify, render_template
 from models import *
 from dbInserters import *
 from compiler import *
+from chatgpt import *
 
 def problemTextFormatter(input_text):
 
@@ -93,16 +94,19 @@ def handle_submission():
         data = request.get_json()
         code = data.get('code')
         language = data.get('selectedLanguage')
+        inputs = data.get('stdinInput')
         if code:
-            response = compile(code, language)
+            response = compile_and_run(code, language, inputs)
             if response['stderr'] == '':
                 response_data = {
-                    'status': 'Accepted'
+                    'status': 'Accepted',
+                    'output': response['stdout']
                 }
             else:
+                error_hint = getErrorExplanation(response['stderr'])
                 response_data = {
-                    'status': 'Rejected',
-                    'error': response['stderr']
+                    'status': 'Compilation Error',
+                    'error': error_hint
                 }
         else:
             response_data = {

@@ -32,37 +32,51 @@ def checkCorrectness(question, code):
     )
     return response
 
-question = "Create a simple game where the computer thinks of a random number between 1 and 100, and the player has to guess it. The computer should provide hints if the player's guess is too high or too low. The player continues guessing until they correctly guess the number."
-code = '''
-import random
+def getErrorExplanation(error):
+    response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    temperature=0.5,
+    messages=[
+            {"role": "system", "content": "You answer to school students who are learning programming. You get a message with errors\
+                during compilation. You rewrite that errors so that learners can get what the error is. You don't use the word \
+                    'error message' in your reply"},
+            {"role": "user", "content": f"The error during compilation is - {error}"}
+        ]
+    )
+    return response['choices'][0]['message']['content']
 
-def guess_the_number():
-    target_number = random.randint(1, 100)
-    attempts = 0
+
+# question = "Create a simple game where the computer thinks of a random number between 1 and 100, and the player has to guess it. The computer should provide hints if the player's guess is too high or too low. The player continues guessing until they correctly guess the number."
+# code = '''
+# import random
+
+# def guess_the_number():
+#     target_number = random.randint(1, 100)
+#     attempts = 0
     
-    print("Welcome to the Guess the Number game!")
-    print("I'm thinking of a number between 1 and 100.")
+#     print("Welcome to the Guess the Number game!")
+#     print("I'm thinking of a number between 1 and 100.")
     
-    while True:
-        player_guess = input("Take a wild guess: ")
-        player_guess = int(player_guess)  # Convert input to integer
+#     while True:
+#         player_guess = input("Take a wild guess: ")
+#         player_guess = int(player_guess)  # Convert input to integer
         
-        if player_guess == target_number:
-            attempts += 1
-            print("Congratulations! You guessed the number in", attempts, "attempts.")
-            break
-        elif player_guess < target_number:
-            print("Your guess is too high! Try a lower number.")
-        else:
-            print("Your guess is too low! Try a higher number.")
+#         if player_guess == target_number:
+#             attempts += 1
+#             print("Congratulations! You guessed the number in", attempts, "attempts.")
+#             break
+#         elif player_guess < target_number:
+#             print("Your guess is too high! Try a lower number.")
+#         else:
+#             print("Your guess is too low! Try a higher number.")
         
-        attempts -= 1  # Decrement attempts (oops, this is incorrect!)
+#         attempts -= 1  # Decrement attempts (oops, this is incorrect!)
     
-    print("Thanks for playing!")
+#     print("Thanks for playing!")
 
-guess_the_number()
+# guess_the_number()
 
-'''
+# '''
 
-response = getHints(question, code, 2)
-print(response['choices'][0]['message']['content'])
+# response = getHints(question, code, 2)
+# print(response['choices'][0]['message']['content'])

@@ -15,6 +15,9 @@ import WeekDetails from "./Pages/WeekDetails";
 import ProgrammingList from "./Pages/ProgrammingList";
 import Mcq from "./Pages/MCQs"
 import Programming from "./Pages/Program";
+import Signup from "./Pages/Signup";
+import Login from "./Pages/Login";
+import Dashboard from "./Pages/Dashboard";
 import Discussion from "./Pages/Discussion";
 
 const router = createBrowserRouter([
@@ -72,6 +75,18 @@ const router = createBrowserRouter([
     path: "/reading-materials",
     element: <ReadingMat />,
   },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
+  {
+    path: "/login", 
+    element: <Login />,
+  },
+  {
+    path: "/dashboard", 
+    element: <Dashboard />, 
+  }, 
 ]);
 
 function App() {

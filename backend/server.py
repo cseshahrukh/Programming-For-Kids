@@ -118,6 +118,75 @@ def handle_submission():
     except Exception as e:
         return jsonify({'status': f'Error: {str(e)}'})
 
+# Create the API endpoint for sign up
+@app.route('/signup', methods=['POST'])
+def signup():
+    # Get the request body data
+    data = request.get_json()
+
+    # Check if the user already exists
+    existing_user = Student.query.filter_by(email=data['email']).first()
+
+    if existing_user:
+        response=jsonify({'message': 'Email already exists.'})
+        response.status_code=409
+        return response
+
+    existing_user = Student.query.filter_by(username=data['username']).first()
+
+    if existing_user:
+        response=jsonify({'message': 'Username already exists.'})
+        response.status_code=409
+        return response
+    
+    # Create a new studentnt object using the data from the request body
+    new_user = Student(
+        name=data['name'],
+        email=data['email'],
+        password=data['password'],
+        username=data['username'],
+    )
+
+    # Give the user a id not existing in the database
+    new_user.id = Student.query.count() + 1
+
+    # Add the new user to the database
+    db.session.add(new_user)
+    db.session.commit()
+
+    response=jsonify({'message': 'New user created.'})
+    response.status_code=201
+    return response
+
+
+# Creae API endpoint for login
+@app.route('/login', methods=['POST'])
+def login():
+    # Get the request body data
+    data = request.get_json()
+
+    # Check if the user exists
+    existing_user = Student.query.filter_by(email=data['email']).first()
+
+    if not existing_user:
+        response=jsonify({'message': 'User does not exist.'})
+        response.status_code=404
+        return response
+
+    # Check if the password matches
+    if existing_user.password != data['password']:
+        response=jsonify({'message': 'Wrong password.'})
+        response.status_code=401
+        return response
+
+    # return username and email
+    response = jsonify({ 'username': existing_user.username, 'email': existing_user.email })
+
+    #response=jsonify({'message': 'User logged in.'})
+    response.status_code=200
+    return response
+
+
 @app.route('/courses', methods=['GET'])
 def fetch_courses():
     all_courses = Course.query.all()

@@ -1,0 +1,86 @@
+/* Home.css */
+
+.home-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5; /* Background color */
+}
+
+.content-container {
+    display: flex; /* Ensure flex layout */
+    flex-direction: row; /* Align content in a row */
+    justify-content: center; /* Center content horizontally */
+    align-items: stretch; /* Stretch content vertically */
+    gap: 20px; /* Add some space between bars and content */
+}
+
+.left-bar {
+    flex: 1;
+    background-color: #f68e5f; /* Customize the background color */
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow */
+    color: #fff; /* Text color */
+    margin-top: 55px; /* Adjust the margin-top value */
+}
+
+.content {
+    flex: 3; /* Expand content to take more space */
+    max-width: 1000px;
+    padding: 40px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow */
+}
+
+.right-bar {
+    flex: 1;
+    background-color: #f68e5f; /* Customize the background color */
+    padding: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow */
+    color: #fff; /* Text color */
+    margin-top: 55px; /* Adjust the margin-top value */
+}
+
+.title {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 20px;
+    padding-top: 100px; /* Adjust the padding as needed */
+}
+
+.highlight {
+    color: #f68e5f; /* Highlight color */
+}
+
+.description {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+/* Additional CSS rules for Navbar and Footer styles */
+.subtitle {
+    font-size: 24px;
+    color: #f68e5f;
+    margin-top: 10px;
+}
+
+.section {
+    margin: 40px 0;
+}
+
+.section-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}

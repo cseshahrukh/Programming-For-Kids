@@ -41,8 +41,11 @@ function Discussion() {
     };
 
     return (
+
         <div className="discussion-page" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Navbar />
+            <header className="App-header">
+                <Navbar />
+            </header>
             <div style={{ flex: 1, padding: "20px" }}>
                 <h1>Discussion for Course: {course_id}</h1>
                 <div>
@@ -66,29 +69,29 @@ function Discussion() {
                         <p>No discussions yet.</p>
                     ) : (
                         <ul>
-                        {discussions.map((discussion, index) => (
-                            <li key={index}>
-                                <h4>Question {index + 1}:</h4>
-                                <p>{discussion.question}</p>
-                                {discussion.replies.length > 0 ? (
-                                    <div>
-                                        <h5>Replies:</h5>
-                                        <ul>
-                                            {discussion.replies.map((reply, replyIndex) => (
-                                                <li key={replyIndex}>
-                                                    <p>Reply: {reply.reply}</p>
-                                                    <p>User: {reply.reply_user_name}</p>
-                                                </li>
-                                ))}
+                            {discussions.map((discussion, index) => (
+                                <li key={index}>
+                                    <h4>Question {index + 1}:</h4>
+                                    <p>{discussion.question}</p>
+                                    {discussion.replies.length > 0 ? (
+                                        <div>
+                                            <h5>Replies:</h5>
+                                            <ul>
+                                                {discussion.replies.map((reply, replyIndex) => (
+                                                    <li key={replyIndex}>
+                                                        <p>Reply: {reply.reply}</p>
+                                                        <p>User: {reply.reply_user_name}</p>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ) : (
+                                        <p>No replies yet.</p>
+                                    )}
+                                    <p>User: {discussion.user_name}</p>
+                                </li>
+                            ))}
                         </ul>
-                </div>
-            ) : (
-                <p>No replies yet.</p>
-            )}
-            <p>User: {discussion.user_name}</p>
-        </li>
-    ))}
-</ul>
                     )}
                 </div>
             </div>

@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import Navbar from './Navbar';
 
 function Signup() {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        name: '',
         username: '',
         email: '',
         password: '',
-        dateOfBirth: '',
     });
+
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -21,10 +23,30 @@ function Signup() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // You can perform signup logic here using formData
-        console.log('Signup form submitted:', formData);
+
+        try {
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                console.log('Signup successful');
+                navigate('/dashboard');
+            } else {
+                const errorData = await response.json(); // Parse error response
+                const errorMessage = errorData.message || 'Signup failed';
+                setErrorMessage(errorMessage);
+            }
+        } catch (error) {
+            console.error('Error submitting signup form:', error);
+            setErrorMessage('An error occurred while signing up.');
+        }
     };
 
     return (
@@ -36,37 +58,20 @@ function Signup() {
                         <div className="card shadow">
                             <div className="card-body">
                                 <h1 className="card-title text-center">Sign Up</h1>
+                                {errorMessage && (
+                                    <div className="alert alert-danger" role="alert">
+                                        {errorMessage}
+                                    </div>
+                                )}
                                 <form onSubmit={handleSubmit}>
                                     <div className="mb-3">
-                                        <label htmlFor="firstName" className="form-label">First Name</label>
+                                        <label htmlFor="name" className="form-label">Name</label>
                                         <input
                                             type="text"
                                             className="form-control"
-                                            id="firstName"
-                                            name="firstName"
-                                            value={formData.firstName}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="lastName" className="form-label">Last Name</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="lastName"
-                                            name="lastName"
-                                            value={formData.lastName}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
-                                        <input
-                                            type="date"
-                                            className="form-control"
-                                            id="dateOfBirth"
-                                            name="dateOfBirth"
-                                            value={formData.dateOfBirth}
+                                            id="name"
+                                            name="name"
+                                            value={formData.name}
                                             onChange={handleInputChange}
                                         />
                                     </div>

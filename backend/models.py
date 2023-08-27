@@ -72,6 +72,7 @@ class Course(db.Model):
 
 # Define the Student table
 class Student(db.Model):
+
     __tablename__ = 'Student'
     # Define the columns for the Student table
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -82,4 +83,4 @@ class Student(db.Model):
     level = db.Column(db.String(50), nullable=False)
     
     def __repr__(self):
-        return f"Student(student_id={self.student_id}, student_name={self.student_name})"
+        return f"Student(student_id={self.id}, student_name={self.name})"

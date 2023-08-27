@@ -383,6 +383,20 @@ def get_course_discussion(course_id):
     response.status_code = 200
     return response
 
+@app.route('/hint', methods=['POST', 'GET'])
+def handle_hint():
+    global hint_count, hint, question, code
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        hint_count = data.get('hintCount', 0)
+        question = data.get('question')
+        code = data.get('code')
+        return jsonify({'message': 'Hint count updated successfully.'})
+        
+    elif request.method == 'GET':
+        hint = getHints(hint_count, question, code)
+        return jsonify({'hint': hint})
 
 # Running app
 if __name__ == '__main__':

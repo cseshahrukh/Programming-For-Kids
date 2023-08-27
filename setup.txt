@@ -1,0 +1,6 @@
+pip install flask 
+pip install flask_sqlalchemy
+pip install psycopg2
+pip install openai
+npm install react-scripts
+

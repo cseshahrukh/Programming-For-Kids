@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import Navbar from './Navbar';
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
 
 function Login() {
+    const navigate = useNavigate();
+    const { setUser } = useUserContext(); // Get setUser from context
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
+
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -17,10 +23,35 @@ function Login() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // You can perform login logic here using formData
-        console.log('Login form submitted:', formData);
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                console.log('Login successful');
+
+                // Update user context with the logged-in user data
+                const userData = await response.json();
+                setUser(userData);
+
+                navigate('/dashboard');
+            } else {
+                const errorData = await response.json(); // Parse error response
+                const errorMessage = errorData.message || 'Login failed';
+                setErrorMessage(errorMessage);
+            }
+        } catch (error) {
+            console.error('Error submitting login form:', error);
+            setErrorMessage('An error occurred while logging in.');
+        }
     };
 
     return (
@@ -32,6 +63,11 @@ function Login() {
                         <div className="card shadow">
                             <div className="card-body">
                                 <h1 className="card-title text-center">Log In</h1>
+                                {errorMessage && (
+                                    <div className="alert alert-danger" role="alert">
+                                        {errorMessage}
+                                    </div>
+                                )}
                                 <form onSubmit={handleSubmit}>
                                     <div className="mb-3">
                                         <label htmlFor="email" className="form-label">Email</label>

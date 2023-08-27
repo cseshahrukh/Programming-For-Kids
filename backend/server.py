@@ -159,6 +159,34 @@ def signup():
     return response
 
 
+# Creae API endpoint for login
+@app.route('/login', methods=['POST'])
+def login():
+    # Get the request body data
+    data = request.get_json()
+
+    # Check if the user exists
+    existing_user = Student.query.filter_by(email=data['email']).first()
+
+    if not existing_user:
+        response=jsonify({'message': 'User does not exist.'})
+        response.status_code=404
+        return response
+
+    # Check if the password matches
+    if existing_user.password != data['password']:
+        response=jsonify({'message': 'Wrong password.'})
+        response.status_code=401
+        return response
+
+    # return username and email
+    response = jsonify({ 'username': existing_user.username, 'email': existing_user.email })
+
+    #response=jsonify({'message': 'User logged in.'})
+    response.status_code=200
+    return response
+
+
 @app.route('/courses', methods=['GET'])
 def fetch_courses():
     all_courses = Course.query.all()

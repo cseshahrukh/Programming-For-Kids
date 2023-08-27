@@ -70,3 +70,19 @@ class Course(db.Model):
     def __repr__(self):
         return f"Course(course_id={self.course_id}, course_name={self.course_name})"
 
+class Discussion_question(db.Model) :
+    __tablename__ = 'Discussion_question'
+    question_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    course_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'), nullable=False)
+    question = db.Column(db.String(500))
+    user_name = db.Column(db.String(50))
+    def __repr__(self):
+        return f"Discussion(course_id={self.course_id}, question_id={self.question_id}, question={self.question}, user_name={self.user_name})"
+class Discussion(db.Model) :
+    __tablename__ = 'Discussion'
+    question_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    question_reply_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    reply = db.Column(db.String(500))
+    reply_user_name = db.Column(db.String(50))
+    def __repr__(self):
+        return f"Discussion(course_id={self.course_id}, question_reply_id={self.question_reply_id}, question={self.question}, reply={self.reply}, user_name={self.user_name}, reply_user_name={self.reply_user_name})"

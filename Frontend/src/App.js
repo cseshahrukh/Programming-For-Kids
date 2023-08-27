@@ -15,6 +15,7 @@ import WeekDetails from "./Pages/WeekDetails";
 import ProgrammingList from "./Pages/ProgrammingList";
 import Mcq from "./Pages/MCQs"
 import Programming from "./Pages/Program";
+import Discussion from "./Pages/Discussion";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: '/courses/:course_id/:week_no',
     element: <WeekDetails />,
+  },
+  {
+    path: '/courses/:course_id/discussion', 
+    element: <Discussion />,
   },
   {
     path: '/courses/:course_id/:week_no/:lesson_id/programming', 

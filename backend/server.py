@@ -289,6 +289,30 @@ def get_problems(course_id, week_no, lesson_id):
     response.status_code = 200
     return response
 
+@app.route('/courses/<int:course_id>/discussion', methods=['GET'])
+def get_course_discussion(course_id):
+    discussions = Discussion_question.query.filter_by(course_id=course_id).all()
+    discussion_list = []
+    for discussion in discussions:
+        discussion_replies = Discussion.query.filter_by(question_id=discussion.question_id).all()
+        reply_list = []
+        for reply in discussion_replies:
+            reply_list.append({
+                'question_reply_id': reply.question_reply_id,
+                'reply': reply.reply,
+                'reply_user_name': reply.reply_user_name
+            })
+        discussion_list.append({
+            'course_id': discussion.course_id,
+            'question_id': discussion.question_id,
+            'question': discussion.question,
+            'user_name': discussion.user_name,
+            'replies': reply_list
+        })
+    
+    response = jsonify({'discussions': discussion_list})
+    response.status_code = 200
+    return response
 
 
 # Running app

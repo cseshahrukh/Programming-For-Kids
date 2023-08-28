@@ -3,6 +3,7 @@ from models import *
 from dbInserters import *
 from compiler import *
 from chatgpt import *
+from sqlalchemy import or_
 
 def problemTextFormatter(input_text):
 
@@ -201,6 +202,32 @@ def fetch_courses():
         course_list.append(course_data)
 
     return jsonify({'courses': course_list})
+
+
+@app.route('/courses/search', methods=['GET'])
+def search_courses():
+    print('searching')
+    search_query = request.args.get('search')
+
+    if search_query:
+        search_results = Course.query.filter(or_(
+            Course.course_name.ilike(f'%{search_query}%'),
+            Course.short_description.ilike(f'%{search_query}%')
+        )).all()
+
+        search_results_list = []
+        for result in search_results:
+            result_data = {
+                'course_id': result.course_id,
+                'course_name': result.course_name,
+                'short_description': result.short_description
+            }
+            search_results_list.append(result_data)
+
+        return jsonify({'searchResults': search_results_list})
+
+    return jsonify({'message': 'No search query provided'})
+
 
 @app.route('/courses/check-course/<string:course_name>', methods=['GET'])
 def check_course(course_name):

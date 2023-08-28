@@ -19,7 +19,7 @@ import Signup from "./Pages/Signup";
 import Login from "./Pages/Login";
 import Dashboard from "./Pages/Dashboard";
 import Discussion from "./Pages/Discussion";
-
+import CoursesSearch from "./Pages/CoursesSearch";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,6 +29,10 @@ const router = createBrowserRouter([
     path: "/courses",
     element: <Courses />,
   },
+  {
+    path: "/courses/search",
+    element: <CoursesSearch />,
+  }, 
   {
     path: `/courses/:course_id`,
     element: <CourseDetails />,
@@ -87,6 +91,11 @@ const router = createBrowserRouter([
     path: "/dashboard", 
     element: <Dashboard />, 
   }, 
+  {
+    
+    path: "/logout", 
+    element: <Home />,
+  },
 ]);
 
 function App() {

@@ -1,16 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import Footer from './Footer';
-import Navbar from './Navbar';
+import NavbarStudent from './NavbarStudent';
 import Profile from './Profile';
-function Dashboard() {
-    // Replace this with the actual user data fetched from the backend
-    
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
 
+function Dashboard() {
+    const { user } = useUserContext(); // Get user from context
+
+    if (!user) {
+        console.log('User not logged in. Redirecting to home page...');
+        // If user is not logged in, redirect to the home page
+        return <Navigate to="/" />;
+    }
+    else 
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <div>
-                <Navbar />
+                <NavbarStudent />
             </div>
             <div style={{ marginTop: '60px', textAlign: 'center' }}>
                 <h2>Your Dashboard</h2>
@@ -20,9 +27,9 @@ function Dashboard() {
                 </div>
             </div>
             <div>
-            <h1>Dashboard</h1>
-            <Profile /> {/* Include the Profile component */}
-            {/* Other dashboard content */}
+                <h1>Dashboard</h1>
+                <Profile /> {/* Include the Profile component */}
+                {/* Other dashboard content */}
             </div>
             <div >
                 <Footer />

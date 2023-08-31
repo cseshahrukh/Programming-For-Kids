@@ -2,7 +2,7 @@ from flask import request, jsonify, render_template
 from models import *
 from dbInserters import *
 from compiler import *
-from chatgpt import *
+#from chatgpt import *
 
 def problemTextFormatter(input_text):
 
@@ -288,6 +288,42 @@ def get_problems(course_id, week_no, lesson_id):
     response = jsonify({'problems': problems_list})
     response.status_code = 200
     return response
+
+
+@app.route('/api/save_section_contents', methods=['POST'])
+def save_section_contents():
+    try:
+        data = request.json
+        for section in data['sections']:
+            new_section = reading_materials(
+                course_id=data['course_id'],
+                week_no=data['week_no'],
+                lesson_id=data['lesson_id'],
+                section_title=section['title'],
+                section_content=section['details']
+            )
+            db.session.add(new_section)
+        
+        db.session.commit()
+        return jsonify({"message": "Section contents saved successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "Error saving section contents"}), 500
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -9,10 +9,10 @@ import "ace-builds/src-noconflict/mode-c_cpp";
 const CodeEditor = ({ question, testCases }) => {
   const inputs = [];
   const outputs = [];
-  // testCases.forEach((testCase) => {
-  //   inputs.push(testCase.Input);
-  //   outputs.push(testCase.Output);
-  // });
+  testCases.forEach((testCase) => {
+    inputs.push(testCase.Input);
+    outputs.push(testCase.Output);
+  });
   const [selectedLanguage, setSelectedLanguage] = useState("python");
   const [submissionStatus, setSubmissionStatus] = useState("Pending");
   const [isStatusAccepted, setIsStatusAccepted] = useState(false);
@@ -48,9 +48,8 @@ const CodeEditor = ({ question, testCases }) => {
     const code = editorRef.current.editor.getValue();
 
     if (code === prevCode) {
-      if (submissionCount < 2) {
-        setSubmissionCount(submissionCount + 1);
-      }
+      window.alert("Submitting same code again");
+      // return;
     }
 
     try {
@@ -65,15 +64,15 @@ const CodeEditor = ({ question, testCases }) => {
       if (response.ok) {
         const data = await response.json();
         if (data.status === 'Accepted') {
-          setSubmissionStatus('Accepted');
-          setIsStatusAccepted(true);
+          setSubmissionStatus('Successfully Run');
           window.alert(data.output);
           setSubmissionCount(1);
-        } else if (data.status === 'Rejected') {
-
-        } else {
-          setSubmissionStatus('Error');
+        } else if (data.status === 'Compilation Error') {
+          setSubmissionStatus('Compilation Error');
           window.alert(data.error);
+          setIsStatusAccepted(false);
+        } else {
+          window.alert("No Code Provided");
           setIsStatusAccepted(false);
         }
         setPrevCode(code);
@@ -86,6 +85,42 @@ const CodeEditor = ({ question, testCases }) => {
   };
 
   const handleSubmitForGrading = async () => {
+    const code = editorRef.current.editor.getValue();
+    try {
+      const response = await fetch('/grade', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code, selectedLanguage, inputs, outputs }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === 'Accepted') {
+          setSubmissionStatus('Accepted');
+          setIsStatusAccepted(true);
+          setSubmissionCount(1);
+        } else if (data.status === 'Rejected') {
+          setSubmissionStatus('Wrong Answer');
+          setIsStatusAccepted(false);
+          setSubmissionCount(1);
+
+        } else if (data.status === 'Compilation Error') {
+          setSubmissionStatus('Compilation Error');
+          window.alert(data.error);
+          setIsStatusAccepted(false);
+        } else {
+          window.alert("No Code Provided");
+          setIsStatusAccepted(false);
+        }
+        setPrevCode(code);
+      } else {
+        console.error('Error sending code to backend:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error sending code to backend:', error);
+    }
   }
 
   const handleHint = async () => {

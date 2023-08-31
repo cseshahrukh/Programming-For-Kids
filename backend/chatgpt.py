@@ -2,21 +2,44 @@ import openai
 
 openai.api_key = "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"
 
-def getHints(question, code, count):
+def getHints1(question, code):
     response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
-    temperature=0.0,
+    temperature=0.3,
     messages=[
             {"role": "system", "content": f"You answer to school students who are learning programming. You go over their code and \
-            give hints where they made an error. You never explicitly return the code nor do you explicitly point out the correct \
-            change. You only give a hint how they might correct it. You give hints based on a scale from 1 to 3. 1 on the scale \
-             means you give one simple hint without any line number mentioned, 2 on the scale means you give a hint with line number \
-             mentioned and 3 means you point out the explicit change in the code. Currently, you are on {count} in the scale. \
-             Strictly follow the scale and Give only the hint corresponding to where you are on the scale. Be as concise as you can."},
+            give hints where they made an error. You never explicitly return the code nor do you explicitly point out the incorrect \
+            line. You provide a gentle nudge to help students without giving away too much. Provide encouragement too."},
             {"role": "user", "content": f"The Programming Problem is - {question} The student's code is - {code}"}
         ]
     )
-    return response
+    return response['choices'][0]['message']['content']
+
+def getHints2(question, code):
+    response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    temperature=0.7,
+    messages=[
+            {"role": "system", "content": f"You answer to school students who are learning programming. You go over their code and \
+            give hints where they made an error. You never explicitly return the full code. You only point out the incorrect line \
+            in the code and provide a gentle nudge to help students without giving away too much. Provide encouragement too."},
+            {"role": "user", "content": f"The Programming Problem is - {question} The student's code is - {code}"}
+        ]
+    )
+    return response['choices'][0]['message']['content']
+
+def getHints3(question, code):
+    response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    temperature=0.7,
+    messages=[
+            {"role": "system", "content": f"You answer to school students who are learning programming. You go over their code and \
+            give hints where they made an error. You give the corrected version of the code snippet of the incorrect part only. \
+            Provide encouragement too."},
+            {"role": "user", "content": f"The Programming Problem is - {question} The student's code is - {code}"}
+        ]
+    )
+    return response['choices'][0]['message']['content']
 
 
 def checkCorrectness(question, code):
@@ -45,6 +68,15 @@ def getErrorExplanation(error):
     )
     return response['choices'][0]['message']['content']
 
+def getHints(n, question, code):
+    if n == 1:
+        return getHints1(question, code)
+    elif n == 2:
+        return getHints2(question, code)
+    elif n == 3:
+        return getHints3(question, code)
+    else:
+        print("Invalid option")
 
 # question = "Create a simple game where the computer thinks of a random number between 1 and 100, and the player has to guess it. The computer should provide hints if the player's guess is too high or too low. The player continues guessing until they correctly guess the number."
 # code = '''
@@ -78,5 +110,4 @@ def getErrorExplanation(error):
 
 # '''
 
-# response = getHints(question, code, 2)
-# print(response['choices'][0]['message']['content'])
+# print(getHints2(question, code))

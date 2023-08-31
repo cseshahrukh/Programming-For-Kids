@@ -18,6 +18,11 @@ import SectionMaterials from "./Pages/SectionMaterials";
 import LectureMcqs from "./Pages/LectureMcqs";
 import LectureProblems from "./Pages/LectureProblems";
 
+import Signup from "./Pages/Signup";
+import Login from "./Pages/Login";
+import Dashboard from "./Pages/Dashboard";
+import Discussion from "./Pages/Discussion";
+import CoursesSearch from "./Pages/CoursesSearch";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,6 +32,10 @@ const router = createBrowserRouter([
     path: "/courses",
     element: <Courses />,
   },
+  {
+    path: "/courses/search",
+    element: <CoursesSearch />,
+  }, 
   {
     path: `/courses/:course_id`,
     element: <CourseDetails />,
@@ -48,6 +57,10 @@ const router = createBrowserRouter([
   {
     path: '/courses/:course_id/:week_no',
     element: <WeekDetails />,
+  },
+  {
+    path: '/courses/:course_id/discussion', 
+    element: <Discussion />,
   },
   {
     path: '/courses/:course_id/:week_no/:lesson_id/programming', 
@@ -76,6 +89,23 @@ const router = createBrowserRouter([
   {
     path: "/reading-materials",
     element: <ReadingMat />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
+  {
+    path: "/login", 
+    element: <Login />,
+  },
+  {
+    path: "/dashboard", 
+    element: <Dashboard />, 
+  }, 
+  {
+    
+    path: "/logout", 
+    element: <Home />,
   },
 ]);
 

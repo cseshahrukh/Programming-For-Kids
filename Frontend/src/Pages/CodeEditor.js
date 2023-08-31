@@ -9,16 +9,18 @@ import "ace-builds/src-noconflict/mode-c_cpp";
 const CodeEditor = ({ question, testCases }) => {
   const inputs = [];
   const outputs = [];
-  testCases.forEach((testCase) => {
-    inputs.push(testCase.Input);
-    outputs.push(testCase.Output);
-  });
+  // testCases.forEach((testCase) => {
+  //   inputs.push(testCase.Input);
+  //   outputs.push(testCase.Output);
+  // });
   const [selectedLanguage, setSelectedLanguage] = useState("python");
   const [submissionStatus, setSubmissionStatus] = useState("Pending");
   const [isStatusAccepted, setIsStatusAccepted] = useState(false);
   const [submissionCount, setSubmissionCount] = useState(1);
   const [prevCode, setPrevCode] = useState("");
   const [stdinInput, setStdinInput] = useState("");
+  const [hint, setHint] = useState("");
+  const [hintCount, setHintCount] = useState(0);
   const editorRef = useRef(null);
 
   const handleLanguageChange = (event) => {
@@ -49,9 +51,6 @@ const CodeEditor = ({ question, testCases }) => {
       if (submissionCount < 2) {
         setSubmissionCount(submissionCount + 1);
       }
-      // setSubmissionStatus("Error");
-      // window.alert(`Code is the same as the previous submission. Submitted ${submissionCount + 1} times.`);
-      // return;
     }
 
     try {
@@ -88,6 +87,41 @@ const CodeEditor = ({ question, testCases }) => {
 
   const handleSubmitForGrading = async () => {
   }
+
+  const handleHint = async () => {
+    try {
+
+      const cappedHintCount = Math.min(hintCount + 1, 3);
+      const code = editorRef.current.editor.getValue();
+
+      const response = await fetch('/hint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ hintCount: cappedHintCount, question, code }),
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        setHintCount(cappedHintCount);
+
+        // Fetch the hint
+        const hintResponse = await fetch('/hint');
+        if (hintResponse.ok) {
+          const hintData = await hintResponse.json();
+          setHint(hintData.hint);
+          window.alert(hintData.hint);
+        } else {
+          console.error('Error fetching hint:', hintResponse.statusText);
+        }
+      } else {
+        console.error('Error sending hint count:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error handling hint:', error);
+    }
+  };
 
   return (
     <div>
@@ -141,6 +175,11 @@ const CodeEditor = ({ question, testCases }) => {
         <button onClick={handleSubmit} type="button" className="btn btn-dark btn-me">
           Submit
         </button>
+        <div style={hintButtonContainer}>
+          <button onClick={handleHint} type="button" className="btn btn-info btn-me" style={hintButtonStyle}>
+            Hint
+          </button>
+        </div>
         <button onClick={handleSubmitForGrading} type="button" className="btn btn-success btn-me">
           Submit for Grading
         </button>
@@ -167,22 +206,12 @@ const statusBoxStyle = {
   marginBottom: "20px",
 };
 
-const submitButtonContainerStyle = {
-  display: "flex",
-  justifyContent: "space-between", // Spread buttons apart
-  alignItems: "center", // Center buttons vertically
-  marginTop: "10px",
-};
 
 const submitButtonContainer = {
   display: "flex",
   justifyContent: "space-between", // Align button to the right
   alignItems: "center",
   marginTop: "10px",
-};
-
-const gradingButtonStyle = {
-  marginLeft: "10px", // Add more spacing between the buttons
 };
 
 const editorContainerStyle = {
@@ -216,6 +245,15 @@ const editorStyle = {
 
 const stdinInputContainer = {
   flex: "1 1 auto",
+};
+
+const hintButtonContainer = {
+  marginLeft: "50%", // Move the hint button to the right
+  marginTop: "-1px",
+};
+
+const hintButtonStyle = {
+  marginLeft: "10px", // Add more spacing between the buttons
 };
 
 export default CodeEditor;

@@ -2,7 +2,8 @@ from flask import request, jsonify, render_template
 from models import *
 from dbInserters import *
 from compiler import *
-#from chatgpt import *
+from chatgpt import *
+from sqlalchemy import or_
 
 def problemTextFormatter(input_text):
 
@@ -118,6 +119,75 @@ def handle_submission():
     except Exception as e:
         return jsonify({'status': f'Error: {str(e)}'})
 
+# Create the API endpoint for sign up
+@app.route('/signup', methods=['POST'])
+def signup():
+    # Get the request body data
+    data = request.get_json()
+
+    # Check if the user already exists
+    existing_user = Student.query.filter_by(email=data['email']).first()
+
+    if existing_user:
+        response=jsonify({'message': 'Email already exists.'})
+        response.status_code=409
+        return response
+
+    existing_user = Student.query.filter_by(username=data['username']).first()
+
+    if existing_user:
+        response=jsonify({'message': 'Username already exists.'})
+        response.status_code=409
+        return response
+    
+    # Create a new studentnt object using the data from the request body
+    new_user = Student(
+        name=data['name'],
+        email=data['email'],
+        password=data['password'],
+        username=data['username'],
+    )
+
+    # Give the user a id not existing in the database
+    new_user.id = Student.query.count() + 1
+
+    # Add the new user to the database
+    db.session.add(new_user)
+    db.session.commit()
+
+    response=jsonify({'message': 'New user created.'})
+    response.status_code=201
+    return response
+
+
+# Creae API endpoint for login
+@app.route('/login', methods=['POST'])
+def login():
+    # Get the request body data
+    data = request.get_json()
+
+    # Check if the user exists
+    existing_user = Student.query.filter_by(email=data['email']).first()
+
+    if not existing_user:
+        response=jsonify({'message': 'User does not exist.'})
+        response.status_code=404
+        return response
+
+    # Check if the password matches
+    if existing_user.password != data['password']:
+        response=jsonify({'message': 'Wrong password.'})
+        response.status_code=401
+        return response
+
+    # return username and email
+    response = jsonify({ 'username': existing_user.username, 'email': existing_user.email })
+
+    #response=jsonify({'message': 'User logged in.'})
+    response.status_code=200
+    return response
+
+
 @app.route('/courses', methods=['GET'])
 def fetch_courses():
     all_courses = Course.query.all()
@@ -132,6 +202,32 @@ def fetch_courses():
         course_list.append(course_data)
 
     return jsonify({'courses': course_list})
+
+
+@app.route('/courses/search', methods=['GET'])
+def search_courses():
+    print('searching')
+    search_query = request.args.get('search')
+
+    if search_query:
+        search_results = Course.query.filter(or_(
+            Course.course_name.ilike(f'%{search_query}%'),
+            Course.short_description.ilike(f'%{search_query}%')
+        )).all()
+
+        search_results_list = []
+        for result in search_results:
+            result_data = {
+                'course_id': result.course_id,
+                'course_name': result.course_name,
+                'short_description': result.short_description
+            }
+            search_results_list.append(result_data)
+
+        return jsonify({'searchResults': search_results_list})
+
+    return jsonify({'message': 'No search query provided'})
+
 
 @app.route('/courses/check-course/<string:course_name>', methods=['GET'])
 def check_course(course_name):
@@ -289,6 +385,30 @@ def get_problems(course_id, week_no, lesson_id):
     response.status_code = 200
     return response
 
+@app.route('/courses/<int:course_id>/discussion', methods=['GET'])
+def get_course_discussion(course_id):
+    discussions = Discussion_question.query.filter_by(course_id=course_id).all()
+    discussion_list = []
+    for discussion in discussions:
+        discussion_replies = Discussion.query.filter_by(question_id=discussion.question_id).all()
+        reply_list = []
+        for reply in discussion_replies:
+            reply_list.append({
+                'question_reply_id': reply.question_reply_id,
+                'reply': reply.reply,
+                'reply_user_name': reply.reply_user_name
+            })
+        discussion_list.append({
+            'course_id': discussion.course_id,
+            'question_id': discussion.question_id,
+            'question': discussion.question,
+            'user_name': discussion.user_name,
+            'replies': reply_list
+        })
+    
+    response = jsonify({'discussions': discussion_list})
+    response.status_code = 200
+    return response
 
 @app.route('/api/save_section_contents', methods=['POST'])
 def save_section_contents():
@@ -313,19 +433,20 @@ def save_section_contents():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+@app.route('/hint', methods=['POST', 'GET'])
+def handle_hint():
+    global hint_count, hint, question, code
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        hint_count = data.get('hintCount', 0)
+        question = data.get('question')
+        code = data.get('code')
+        return jsonify({'message': 'Hint count updated successfully.'})
+        
+    elif request.method == 'GET':
+        hint = getHints(hint_count, question, code)
+        return jsonify({'hint': hint})
 
 # Running app
 if __name__ == '__main__':

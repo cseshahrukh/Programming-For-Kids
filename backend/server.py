@@ -5,6 +5,7 @@ from compiler import *
 from chatgpt import *
 from sqlalchemy import or_
 
+
 def problemTextFormatter(input_text):
 
     sections = input_text.split("-----")
@@ -22,14 +23,15 @@ def problemTextFormatter(input_text):
             question_section = sections[i + 1]
         elif "EXAMPLE" in sections[i]:
             example_sections.append(sections[i + 1])
-    
+
     for example in example_sections:
         examples = examples + example + "\n"*3
 
     return question_section, examples
 
+
 def readingMaterialFormatter(input_text):
-    
+
     section_titles = []
     section_content = []
     sections = input_text.split("-----")
@@ -40,6 +42,7 @@ def readingMaterialFormatter(input_text):
             if len(sections[i]) > 2:
                 section_content.append(sections[i])
     return section_titles, section_content
+
 
 def handle_data(json_data):
 
@@ -57,7 +60,8 @@ def handle_data(json_data):
                 titles, contents = readingMaterialFormatter(reading_materials)
                 weekly_topics.append(titles)
                 if len(titles) == len(contents):
-                    dbInsertReadingMaterials(week_number, lesson_number, titles, contents)
+                    dbInsertReadingMaterials(
+                        week_number, lesson_number, titles, contents)
                 else:
                     print("FATAL ERROR. Title and Content Mismatch")
 
@@ -66,17 +70,21 @@ def handle_data(json_data):
                 choices = mcq['choices']
                 correct_answer = mcq['correctAnswer']
                 if len(question) > 2:
-                    dbInsertMCQ(week_number, lesson_number, question, choices, correct_answer)
+                    dbInsertMCQ(week_number, lesson_number,
+                                question, choices, correct_answer)
 
             for problem in programming_problems:
                 if len(problem) > 2:
                     question, examples = problemTextFormatter(problem)
-                    dbInsertProblem(week_number, lesson_number, question, examples)
+                    dbInsertProblem(week_number, lesson_number,
+                                    question, examples)
         dbInsertWeeklyModules(week_number, lesson_number, weekly_topics)
 
         print("=" * 20)
 
+
 app, db = initialize()
+
 
 @app.route('/save_data', methods=['POST'])
 def save_data():
@@ -84,10 +92,12 @@ def save_data():
     handle_data((data))
     return jsonify(message="Data received successfully")
 
+
 @app.route('/')
 def index():
     materials = reading_materials.query.all()
     return render_template('index.html', students=materials)
+
 
 @app.route('/compile', methods=['POST'])
 def handle_submission():
@@ -113,11 +123,60 @@ def handle_submission():
             response_data = {
                 'status': 'Error: No code provided'
             }
-        
+
         return jsonify(response_data)
-    
+
     except Exception as e:
         return jsonify({'status': f'Error: {str(e)}'})
+
+
+@app.route('/grade', methods=['POST'])
+def handle_grading():
+    try:
+        data = request.get_json()
+        code = data.get('code')
+        language = data.get('selectedLanguage')
+        inputs = data.get('inputs')
+        outputs = data.get('outputs')
+        if code:
+            status = True
+            c = 0
+            for stdin in inputs:
+                response = compile_and_run(code, language, stdin)
+                if response['stderr'] != '':
+                    status = False
+                    break
+                else:
+                    if response['stdout'].strip() != outputs[c]:
+                        status = False
+                        break
+                    c = c + 1
+
+            if status:
+                response_data = {
+                    'status': 'Accepted',
+                }
+            else:
+                if response['stderr'] != '':
+                    error_hint = getErrorExplanation(response['stderr'])
+                    response_data = {
+                        'status': 'Compilation Error',
+                        'error': error_hint
+                    }
+                else:
+                    response_data = {
+                        'status': 'Rejected',
+                    }
+        else:
+            response_data = {
+                'status': 'Empty Error'
+            }
+
+        return jsonify(response_data)
+
+    except Exception as e:
+        return jsonify({'status': f'Error: {str(e)}'})
+
 
 # Create the API endpoint for sign up
 @app.route('/signup', methods=['POST'])
@@ -129,17 +188,17 @@ def signup():
     existing_user = Student.query.filter_by(email=data['email']).first()
 
     if existing_user:
-        response=jsonify({'message': 'Email already exists.'})
-        response.status_code=409
+        response = jsonify({'message': 'Email already exists.'})
+        response.status_code = 409
         return response
 
     existing_user = Student.query.filter_by(username=data['username']).first()
 
     if existing_user:
-        response=jsonify({'message': 'Username already exists.'})
-        response.status_code=409
+        response = jsonify({'message': 'Username already exists.'})
+        response.status_code = 409
         return response
-    
+
     # Create a new studentnt object using the data from the request body
     new_user = Student(
         name=data['name'],
@@ -155,8 +214,8 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
 
-    response=jsonify({'message': 'New user created.'})
-    response.status_code=201
+    response = jsonify({'message': 'New user created.'})
+    response.status_code = 201
     return response
 
 
@@ -170,21 +229,22 @@ def login():
     existing_user = Student.query.filter_by(email=data['email']).first()
 
     if not existing_user:
-        response=jsonify({'message': 'User does not exist.'})
-        response.status_code=404
+        response = jsonify({'message': 'User does not exist.'})
+        response.status_code = 404
         return response
 
     # Check if the password matches
     if existing_user.password != data['password']:
-        response=jsonify({'message': 'Wrong password.'})
-        response.status_code=401
+        response = jsonify({'message': 'Wrong password.'})
+        response.status_code = 401
         return response
 
     # return username and email
-    response = jsonify({ 'username': existing_user.username, 'email': existing_user.email })
+    response = jsonify({'username': existing_user.username,
+                       'email': existing_user.email})
 
-    #response=jsonify({'message': 'User logged in.'})
-    response.status_code=200
+    # response=jsonify({'message': 'User logged in.'})
+    response.status_code = 200
     return response
 
 
@@ -232,28 +292,33 @@ def search_courses():
 @app.route('/courses/check-course/<string:course_name>', methods=['GET'])
 def check_course(course_name):
     course_name = course_name.strip()
-    
+
     # Check if a course with the given course_name exists (case-insensitive)
-    existing_course = Course.query.filter(func.lower(Course.course_name) == course_name.lower()).first()
+    existing_course = Course.query.filter(func.lower(
+        Course.course_name) == course_name.lower()).first()
 
     if existing_course:
-        response=jsonify({'message': 'Course with the same name exists.','courseExists':'true'})
-        response.status_code=200
+        response = jsonify(
+            {'message': 'Course with the same name exists.', 'courseExists': 'true'})
+        response.status_code = 200
         return response
     else:
-        response=jsonify({'message': 'Course with the same name does not exist.','courseExists':'false'})
-        response.status_code=404
+        response = jsonify(
+            {'message': 'Course with the same name does not exist.', 'courseExists': 'false'})
+        response.status_code = 404
         return response
 
 # Create the API endpoint for retrieving course details
+
+
 @app.route('/courses/<int:course_id>', methods=['GET'])
 def get_course_details(course_id):
     # Query the database for the course
     queried_course = Course.query.filter_by(course_id=course_id).first()
 
     if not queried_course:
-        response=jsonify({'error': 'Course not found.'})
-        response.status_code=404
+        response = jsonify({'error': 'Course not found.'})
+        response.status_code = 404
         return response
 
     # Convert the course object to a dictionary
@@ -265,18 +330,20 @@ def get_course_details(course_id):
         'total_week': queried_course.total_week,
     }
 
-    response=jsonify({'course': course_details})
-    response.status_code=200
+    response = jsonify({'course': course_details})
+    response.status_code = 200
     return response
+
 
 @app.route('/courses/mcqs/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_mcqs(course_id, week_no, lesson_id):
     # Query the database for MCQ questions
-    queried_mcqs = mcqs.query.filter_by(course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
+    queried_mcqs = mcqs.query.filter_by(
+        course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
 
     if not queried_mcqs:
-        response=jsonify({'error': 'No MCQ questions found.'})
-        response.status_code=404
+        response = jsonify({'error': 'No MCQ questions found.'})
+        response.status_code = 404
         return response
 
     # Convert the selected MCQs to a list of dictionaries
@@ -292,13 +359,15 @@ def get_mcqs(course_id, week_no, lesson_id):
         for mcq in queried_mcqs
     ]
 
-    response=jsonify({'mcqs': mcq_list})
-    response.status_code=200
+    response = jsonify({'mcqs': mcq_list})
+    response.status_code = 200
     return response
+
 
 @app.route('/courses/reading_materials/<int:course_id>/<int:week_no>', methods=['GET'])
 def get_reading_materials_prev(course_id, week_no):
-    materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no).order_by(reading_materials.section_id).all()
+    materials = reading_materials.query.filter_by(
+        course_id=course_id, week_no=week_no).order_by(reading_materials.section_id).all()
 
     response_materials = []
     for material in materials:
@@ -312,9 +381,11 @@ def get_reading_materials_prev(course_id, week_no):
     response.status_code = 200
     return response
 
+
 @app.route('/courses/reading_materials/<int:course_id>/<int:week_no>/<int:lesson_no>', methods=['GET'])
 def get_reading_materials_whole(course_id, week_no, lesson_no):
-    materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no, lesson_id=lesson_no).order_by(reading_materials.section_id).all()
+    materials = reading_materials.query.filter_by(
+        course_id=course_id, week_no=week_no, lesson_id=lesson_no).order_by(reading_materials.section_id).all()
 
     response_materials = []
     for material in materials:
@@ -332,11 +403,12 @@ def get_reading_materials_whole(course_id, week_no, lesson_no):
 
 @app.route('/courses/reading_materials/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_reading_materials(course_id, week_no, lesson_id):
-    materials = reading_materials.query.filter_by(course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
+    materials = reading_materials.query.filter_by(
+        course_id=course_id, week_no=week_no, lesson_id=lesson_id).all()
 
     if not materials:
-        response=jsonify({'error': 'No reading materials found.'})
-        response.status_code=404
+        response = jsonify({'error': 'No reading materials found.'})
+        response.status_code = 404
         return response
 
     response_materials = []
@@ -346,18 +418,19 @@ def get_reading_materials(course_id, week_no, lesson_id):
             'section_content': material.section_content
         })
 
-    response=jsonify({'reading_materials': response_materials})
-    response.status_code=200
+    response = jsonify({'reading_materials': response_materials})
+    response.status_code = 200
     return response
 
 # Create the API endpoint for retrieving problems based on criteria
+
+
 @app.route('/courses/problems/<int:course_id>/<int:week_no>/<int:lesson_id>', methods=['GET'])
 def get_problems(course_id, week_no, lesson_id):
 
     # Retrieve problems based on the provided criteria
-    selected_problems = problems.query.filter_by(course_id=course_id, week_no=week_no, 
+    selected_problems = problems.query.filter_by(course_id=course_id, week_no=week_no,
                                                  lesson_id=lesson_id).order_by(problems.problem_id).all()
-    
 
     # Convert the list of problems to a list of dictionaries with examples
     problems_list = []
@@ -369,13 +442,13 @@ def get_problems(course_id, week_no, lesson_id):
             input_value = examples[i].replace('Input:', '').strip()
             output_value = examples[i+1].replace('Output:', '').strip()
             explanation = examples[i+2].replace('Explanation:', '').strip()
-            
+
             example_list.append({
                 'Input': input_value,
                 'Output': output_value,
                 'Explanation': explanation
             })
-        
+
         problems_list.append({
             'question': problem.question,
             'examples': example_list
@@ -385,12 +458,15 @@ def get_problems(course_id, week_no, lesson_id):
     response.status_code = 200
     return response
 
+
 @app.route('/courses/<int:course_id>/discussion', methods=['GET'])
 def get_course_discussion(course_id):
-    discussions = Discussion_question.query.filter_by(course_id=course_id).all()
+    discussions = Discussion_question.query.filter_by(
+        course_id=course_id).all()
     discussion_list = []
     for discussion in discussions:
-        discussion_replies = Discussion.query.filter_by(question_id=discussion.question_id).all()
+        discussion_replies = Discussion.query.filter_by(
+            question_id=discussion.question_id).all()
         reply_list = []
         for reply in discussion_replies:
             reply_list.append({
@@ -405,7 +481,7 @@ def get_course_discussion(course_id):
             'user_name': discussion.user_name,
             'replies': reply_list
         })
-    
+
     response = jsonify({'discussions': discussion_list})
     response.status_code = 200
     return response
@@ -431,22 +507,21 @@ def save_section_contents():
         return jsonify({"message": "Error saving section contents"}), 500
 
 
-
-
 @app.route('/hint', methods=['POST', 'GET'])
 def handle_hint():
     global hint_count, hint, question, code
-    
+
     if request.method == 'POST':
         data = request.get_json()
         hint_count = data.get('hintCount', 0)
         question = data.get('question')
         code = data.get('code')
         return jsonify({'message': 'Hint count updated successfully.'})
-        
+
     elif request.method == 'GET':
         hint = getHints(hint_count, question, code)
         return jsonify({'hint': hint})
+
 
 # Running app
 if __name__ == '__main__':

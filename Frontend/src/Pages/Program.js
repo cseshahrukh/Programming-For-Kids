@@ -35,8 +35,6 @@ const Programming = () => {
     return <p>Loading...</p>;
   }
 
-  console.log(problemsList)
-
   const currentProgram = problemsList[currentIndex]; // You should adjust this according to your data structure
 
   return (

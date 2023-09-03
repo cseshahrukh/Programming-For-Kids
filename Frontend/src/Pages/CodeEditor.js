@@ -1,5 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import AceEditor from "react-ace";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Modal from 'react-modal';
 
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/mode-java";
@@ -21,6 +24,8 @@ const CodeEditor = ({ question, testCases }) => {
   const [stdinInput, setStdinInput] = useState("");
   const [hint, setHint] = useState("");
   const [hintCount, setHintCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const editorRef = useRef(null);
 
   const handleLanguageChange = (event) => {
@@ -44,11 +49,15 @@ const CodeEditor = ({ question, testCases }) => {
     setStdinInput(event.target.value);
   };
 
+  const toggleNotifications = () => {
+    setIsNotificationsOpen(!isNotificationsOpen);
+  };
+
   const handleSubmit = async () => {
     const code = editorRef.current.editor.getValue();
 
     if (code === prevCode) {
-      window.alert("Submitting same code again");
+      toast("Submitting same code again");
       // return;
     }
 
@@ -65,14 +74,16 @@ const CodeEditor = ({ question, testCases }) => {
         const data = await response.json();
         if (data.status === 'Accepted') {
           setSubmissionStatus('Successfully Run');
-          window.alert(data.output);
+          toast(data.output);
           setSubmissionCount(1);
         } else if (data.status === 'Compilation Error') {
           setSubmissionStatus('Compilation Error');
-          window.alert(data.error);
+          toast(data.error);
+          const message = data.error
+          setNotifications([...notifications, message]);
           setIsStatusAccepted(false);
         } else {
-          window.alert("No Code Provided");
+          toast("No Code Provided");
           setIsStatusAccepted(false);
         }
         setPrevCode(code);
@@ -108,10 +119,12 @@ const CodeEditor = ({ question, testCases }) => {
 
         } else if (data.status === 'Compilation Error') {
           setSubmissionStatus('Compilation Error');
-          window.alert(data.error);
+          toast(data.error);
+          const message = data.error
+          setNotifications([...notifications, message]);
           setIsStatusAccepted(false);
         } else {
-          window.alert("No Code Provided");
+          toast("No Code Provided");
           setIsStatusAccepted(false);
         }
         setPrevCode(code);
@@ -146,7 +159,9 @@ const CodeEditor = ({ question, testCases }) => {
         if (hintResponse.ok) {
           const hintData = await hintResponse.json();
           setHint(hintData.hint);
-          window.alert(hintData.hint);
+          toast(hintData.hint);
+          const message = hintData.hint
+          setNotifications([...notifications, message]);
         } else {
           console.error('Error fetching hint:', hintResponse.statusText);
         }
@@ -196,13 +211,38 @@ const CodeEditor = ({ question, testCases }) => {
         </div>
         <div style={stdinInputContainer}>
           <label htmlFor="stdinInput">Input for stdin:</label>
-          <textarea
-            id="stdinInput"
-            value={stdinInput}
-            onChange={handleStdinInputChange}
-            rows={5}
-            cols={40}
-          />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <textarea
+              id="stdinInput"
+              value={stdinInput}
+              onChange={handleStdinInputChange}
+              rows={5}
+              cols={40}
+            />
+          </div>
+          <div>
+            <div>
+              <button
+                onClick={toggleNotifications}
+                type="button"
+                className="btn btn-dark btn-me"
+                style={{ width: '100%', marginLeft: '195%' }}
+              >
+                See Previous Hints
+              </button>
+              {isNotificationsOpen && (
+                <div style={customWindowStyle}>
+                  <h3>Previous Hints:</h3>
+                  <ul>
+                    {notifications.map((notification, index) => (
+                      <li key={index}>{notification}</li>
+                    ))}
+                  </ul>
+                  <button onClick={toggleNotifications} style={closeButtonStyle}>X</button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -212,7 +252,7 @@ const CodeEditor = ({ question, testCases }) => {
         </button>
         <div style={hintButtonContainer}>
           <button onClick={handleHint} type="button" className="btn btn-info btn-me" style={hintButtonStyle}>
-            Hint
+            Get Hint
           </button>
         </div>
         <button onClick={handleSubmitForGrading} type="button" className="btn btn-success btn-me">
@@ -227,8 +267,7 @@ const CodeEditor = ({ question, testCases }) => {
           </span>
         </div>
       )}
-
-
+      <ToastContainer position="top-right" autoClose={5000} />
     </div>
   );
 };
@@ -244,15 +283,14 @@ const statusBoxStyle = {
 
 const submitButtonContainer = {
   display: "flex",
-  justifyContent: "space-between", // Align button to the right
-  alignItems: "center",
+  justifyContent: "space-between",
   marginTop: "10px",
 };
 
 const editorContainerStyle = {
   display: "flex",
-  justifyContent: "flex-right", // Place editor on the right side
-  marginTop: "2px", // Adjust as needed for spacing
+  justifyContent: "flex-right",
+  marginTop: "2px",
   width: "32.6%",
   flexDirection: "column",
 };
@@ -267,7 +305,7 @@ const editorHeaderStyle = {
 const languageSelectContainerStyle = {
   display: "flex",
   alignItems: "center",
-  marginRight: "18px", // Add some spacing between the label and select
+  marginRight: "18px",
 };
 
 const editorTitleStyle = {
@@ -275,7 +313,7 @@ const editorTitleStyle = {
 };
 
 const editorStyle = {
-  flex: "1 1 auto", // Allow to grow and shrink, take remaining space
+  flex: "1 1 auto",
 };
 
 const stdinInputContainer = {
@@ -283,12 +321,32 @@ const stdinInputContainer = {
 };
 
 const hintButtonContainer = {
-  marginLeft: "50%", // Move the hint button to the right
+  marginLeft: "50%",
   marginTop: "-1px",
 };
 
 const hintButtonStyle = {
-  marginLeft: "10px", // Add more spacing between the buttons
+  marginLeft: "10px",
+};
+
+const customWindowStyle = {
+  position: 'fixed',
+  top: '20%',
+  left: '20%',
+  width: '60%',
+  background: 'white',
+  padding: '20px',
+  border: '1px solid #ccc',
+  borderRadius: '5px',
+  boxShadow: '0px 0px 5px 0px #ccc',
+  zIndex: 9999,
+};
+
+const closeButtonStyle = {
+  position: 'absolute',
+  top: '10px',
+  right: '10px',
+  cursor: 'pointer',
 };
 
 export default CodeEditor;

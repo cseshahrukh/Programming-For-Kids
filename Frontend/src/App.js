@@ -23,6 +23,10 @@ import Login from "./Pages/Login";
 import Dashboard from "./Pages/Dashboard";
 import Discussion from "./Pages/Discussion";
 import CoursesSearch from "./Pages/CoursesSearch";
+import AddCourseMaterialsPage from "./Pages/AddCourseMaterialsPage";
+import AddCourseLessonsPage from "./Pages/AddCourseLessonsPage";
+import CourseInfoInput from "./Pages/CourseInfoInput";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -54,6 +58,7 @@ const router = createBrowserRouter([
     path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/problems`,
     element: <Programming />,
   },
+
   {
     path: '/courses/:course_id/:week_no',
     element: <WeekDetails />,
@@ -78,6 +83,22 @@ const router = createBrowserRouter([
     path: '/addCourse/:course_id/week/:week_no/lesson/:lesson_no/problems',
     element: <LectureProblems />,
   },
+  {
+    
+    path: `/addCourse/:course_id/week/:week_no`,
+    element: <AddCourseMaterialsPage />,
+  }, 
+  {
+    
+    path: `/addCourse/:course_id/week/:week_no/lesson/:lesson_no/:which_page`,
+    element: <AddCourseLessonsPage />,
+  }, 
+  {
+    
+    path: `/addCourse`,
+    element: <CourseInfoInput />,
+  }, 
+  
   {
     path: "/editor",
     element: <CodeEditor />,

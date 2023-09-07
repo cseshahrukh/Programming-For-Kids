@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import './AddCourse.css'
+import React, { useState, useEffect } from "react";
+import { useParams, Link , useNavigate } from "react-router-dom";
+import './AddCourse.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 function LectureMcqs() {
-    const [mcqs, setMCQs] = useState([
-    { question: "", choices: ["", "", "", ""], correctAnswer: 0 }
-    ]);
+    const { course_id, week_no, lesson_no } = useParams(); // Extract course_id, week_no, and lesson_no
+    const navigate = useNavigate();
+    const [mcqs, setMCQs] = useState([]);
 
     const handleMCQChange = (event, mcqIndex) => {
     const { value } = event.target;
@@ -38,10 +39,55 @@ function LectureMcqs() {
     ]);
     };
 
-    const handleComplete = () => {
-    // Perform actions to complete adding MCQs
-    console.log("MCQs have been added:", mcqs);
+
+    const handleComplete = async () => {
+      try {
+        const response = await fetch(`/api/save_mcqs`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            course_id: course_id,
+            week_no: week_no,
+            lesson_id: lesson_no,
+            mcqs: mcqs,
+          }),
+        });
+
+        if (response.ok) {
+          navigate(`/addCourse/${course_id}/week/${week_no}/lesson/${lesson_no}/2`);
+          console.log('MCQs have been successfully saved');
+        } else {
+          console.error('Error saving MCQs');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
     };
+
+   // Function to fetch MCQs data
+   const fetchMCQs = async () => {
+    try {
+        const response = await fetch(`/api/load_mcqs?course_id=${course_id}&week_no=${week_no}&lesson_id=${lesson_no}`);
+
+        if (response.ok) {
+            const data = await response.json();
+            setMCQs(data.mcqs);
+            console.log('MCQs data fetched successfully');
+        } else {
+            console.error('Error fetching MCQs data');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+  };
+
+  // Fetch MCQs data when the component mounts
+  useEffect(() => {
+      fetchMCQs();
+  }, []);
+
 
   return (
     <div className="App">

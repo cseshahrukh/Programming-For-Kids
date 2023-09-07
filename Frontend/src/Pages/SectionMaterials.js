@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import './AddCourse.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -8,17 +8,19 @@ import Footer from "./Footer";
 
 function SectionMaterials() {
   const { course_id, week_no, lesson_no } = useParams(); // Extract course_id, week_no, and lesson_no
-  const [sections, setSections] = useState([
-    // Initialize with an empty section
-    { title: "", details: "" },
-  ]);
+  const navigate = useNavigate();
+  const [sections, setSections] = useState([]);
   const [completed, setCompleted] = useState(false);
    
   const handleAddSection = () => {
-    // Add a new empty section to the sections state
+    // Find the maximum section_id and increment it
+    const maxSectionId = Math.max(...sections.map(section => section.section_id), 0);
+    const newSectionId = maxSectionId + 1;
+
+    // Add a new empty section to the sections state with the new section_id
     setSections([
       ...sections,
-      { title: "", details: "" },
+      { section_id: newSectionId, title: "", details: "" },
     ]);
   };
 
@@ -31,7 +33,7 @@ function SectionMaterials() {
 
   const handleComplete = async () => {
     try {
-      const response = await fetch(`/api/save_section_contents`, { // Use the URL parameter values
+      const response = await fetch(`/api/save_section_contents`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,6 +48,7 @@ function SectionMaterials() {
 
       if (response.ok) {
         setCompleted(true);
+        navigate(`/addCourse/${course_id}/week/${week_no}/lesson/${lesson_no}/1`);
       } else {
         console.error('Error saving section contents');
       }
@@ -53,6 +56,25 @@ function SectionMaterials() {
       console.error('Error:', error);
     }
   };
+
+  // Use useEffect to load existing content when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/load_section_contents?course_id=${course_id}&week_no=${week_no}&lesson_id=${lesson_no}`);
+        if (response.ok) {
+          const data = await response.json();
+          setSections(data.sections);
+        } else {
+          console.error('Error loading section contents');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, [course_id, week_no, lesson_no]);
 
   return (
     <div className="App">
@@ -75,7 +97,7 @@ function SectionMaterials() {
               </div>
               <div className="section-details">
                 <textarea
-                  rows="10" // Increased the number of rows for a taller textarea
+                  rows="10"
                   placeholder="Section Details"
                   value={section.details}
                   onChange={(e) => handleSectionChange(index, "details", e.target.value)}

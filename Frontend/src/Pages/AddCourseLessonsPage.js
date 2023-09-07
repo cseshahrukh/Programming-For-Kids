@@ -59,6 +59,11 @@ function AddCourseLessonsPage() {
           </button>
         </div>
       </div>
+      <div className="complete-button-container">
+        <Link to={`/addCourse/${course_id}/week/${week_no}`}>
+          <button className="complete-button">Complete</button>
+        </Link>
+      </div>
     </div>
   );
 }

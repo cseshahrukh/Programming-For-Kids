@@ -430,7 +430,7 @@ def get_problems(course_id, week_no, lesson_id):
 
     # Retrieve problems based on the provided criteria
     selected_problems = problems.query.filter_by(course_id=course_id, week_no=week_no,
-                                                 lesson_id=lesson_id).order_by(problems.problem_id).all()
+                                                 lesson_id=lesson_id).all()
 
     # Convert the list of problems to a list of dictionaries with examples
     problems_list = []
@@ -486,25 +486,233 @@ def get_course_discussion(course_id):
     response.status_code = 200
     return response
 
+
+@app.route('/api/save_mcqs', methods=['POST'])
+def save_mcqs():
+    try:
+        data = request.json  # Get the JSON data from the request
+        course_id = data['course_id']
+        week_no = data['week_no']
+        lesson_id = data['lesson_id']
+        mcqs_data = data['mcqs']
+        
+        # Delete existing MCQs for the given course, week, and lesson
+        mcqs_to_delete = mcqs.query.filter_by(
+            course_id=course_id,
+            week_no=week_no,
+            lesson_id=lesson_id
+        ).delete()
+        
+        # Commit the deletion to the database
+        db.session.commit()
+        
+        # Add the new MCQs from the frontend
+        for mcq in mcqs_data:
+            question = mcq['question']
+            option_1 = mcq['choices'][0]
+            option_2 = mcq['choices'][1]
+            option_3 = mcq['choices'][2]
+            option_4 = mcq['choices'][3]
+            correct = mcq['correctAnswer']
+            
+            # Create a new MCQ object and add it to the database
+            new_mcq = mcqs(
+                course_id=course_id,
+                week_no=week_no,
+                lesson_id=lesson_id,
+                question=question,
+                option_1=option_1,
+                option_2=option_2,
+                option_3=option_3,
+                option_4=option_4,
+                correct=correct
+            )
+            db.session.add(new_mcq)
+        
+        # Commit the changes to the database
+        db.session.commit()
+        
+        return jsonify({"message": "MCQs have been saved successfully"}), 200
+    
+    except Exception as e:
+        db.session.rollback()  # Rollback changes in case of an error
+        return jsonify({"message": "Error saving MCQs"}), 500
+
+    
+@app.route('/api/load_mcqs', methods=['GET'])
+def load_mcqs():
+    try:
+        course_id = request.args.get('course_id')
+        week_no = request.args.get('week_no')
+        lesson_id = request.args.get('lesson_id')
+
+        mcqs_data = mcqs.query.filter_by(
+            course_id=course_id,
+            week_no=week_no,
+            lesson_id=lesson_id
+        ).all()
+
+        mcqs_list = [{
+            'question': mcq.question,
+            'choices': [mcq.option_1, mcq.option_2, mcq.option_3, mcq.option_4],
+            'correctAnswer': mcq.correct
+        } for mcq in mcqs_data]
+
+        return jsonify({"mcqs": mcqs_list}), 200
+
+    except Exception as e:
+        return jsonify({"message": "Error fetching MCQs data"}), 500
+
+
+@app.route('/api/save_problems', methods=['POST'])
+def save_problems():
+    try:
+        data = request.json  # Get the JSON data from the request
+        course_id = data['course_id']
+        week_no = data['week_no']
+        lesson_id = data['lesson_id']
+        problems_data = data['problems']
+
+        # Delete existing problems with the provided course_id, week_no, and lesson_id
+        problems.query.filter_by(
+            course_id=course_id,
+            week_no=week_no,
+            lesson_id=lesson_id
+        ).delete()
+
+        # Add new problems from the frontend data
+        for problem in problems_data:
+            question = problem['problemDescription']
+            examples = "\n\n".join([f"Input:\n{tc['input']}\n\nOutput:\n{tc['output']}\n\nExplanation:\n{tc['explanation']}" for tc in problem['testCases']])
+
+            # Create a new problems object and add it to the database
+            new_problem = problems(
+                course_id=course_id,
+                week_no=week_no,
+                lesson_id=lesson_id,
+                question=question,
+                examples=examples
+            )
+            db.session.add(new_problem)
+
+        db.session.commit()  # Commit the changes to the database
+        return jsonify({"message": "Problems have been saved successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()  # Rollback changes if there's an error
+        return jsonify({"message": "Error saving problems"}), 500
+
+
+@app.route('/api/load_problems', methods=['GET'])
+def load_problems():
+    try:
+        course_id = request.args.get('course_id')
+        week_no = request.args.get('week_no')
+        lesson_id = request.args.get('lesson_id')
+        
+        # Fetch problems from the database based on the provided parameters
+        selected_problems = problems.query.filter_by(
+            course_id=course_id,
+            week_no=week_no,
+            lesson_id=lesson_id
+        ).order_by(problems.problem_id).all()
+      
+        # Convert problems to a format suitable for JSON response
+        problems_list = []
+        for problem in selected_problems:
+            examples_text = problem.examples
+            examples = examples_text.split('\n\n')
+
+            test_cases = []
+            for i in range(0, len(examples), 3):
+                input_text = examples[i].strip('Input:\n')
+                output_text = examples[i + 1].strip('Output:\n')
+                explanation_text = examples[i + 2].strip('Explanation:\n')
+                test_cases.append({
+                    'input': input_text,
+                    'output': output_text,
+                    'explanation': explanation_text
+                })
+
+            problems_list.append({
+                'problemDescription': problem.question,
+                'testCases': test_cases
+            })
+
+        return jsonify({"problems": problems_list}), 200
+
+    except Exception as e:
+        return jsonify({"message": "Error fetching problems"}), 500
+
+
+
 @app.route('/api/save_section_contents', methods=['POST'])
 def save_section_contents():
     try:
         data = request.json
+        
+        # Extract course_id, week_no, and lesson_id from the request data
+        course_id = data['course_id']
+        week_no = data['week_no']
+        lesson_id = data['lesson_id']
+        
+        # Delete existing rows with the same course_id, week_no, and lesson_id
+        reading_materials.query.filter_by(
+            course_id=course_id,
+            week_no=week_no,
+            lesson_id=lesson_id
+        ).delete()
+        
+        # Commit the deletion
+        db.session.commit()
+        
+        # Add the new sections
         for section in data['sections']:
             new_section = reading_materials(
-                course_id=data['course_id'],
-                week_no=data['week_no'],
-                lesson_id=data['lesson_id'],
+                course_id=course_id,
+                week_no=week_no,
+                lesson_id=lesson_id,
                 section_title=section['title'],
-                section_content=section['details']
+                section_content=section['details'],
+                section_id=section['section_id']
             )
             db.session.add(new_section)
-        
+
+        # Commit the addition
         db.session.commit()
+        
         return jsonify({"message": "Section contents saved successfully"}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error saving section contents"}), 500
+
+
+
+@app.route('/api/load_section_contents', methods=['GET'])
+def load_section_contents():
+    try:
+        # Extract course_id, week_no, and lesson_id from the query parameters
+        course_id = request.args.get('course_id')
+        week_no = request.args.get('week_no')
+        lesson_id = request.args.get('lesson_id')
+
+        # Query the database to get existing sections
+        existing_sections = reading_materials.query.filter_by(
+            course_id=course_id,
+            week_no=week_no,
+            lesson_id=lesson_id
+        ).order_by(reading_materials.section_id).all()
+
+        # Convert the sections to a list of dictionaries
+        sections = [{
+            'section_id': section.section_id,
+            'title': section.section_title,
+            'details': section.section_content
+        } for section in existing_sections]
+
+        return jsonify({'sections': sections}), 200
+    except Exception as e:
+        return jsonify({"message": "Error loading section contents"}), 500
 
 
 @app.route('/hint', methods=['POST', 'GET'])
@@ -526,3 +734,7 @@ def handle_hint():
 # Running app
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+#DELETE FROM reading_materials
+#WHERE section_content='sec 1 details modified' OR section_content='sec 2 details modified' OR section_content='sec 3 details newly added';

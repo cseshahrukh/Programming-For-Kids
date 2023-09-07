@@ -62,6 +62,12 @@ function AddCourseMaterialsPage() {
             <button className="action-button">Add Problems</button>
           </Link>
         </div>
+
+        <div className="complete-button-container">
+        <Link to={`/`}>
+          <button className="complete-button">Finish Uploading</button>
+        </Link>
+        </div>
       </div>
     </div>
   );

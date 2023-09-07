@@ -77,4 +77,28 @@
     margin-bottom: 20px;
     color: #333;
   }
+
+  .complete-button-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px; /* Add spacing from the elements above */
+  
+  }
+  
+  
+  .complete-button {
+    background-color: #ff5722; /* Change to your desired color code */
+    color: #fff; /* Text color */
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px; /* Adjust padding as needed */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+  }
+  
+  .complete-button:hover {
+    background-color: #f44336; /* Change to a slightly different shade on hover */
+  }
+  
   

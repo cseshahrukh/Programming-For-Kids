@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import './LectureProblems.css';
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link ,useNavigate} from "react-router-dom";
 import './AddCourse.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -9,12 +9,9 @@ import Footer from "./Footer";
 
 
 function LectureProblems() {
-    const [problems, setProblems] = useState([
-      {
-        problemDescription: '',
-        testCases: [{ input: '', output: '', explanation: '' }],
-      },
-    ]);
+    const { course_id, week_no, lesson_no } = useParams(); // Extract course_id, week_no, and lesson_no
+    const navigate = useNavigate();
+    const [problems, setProblems] = useState([]);
   
     const handleProblemDescriptionChange = (problemIndex, e) => {
       const updatedProblems = [...problems];
@@ -38,11 +35,56 @@ function LectureProblems() {
       setProblems([...problems, { problemDescription: '', testCases: [{ input: '', output: '', explanation: '' }] }]);
     };
   
-    const handleComplete = () => {
-      // Handle form completion, e.g., sending data to the server
-      // You can access all the problems and test cases in the 'problems' state here
+
+    const handleComplete = async () => {
+      try {
+        const response = await fetch(`/api/save_problems`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            course_id: course_id,
+            week_no: week_no,
+            lesson_id: lesson_no,
+            problems: problems,
+          }),
+        });
+
+        if (response.ok) {
+          // Handle success, e.g., show a success message to the user
+          navigate(`/addCourse/${course_id}/week/${week_no}/lesson/${lesson_no}/3`);
+          console.log('Problems have been successfully saved');
+        } else {
+          console.error('Error saving problems');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
     };
-  
+
+
+     // Function to fetch existing problems from the backend
+    const fetchProblems = async () => {
+      try {
+        const response = await fetch(`/api/load_problems?course_id=${course_id}&week_no=${week_no}&lesson_id=${lesson_no}`);
+        if (response.ok) {
+          const data = await response.json();
+          setProblems(data.problems || []);
+        } else {
+          console.error('Error fetching problems');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    useEffect(() => {
+      // Fetch existing problems when the component mounts
+      fetchProblems();
+    }, []);
+
+
     return (
       <div className="problem-form">
         <h2>Programming Problem Form</h2>

@@ -24,7 +24,7 @@ class reading_materials(db.Model):
 
 
 class problems(db.Model):
-    problem_id = db.Column(db.String , primary_key=True, nullable=False)
+    problem_id = db.Column(db.String , nullable=False)
     course_id = db.Column(db.Integer)
     week_no = db.Column(db.Integer)
     lesson_id = db.Column(db.Integer)

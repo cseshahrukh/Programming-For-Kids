@@ -57,7 +57,7 @@ function NavbarStudent() {
                         
                     </ul>
                     {/* Add Search input */}
-                    <div className="d-flex">
+                    <div className="d-flex position-relative">
                         <form onSubmit={handleSearchSubmit} className="me-2">
                             <input
                                 type="text"
@@ -67,15 +67,17 @@ function NavbarStudent() {
                                 onChange={handleSearchChange}
                             />
                         </form>
-                        {/* Display suggestions */}
+                        {/* Display suggestions below the search bar */}
                         {suggestions.length > 0 && (
-                            <ul className="suggestions">
-                                {suggestions.map((suggestion, index) => (
-                                    <li key={index}>
-                                        <Link to={`/courses/search/${suggestion}`}>{suggestion}</Link>
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className="suggestions-box position-absolute bg-white border rounded mt-5 w-100">
+                                <ul className="suggestions list-unstyled m-0 p-2">
+                                    {suggestions.map((suggestion, index) => (
+                                        <li key={index}>
+                                            <Link to={`/courses/search/${suggestion}`}>{suggestion}</Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         )}
                         {user ? (
                             <>

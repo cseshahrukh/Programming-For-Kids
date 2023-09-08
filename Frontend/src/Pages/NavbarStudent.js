@@ -1,33 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useUserContext } from '../UserContext'; // Import the useUserContext hook
+import { useUserContext } from '../UserContext';
 
 function NavbarStudent() {
     const navigate = useNavigate();
-    const { user, setUser } = useUserContext(); // Get user and setUser from context
+    const { user, setUser } = useUserContext();
 
     const handleLogout = () => {
-        console.log('Logging out...');
-        // Clear user context and perform logout logic
-        setUser(null); // Clear user data from context
-        // Perform any other logout-related actions
-        console.log('User data cleared from context.');
-        // Navigate to home page or any other desired page
+        setUser(null);
         navigate('/');
     };
 
     const [searchQuery, setSearchQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
 
     const handleSearchChange = (event) => {
-        setSearchQuery(event.target.value);
+        const newQuery = event.target.value;
+        setSearchQuery(newQuery);
+
+        // Fetch suggestions when the search query changes
+        fetchSuggestions(newQuery);
     };
 
     const handleSearchSubmit = (event) => {
         event.preventDefault();
-        // Implement your search logic using the searchQuery value
-        console.log('Search query:', searchQuery);
-        console.log("Inside navbar student");
         navigate(`/courses/search/${searchQuery}`);
+    };
+
+    const fetchSuggestions = (query) => {
+        // Fetch suggestions from your backend API
+        fetch(`/courses/search-suggestions?query=${query}`)
+            .then(response => response.json())
+            .then(data => setSuggestions(data.suggestions))
+            .catch(error => console.error('Error fetching suggestions:', error));
     };
 
     return (
@@ -50,8 +55,6 @@ function NavbarStudent() {
                             <Link className="nav-link active fancy-link" aria-current="page" to="/dashboard">Dashboard</Link>
                         </li>
                         
-                        
-                        
                     </ul>
                     {/* Add Search input */}
                     <div className="d-flex">
@@ -64,12 +67,26 @@ function NavbarStudent() {
                                 onChange={handleSearchChange}
                             />
                         </form>
+                        {/* Display suggestions */}
+                        {suggestions.length > 0 && (
+                            <ul className="suggestions">
+                                {suggestions.map((suggestion, index) => (
+                                    <li key={index}>
+                                        <Link to={`/courses/search/${suggestion}`}>{suggestion}</Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                         {user ? (
-                            <button onClick={handleLogout} className="btn btn-outline-light fancy-button">Logout</button>
+                            <>
+                                <button onClick={handleLogout} className="btn btn-outline-light fancy-button">Logout</button>
+                                {/* You can add other buttons here */}
+                            </>
                         ) : (
                             <>
                                 <Link to="/login" className="btn btn-outline-light me-2">Login</Link>
                                 <Link to="/signup" className="btn btn-primary">Sign Up</Link>
+                                {/* You can add more buttons for non-logged in users */}
                             </>
                         )}
                     </div>

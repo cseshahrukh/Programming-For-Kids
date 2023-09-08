@@ -285,16 +285,17 @@ def get_teacher_courses():
     return jsonify({'courses': course_list})
 
 
-@app.route('/courses/search', methods=['GET'])
-def search_courses():
-    print('searching')
-    search_query = request.args.get('search')
+@app.route('/courses/search=<search_query>', methods=['GET'])
+def search_courses(search_query):
+    print('searching in backend')
 
     if search_query:
-        search_results = Course.query.filter(or_(
-            Course.course_name.ilike(f'%{search_query}%'),
-            Course.short_description.ilike(f'%{search_query}%')
-        )).all()
+        search_results = Course.query.filter(
+            or_(
+                Course.course_name.ilike(f'%{search_query}%'),
+                Course.short_description.ilike(f'%{search_query}%')
+            )
+        ).all()
 
         search_results_list = []
         for result in search_results:

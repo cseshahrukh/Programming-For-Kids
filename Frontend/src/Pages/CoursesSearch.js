@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
+import NavbarStudent from "./NavbarStudent";
 
 function CoursesSearch() {
+    console.log("CoursesSearch");
+
     const { searchQuery } = useParams(); // Get the search query from the URL parameter
 
+    console.log("searchQuery:", searchQuery);
     const [searchResults, setSearchResults] = useState([]);
 
     useEffect(() => {
@@ -19,7 +23,7 @@ function CoursesSearch() {
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <div>
-                <Navbar />
+                <NavbarStudent />
             </div>
             <div >
                 <h1 style={{ margin: "30px", marginTop: "80px" }}>Search Results for "{searchQuery}"</h1>

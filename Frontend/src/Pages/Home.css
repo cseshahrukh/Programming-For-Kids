@@ -16,7 +16,7 @@
 }
 
 .left-bar {
-    flex: 1;
+    flex: 0.5;
     background-color: #f68e5f; /* Customize the background color */
     padding: 10px;
     border-top-left-radius: 10px;
@@ -27,7 +27,7 @@
 }
 
 .content {
-    flex: 3; /* Expand content to take more space */
+    flex: 5; /* Expand content to take more space */
     max-width: 1000px;
     padding: 40px;
     text-align: center;
@@ -37,9 +37,9 @@
 }
 
 .right-bar {
-    flex: 1;
+    flex: 0.5;
     background-color: #f68e5f; /* Customize the background color */
-    padding: 10px;
+    padding: 20px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow */
@@ -84,3 +84,38 @@
     color: #333;
     margin-bottom: 10px;
 }
+
+/* Add this CSS to your Home.css file */
+.contributors {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .contributors-title {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .contributors-description {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 15px;
+  }
+  
+  .contributors ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left; /* Left-align the list */
+  }
+  
+  .contributors ul li {
+    font-size: 20px;
+    color: #444;
+    margin-bottom: 10px;
+  }
+  
+  /* You can adjust the colors and styles as needed */
+  

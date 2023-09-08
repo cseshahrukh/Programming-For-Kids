@@ -67,8 +67,8 @@ function Discussion() {
     };
 
     return (
-        <div className="discussion-page" style={{ display: "flex", flexDirection: "column", minHeight: "100vh", padding: "30px" }}>
-            <header className="App-header">
+        <div className="discussion-page" style={{ display: "flex", flexDirection: "column", minHeight: "100vh", padding: "24px" }}>
+            <header className="App-header" style={{ fontSize: '18px' }}>
                 <NavbarStudent />
             </header>
             <div style={{ flex: 1 }}>
@@ -98,22 +98,22 @@ function Discussion() {
                                 <li key={questionIndex} style={{ backgroundColor: "#FFF", marginBottom: "20px", padding: "10px", borderRadius: "5px", boxShadow: "0 0 10px rgba(0,0,0,0.2)" }}>
                                     <h4>Question {questionIndex + 1}:</h4>
                                     <p>{discussion.question}</p>
-                                    {discussion.replies.length > 0 ? (
-                                        <div>
-                                            <h5>Replies:</h5>
-                                            <ul>
-                                                {discussion.replies.map((reply, replyIndex) => (
-                                                    <li key={replyIndex}>
-                                                        <p>Reply: {reply.reply}</p>
-                                                        <p>User: {reply.reply_user_name}</p>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    ) : (
-                                        <p>No replies yet.</p>
-                                    )}
-                                    <p>User: {discussion.user_name}</p>
+                                    <ul>
+                                        {discussion.replies.length > 0 ? (
+                                            <div>
+                                                <h5>Replies:</h5>
+                                                <ul>
+                                                    {discussion.replies.map((reply, replyIndex) => (
+                                                        <li key={replyIndex}>
+                                                            <p>{reply.reply_user_name}: {reply.reply}</p>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ) : (
+                                            <p>No replies yet.</p>
+                                        )}
+                                    </ul>
 
                                     {/* Reply Form */}
                                     <form onSubmit={(e) => handleSubmitReply(e, questionIndex)}>

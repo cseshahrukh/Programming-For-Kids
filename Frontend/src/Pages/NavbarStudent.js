@@ -25,7 +25,7 @@ function NavbarStudent() {
     const handleSearchSubmit = (event) => {
         event.preventDefault();
         // Implement your search logic using the searchQuery value
-        navigate(`/courses?search=${searchQuery}`);
+        navigate(`/courses/search=${searchQuery}`);
     };
 
     return (

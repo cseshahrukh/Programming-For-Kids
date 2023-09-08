@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
+import NavbarStudent from "./NavbarStudent";
 
 function Courses() {
-
+    console.log("Courses");
     const [courses, setCourses] = useState([]);
 
     useEffect(() => {
@@ -17,7 +18,7 @@ function Courses() {
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <div>
-                <Navbar />
+                <NavbarStudent />
             </div>
             <div >
                 <h1 style={{ margin: "30px", marginTop: "80px" }}>Courses</h1>

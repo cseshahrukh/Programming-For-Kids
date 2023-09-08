@@ -61,11 +61,11 @@ class Course(db.Model):
     course_level = db.Column(db.String(50), nullable=False)
     short_description = db.Column(db.String(500))
     long_description = db.Column(db.String)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('Teacher.teacher_id'), nullable=False)
-    prerequisite_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
-    #teacher_id = db.Column(db.Integer,nullable=False)
-    #prerequisite_id = db.Column(db.Integer)
-    total_week = db.Column(db.Integer, nullable=False)
+    teacher_id = db.Column(db.Integer, nullable=False)
+    prerequisite_id = db.Column(db.Integer)
+    #teacher_id = db.Column(db.Integer,db.ForeignKey('Teacher.teacher_id'),nullable=False)
+    #prerequisite_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
+    total_week = db.Column(db.Integer)
 
     def __repr__(self):
         return f"Course(course_id={self.course_id}, course_name={self.course_name})"

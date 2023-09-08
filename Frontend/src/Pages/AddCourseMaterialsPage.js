@@ -64,7 +64,7 @@ function AddCourseMaterialsPage() {
         </div>
 
         <div className="complete-button-container">
-        <Link to={`/`}>
+        <Link to={`/teacher/courses`}>
           <button className="complete-button">Finish Uploading</button>
         </Link>
         </div>

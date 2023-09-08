@@ -9,6 +9,7 @@ import ProgrammingProb from './Pages/ProgrammingProblem';
 import ReadingMat from "./Pages/readingMaterials";
 import Home from "./Pages/Home";
 import Courses from "./Pages/Courses";
+import TeacherCourses from "./Pages/TeacherCourses";
 import CourseDetails from "./Pages/CourseDetails";
 import WeekDetails from "./Pages/WeekDetails";
 import ProgrammingList from "./Pages/ProgrammingList";
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: "/courses",
     element: <Courses />,
+  },
+  {
+    path: "/teacher/courses",
+    element: <TeacherCourses />,
   },
   {
     path: "/courses/search",
@@ -95,7 +100,7 @@ const router = createBrowserRouter([
   }, 
   {
     
-    path: `/addCourse`,
+    path: `/teacher/:teacher_id/addCourse`,
     element: <CourseInfoInput />,
   }, 
   

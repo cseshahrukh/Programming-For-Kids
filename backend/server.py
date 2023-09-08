@@ -3,7 +3,7 @@ from models import *
 from dbInserters import *
 from compiler import *
 from chatgpt import *
-from sqlalchemy import or_
+from sqlalchemy import or_,desc
 
 
 def problemTextFormatter(input_text):
@@ -264,6 +264,27 @@ def fetch_courses():
     return jsonify({'courses': course_list})
 
 
+@app.route('/teacher_courses', methods=['GET'])
+def get_teacher_courses():
+    teacher_id = request.args.get('teacher_id')  # Get the teacher_id from the request query parameters
+
+    # Query the Course table to retrieve courses for the given teacher_id
+    courses = Course.query.filter_by(teacher_id=teacher_id).all()
+
+    # Convert the courses to a list of dictionaries for JSON response
+    course_list = []
+    for course in courses:
+        course_dict = {
+            'course_id': course.course_id,
+            'course_name': course.course_name,
+            'short_description': course.short_description,
+        }
+        course_list.append(course_dict)
+
+    # Return the courses as JSON response
+    return jsonify({'courses': course_list})
+
+
 @app.route('/courses/search', methods=['GET'])
 def search_courses():
     print('searching')
@@ -288,27 +309,6 @@ def search_courses():
 
     return jsonify({'message': 'No search query provided'})
 
-
-@app.route('/courses/check-course/<string:course_name>', methods=['GET'])
-def check_course(course_name):
-    course_name = course_name.strip()
-
-    # Check if a course with the given course_name exists (case-insensitive)
-    existing_course = Course.query.filter(func.lower(
-        Course.course_name) == course_name.lower()).first()
-
-    if existing_course:
-        response = jsonify(
-            {'message': 'Course with the same name exists.', 'courseExists': 'true'})
-        response.status_code = 200
-        return response
-    else:
-        response = jsonify(
-            {'message': 'Course with the same name does not exist.', 'courseExists': 'false'})
-        response.status_code = 404
-        return response
-
-# Create the API endpoint for retrieving course details
 
 
 @app.route('/courses/<int:course_id>', methods=['GET'])
@@ -713,6 +713,59 @@ def load_section_contents():
         return jsonify({'sections': sections}), 200
     except Exception as e:
         return jsonify({"message": "Error loading section contents"}), 500
+
+
+@app.route('/api/check_course', methods=['POST'])
+def check_course():
+    try:
+        data = request.json
+        course_name = data['courseName']
+        
+        # Query the database to check if a course with the same name exists
+        existing_course = Course.query.filter_by(course_name=course_name).first()
+
+        if existing_course:
+            return jsonify({"exists": True}), 200
+        else:
+            return jsonify({"exists": False}), 200
+
+    except Exception as e:
+        return jsonify({"message": "Error checking course availability"}), 500
+
+
+
+@app.route('/api/save_course', methods=['POST'])
+def save_course():
+    try:
+        data = request.json
+        course_name = data['courseName']
+        short_description = data['shortDescription']
+        detail_description = data['detailDescription']
+        course_level = data['courseLevel']
+        teacherID=data['teacher_id']
+        
+        # Find the highest course_id in the Course table and generate a new course_id
+        highest_course = Course.query.order_by(desc(Course.course_id)).first()
+        new_course_id = highest_course.course_id + 1 if highest_course else 1
+        
+        # Create a new course object and add it to the database
+        new_course = Course(
+            course_id=new_course_id,
+            course_name=course_name,
+            short_description=short_description,
+            long_description=detail_description,  # Changed field name to long_description
+            course_level=course_level,
+            teacher_id=teacherID,
+            total_week=6
+        )
+   
+        db.session.add(new_course)
+        db.session.commit()
+
+        return jsonify({"course_id": new_course_id}), 200
+
+    except Exception as e:
+        return jsonify({"message": "Error saving course information"}), 500
 
 
 @app.route('/hint', methods=['POST', 'GET'])

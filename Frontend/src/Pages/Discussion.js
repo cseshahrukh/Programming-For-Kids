@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams,useNavigate } from "react-router-dom";
-import { useUserContext } from '../UserContext'; // Import the useUserContext hook
-import { useAuth } from '../useAuth'; // Import the custom hook
-
+import { useParams, useNavigate } from "react-router-dom";
+import { useUserContext } from '../UserContext';
+import { useAuth } from '../useAuth';
 import Footer from "./Footer";
 import NavbarStudent from "./NavbarStudent";
 
@@ -10,21 +9,18 @@ function Discussion() {
     const { course_id } = useParams();
     const [discussions, setDiscussions] = useState([]);
     const [newQuestion, setNewQuestion] = useState("");
-    const [newReply, setNewReply] = useState("");
+    const [newReplies, setNewReplies] = useState(Array.from({ length: discussions.length }, () => ""));
 
     const navigate = useNavigate();
-    const { user } = useUserContext(); // Get user data from context
-    const isAuthenticated = useAuth(); // Use the custom hook
-  
-    // Use useEffect to handle the redirection
+    const { user } = useUserContext();
+    const isAuthenticated = useAuth();
+
     useEffect(() => {
-      if (!isAuthenticated) {
-        // Redirect to the login page
-        navigate(`/login`);    
-      }
+        if (!isAuthenticated) {
+            navigate(`/login`);
+        }
     }, [isAuthenticated]);
 
-    // Fetch discussions (questions and replies) from the server
     useEffect(() => {
         fetch(`/courses/${course_id}/discussion`)
             .then(response => response.json())
@@ -33,7 +29,6 @@ function Discussion() {
     }, [course_id]);
 
     if (!user) {
-        // Return null when user is null (unauthenticated)
         return null;
     }
 
@@ -41,7 +36,6 @@ function Discussion() {
         e.preventDefault();
 
         if (newQuestion.trim() !== "") {
-            // Simulate sending the question to the server and updating the discussions list
             const response = await fetch(`/courses/${course_id}/discussion`, {
                 method: 'POST',
                 headers: {
@@ -60,27 +54,31 @@ function Discussion() {
         }
     };
 
-    // Handle reply submission
     const handleSubmitReply = async (e, questionIndex) => {
         e.preventDefault();
 
-        if (newReply.trim() !== "") {
-            // Simulate sending the reply to the server and updating the discussions list
+        if (newReplies[questionIndex].trim() !== "") {
+            // print questionIndex
+            console.log("questionIndex: " + questionIndex);
             const response = await fetch(`/courses/${course_id}/discussion/${questionIndex}/reply`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    reply: newReply
+                    reply: newReplies[questionIndex]
                 })
             });
 
             if (response.status === 200) {
                 const updatedDiscussions = [...discussions];
-                updatedDiscussions[questionIndex].replies.push({ reply: newReply, reply_user_name: "User" });
+                updatedDiscussions[questionIndex].replies.push({ reply: newReplies[questionIndex], reply_user_name: "User" });
                 setDiscussions(updatedDiscussions);
-                setNewReply("");
+
+                // Clear the reply field for this question
+                const newRepliesCopy = [...newReplies];
+                newRepliesCopy[questionIndex] = "";
+                setNewReplies(newRepliesCopy);
             }
         }
     };
@@ -118,7 +116,7 @@ function Discussion() {
                                     <h4>Question {questionIndex + 1}:</h4>
                                     <p>{discussion.question}</p>
                                     <ul>
-                                        {discussion.replies.length > 0 ? (
+                                        {discussion.replies && discussion.replies.length > 0 ? (
                                             <div>
                                                 <h5>Replies:</h5>
                                                 <ul>
@@ -137,8 +135,12 @@ function Discussion() {
                                     {/* Reply Form */}
                                     <form onSubmit={(e) => handleSubmitReply(e, questionIndex)}>
                                         <textarea
-                                            value={newReply}
-                                            onChange={(e) => setNewReply(e.target.value)}
+                                            value={newReplies[questionIndex]}
+                                            onChange={(e) => {
+                                                const newRepliesCopy = [...newReplies];
+                                                newRepliesCopy[questionIndex] = e.target.value;
+                                                setNewReplies(newRepliesCopy);
+                                            }}
                                             placeholder="Type your reply here..."
                                             rows="4"
                                             style={{ width: "100%", padding: "10px", fontSize: "16px", backgroundColor: "#FFF", border: "2px solid #333", borderRadius: "5px" }}

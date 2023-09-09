@@ -479,6 +479,34 @@ def get_problems(course_id, week_no, lesson_id):
     response.status_code = 200
     return response
 
+@app.route('/courses/<int:course_id>/discussion', methods=['POST'])
+def post_course_discussion(course_id):
+    print("Inside post_course_discussion")
+    data = request.get_json()
+    question = data['question']
+    user_name = data['user_name']
+
+    # Check if user_name is None or empty, and set it to "anonymous" if needed
+    if user_name is None or user_name.strip() == "":
+        user_name = "anonymous"
+
+    question_id = data['question_id']
+    
+    new_question = Discussion_question(
+        course_id=course_id,
+        question_id=question_id,
+        question=question,
+        user_name=user_name
+    )
+
+    db.session.add(new_question)
+    db.session.commit()
+
+    response = jsonify({'message': 'Question posted successfully'})
+    response.status_code = 200
+    return response
+
+
 
 @app.route('/courses/<int:course_id>/discussion', methods=['GET'])
 def get_course_discussion(course_id):

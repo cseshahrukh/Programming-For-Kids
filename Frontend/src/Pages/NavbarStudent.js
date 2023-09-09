@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../UserContext';
 
-function NavbarStudent() {
+function NavbarStudent({username}) {
     const navigate = useNavigate();
     const { user, setUser } = useUserContext();
 
@@ -49,10 +49,10 @@ function NavbarStudent() {
                         {/* ... rest of the navigation items */}
                         
                         <li className="nav-item">
-                            <Link className="nav-link active fancy-link" aria-current="page" to="/courses">Courses</Link>
+                            <Link className="nav-link active fancy-link" aria-current="page" to={`/student/${username}/courses`}>Courses</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link active fancy-link" aria-current="page" to="/dashboard">Dashboard</Link>
+                            <Link className="nav-link active fancy-link" aria-current="page" to={`/student/${username}/dashboard`}>Dashboard</Link>
                         </li>
                         
                     </ul>
@@ -73,7 +73,7 @@ function NavbarStudent() {
                                 <ul className="suggestions list-unstyled m-0 p-2">
                                     {suggestions.map((suggestion, index) => (
                                         <li key={index}>
-                                            <Link to={`/courses/search/${suggestion}`}>{suggestion}</Link>
+                                            <Link to={`/student/${username}/courses/search/${suggestion}`}>{suggestion}</Link>
                                         </li>
                                     ))}
                                 </ul>

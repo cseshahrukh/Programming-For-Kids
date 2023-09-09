@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import './ProgrammingProblem.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import CodeEditor from './CodeEditor';
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
+import { useAuth } from '../useAuth'; // Import the custom hook
 
 const problemsToSolve = 1;
 let currentSolved = 0;
 
 const Programming = () => {
-  const { course_id, week_no, lesson_no } = useParams();
+  const { username, course_id, week_no, lesson_no } = useParams();
   const [problemsList, setProblemsList] = useState([]);
   const [lastSkipped, setlastSkipped] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextLink, setNextLink] = useState("");
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(false);
-  const codeEditorRef = useRef(null);
-  const [buttonText, setButtonText] = useState('Next');
 
   useEffect(() => {
     fetch(`/courses/problems/${course_id}/${week_no}/${lesson_no}`)
@@ -37,6 +37,11 @@ const Programming = () => {
         setError(true);
       });
   }, [course_id, week_no, lesson_no]);
+
+  if (!user) {
+    // Return null when user is null (unauthenticated)
+    return null;
+  }
 
   if (Object.keys(problemsList).length === 0) {
     return <p>Loading...</p>;
@@ -121,7 +126,7 @@ const Programming = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar />
+        <Navbar username={username}/>
       </header>
       <div className="problem-solver-container">
         <div className="left-pane">

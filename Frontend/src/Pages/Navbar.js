@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Navbar() {
+function Navbar({username}) {
     return (
         <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
@@ -17,10 +17,10 @@ function Navbar() {
                             <Link className="nav-link active" aria-current="page" to="/teacher/courses">Add Course</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link active" aria-current="page" to="/courses">Courses</Link>
+                            <Link className="nav-link active" aria-current="page" to={`/student/${username}/courses`}>Courses</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link active" aria-current="page" to="/dashboard">Dashboard</Link>
+                            <Link className="nav-link active" aria-current="page" to={`/student/${username}/dashboard`}>Dashboard</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link active" to="/problems">Playground</Link>

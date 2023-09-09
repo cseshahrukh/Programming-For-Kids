@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link,useNavigate } from "react-router-dom";
 import './MCQs.css';
 import Navbar from "./Navbar";
 import Footer from './Footer';
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
+import { useAuth } from '../useAuth'; // Import the custom hook
 
 const maxMCQsToShow = 2;
 let currentSolved = 0;
 
 const MyMCQ = () => {
-  const { course_id, week_no, lesson_no } = useParams();
+  const { username,course_id, week_no, lesson_no } = useParams();
   const [mcqList, setMcqList] = useState([]);
   const [currentMCQIndex, setCurrentMCQIndex] = useState(0);
   const [currentWrongIndex, setCurrentWrongIndex] = useState(0);
@@ -21,6 +23,18 @@ const MyMCQ = () => {
   const [traverseWrong, setTraverseWrong] = useState(false);
   const [wrongOnes, setWrongOnes] = useState([]);
 
+
+  const navigate = useNavigate();
+  const { user } = useUserContext(); // Get user data from context
+  const isAuthenticated = useAuth(); // Use the custom hook
+
+  // Use useEffect to handle the redirection
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Redirect to the login page
+      navigate(`/login`);    
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     fetch(`/courses/mcqs/${course_id}/${week_no}/${lesson_no}`)
@@ -37,6 +51,11 @@ const MyMCQ = () => {
         console.error(error);
       });
   }, [course_id, week_no, lesson_no]);
+
+  if (!user) {
+    // Return null when user is null (unauthenticated)
+    return null;
+  }
 
   if (Object.keys(mcqList).length === 0) {
     return <p>Loading...</p>;
@@ -102,7 +121,7 @@ const MyMCQ = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar />
+        <Navbar username={username} />
       </header>
       <div className="mcq-container">
         <h1>Multiple Choice Questions</h1>
@@ -163,7 +182,7 @@ const MyMCQ = () => {
           <div className="mcq-button-container">
             {buttonText === 'Go To Problems' ? (
               <Link
-                to={`/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/problems`}
+                to={`/student/${username}/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/problems`}
                 className={`mcq-button ${buttonColor}`}
               >
                 {buttonText}

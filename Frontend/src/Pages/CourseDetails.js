@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-
+import { useParams, Link,useNavigate } from "react-router-dom";
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
+import { useAuth } from '../useAuth'; // Import the custom hook
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 function CourseDetails() {
-    const { course_id } = useParams();
+    const { username,course_id } = useParams();
     const [courseDetails, setCourseDetails] = useState({});
     const [selectedWeek, setSelectedWeek] = useState(1); // Initialize with week 1
+    const navigate = useNavigate();
+    const { user } = useUserContext(); // Get user data from context
+    const isAuthenticated = useAuth(); // Use the custom hook
+  
+    // Use useEffect to handle the redirection
+    useEffect(() => {
+      if (!isAuthenticated) {
+        // Redirect to the login page
+        navigate(`/login`);    
+      }
+    }, [isAuthenticated]);
 
     useEffect(() => {
         fetch(`/courses/${course_id}`)
@@ -15,6 +27,11 @@ function CourseDetails() {
             .then(data => setCourseDetails(data.course))
             .catch(error => console.error('Error fetching course details:', error));
     }, [course_id]);
+
+    if (!user) {
+        // Return null when user is null (unauthenticated)
+        return null;
+    }
 
     // Render a loading message if courseDetails is empty
     if (Object.keys(courseDetails).length === 0) {
@@ -29,7 +46,7 @@ function CourseDetails() {
 
     return (
         <div className="App" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Navbar />
+            <Navbar username={username}/>
 
             {/* Main Content */}
             <div style={{ display: "flex", flex: 1 }}>
@@ -41,7 +58,7 @@ function CourseDetails() {
                     <p className="left-align" style={{ textAlign: "left" }}>
                         {courseDetails.long_description}
                     </p>
-                    <Link to={`/courses/${course_id}/week/1/lesson/1/readingMaterials`}>
+                    <Link to={`/student/${username}/courses/${course_id}/week/1/lesson/1/readingMaterials`}>
                         <button className="btn btn-primary" style={{ backgroundColor: "green" }}>
                             Start
                         </button>
@@ -54,7 +71,7 @@ function CourseDetails() {
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "50px" }}>
                         {weekNumbers.map(weekNo => (
                             <div key={weekNo} style={{ marginBottom: "5px" }}>
-                                <Link to={`/courses/${course_id}/${weekNo}`}>
+                                <Link to={`/student/${username}/courses/${course_id}/${weekNo}`}>
                                     Week {weekNo}
                                 </Link>
                             </div>
@@ -63,14 +80,14 @@ function CourseDetails() {
 
                     {/* Discussion Option */}
                     <div style={{ marginTop: "20px" }}>
-                        <Link to={`/courses/${course_id}/discussion`}>
+                        <Link to={`/student/${username}/courses/${course_id}/discussion`}>
                             Discussion
                         </Link>
                     </div>
 
                     {/* Grade Option */}
                     <div style={{ marginTop: "20px" }}>
-                        <Link to={`/courses/${course_id}/grade`}>
+                        <Link to={`/student/${username}/courses/${course_id}/grade`}>
                             Grade
                         </Link>
                     </div>

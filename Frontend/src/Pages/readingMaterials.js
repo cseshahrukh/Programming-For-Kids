@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link,useNavigate } from "react-router-dom";
 import './readingMaterials.css';
 import Navbar from "./Navbar";
 import Footer from './Footer';
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
+import { useAuth } from '../useAuth'; // Import the custom hook
 
 const ReadingMat = () => {
-  const { course_id, week_no, lesson_no } = useParams();
+  const { username,course_id, week_no, lesson_no } = useParams();
   const [readingMaterials, setReadingMaterials] = useState([]);
   const [displayedSections, setDisplayedSections] = useState([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [showMCQButton, setShowMCQButton] = useState(false);
+
+  const navigate = useNavigate();
+  const { user } = useUserContext(); // Get user data from context
+  const isAuthenticated = useAuth(); // Use the custom hook
+
+  // Use useEffect to handle the redirection
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Redirect to the login page
+      navigate(`/login`);    
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     fetch(`/courses/reading_materials/${course_id}/${week_no}/${lesson_no}`)
@@ -20,6 +34,12 @@ const ReadingMat = () => {
       })
       .catch(error => console.error('Error fetching reading materials:', error));
   }, [course_id, week_no, lesson_no]);
+
+  
+  if (!user) {
+    // Return null when user is null (unauthenticated)
+    return null;
+  }
 
   if (readingMaterials.length === 0) {
     return <p>Loading...</p>;
@@ -45,7 +65,7 @@ const ReadingMat = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar />
+        <Navbar username={username}/>
       </header>
       <div className="reading-materials-container">
         <div style={{ textAlign: 'center' }}>
@@ -81,7 +101,7 @@ const ReadingMat = () => {
         </button>
       )}
       {showMCQButton && (
-        <Link to={`/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/mcqs`}>
+        <Link to={`/student/${username}/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/mcqs`}>
           <button className="mcq-button">
             Go To MCQ
           </button>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
+import { useAuth } from '../useAuth'; // Import the custom hook
 
 import Footer from "./Footer";
 import Navbar from "./Navbar";
@@ -8,12 +10,29 @@ function WeekDetails() {
     const { course_id, week_no } = useParams();
     const [readingMaterials, setReadingMaterials] = useState([]);
 
+    const navigate = useNavigate();
+    const { user } = useUserContext(); // Get user data from context
+    const isAuthenticated = useAuth(); // Use the custom hook
+  
+    // Use useEffect to handle the redirection
+    useEffect(() => {
+      if (!isAuthenticated) {
+        // Redirect to the login page
+        navigate(`/login`);    
+      }
+    }, [isAuthenticated]);
+
     useEffect(() => {
         fetch(`/courses/reading_materials/${course_id}/${week_no}`)
             .then(response => response.json())
             .then(data => setReadingMaterials(data.reading_materials))
             .catch(error => console.error('Error fetching reading materials:', error));
     }, [course_id, week_no]);
+
+    if (!user) {
+        // Return null when user is null (unauthenticated)
+        return null;
+    }
 
     return (
         <div className="week-details" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>

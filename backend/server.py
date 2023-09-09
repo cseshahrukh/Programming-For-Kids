@@ -541,8 +541,11 @@ def get_course_discussion(course_id):
 
 @app.route('/courses/<int:course_id>/discussion/<int:question_id>/reply', methods=['POST'])
 def post_discussion_reply(course_id, question_id):
+    print("Inside post_discussion_reply")
+    print("qeustion_id: ", question_id)
     data = request.get_json()
     reply = data.get('reply', '')  # Get the reply from the JSON data
+    reply_user_name = data.get('reply_user_name', 'anonymous')  # Get the reply user name, default to 'anonymous' if not provided or None
 
     if not reply.strip():
         return jsonify({'error': 'Reply cannot be empty'}), 400
@@ -556,12 +559,14 @@ def post_discussion_reply(course_id, question_id):
     new_reply = Discussion(
         question_id=question_id,
         reply=reply,
+        reply_user_name=reply_user_name  # Set the reply user name
     )
 
     db.session.add(new_reply)
     db.session.commit()
 
     return jsonify({'message': 'Reply posted successfully'}), 200
+
 
 @app.route('/api/save_mcqs', methods=['POST'])
 def save_mcqs():

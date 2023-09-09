@@ -542,11 +542,15 @@ def get_course_discussion(course_id):
 @app.route('/courses/<int:course_id>/discussion/<int:question_id>/reply', methods=['POST'])
 def post_discussion_reply(course_id, question_id):
     print("Inside post_discussion_reply")
-    print("qeustion_id: ", question_id)
+    print("question_id: ", question_id)
+
+    # Make question_id 1-based from 0-based
+    question_id = question_id + 1
     data = request.get_json()
     reply = data.get('reply', '')  # Get the reply from the JSON data
     reply_user_name = data.get('reply_user_name', 'anonymous')  # Get the reply user name, default to 'anonymous' if not provided or None
 
+    
     if not reply.strip():
         return jsonify({'error': 'Reply cannot be empty'}), 400
 
@@ -555,9 +559,16 @@ def post_discussion_reply(course_id, question_id):
     if not question:
         return jsonify({'error': 'Question not found'}), 404
 
+    # Count existing replies for the given question
+    existing_replies_count = Discussion.query.count()
+
+    # Increment the count to generate the question_reply_id
+    question_reply_id = existing_replies_count + 1
+
     # Create a new discussion reply
     new_reply = Discussion(
         question_id=question_id,
+        question_reply_id=question_reply_id,
         reply=reply,
         reply_user_name=reply_user_name  # Set the reply user name
     )
@@ -566,6 +577,8 @@ def post_discussion_reply(course_id, question_id):
     db.session.commit()
 
     return jsonify({'message': 'Reply posted successfully'}), 200
+
+
 
 
 @app.route('/api/save_mcqs', methods=['POST'])

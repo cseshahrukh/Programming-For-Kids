@@ -58,6 +58,8 @@ function Discussion() {
         e.preventDefault();
 
         if (newReplies[questionIndex].trim() !== "") {
+            // print questionIndex
+            console.log("questionIndex: " + questionIndex);
             const response = await fetch(`/courses/${course_id}/discussion/${questionIndex}/reply`, {
                 method: 'POST',
                 headers: {

@@ -539,6 +539,29 @@ def get_course_discussion(course_id):
     response.status_code = 200
     return response
 
+@app.route('/courses/<int:course_id>/discussion/<int:question_id>/reply', methods=['POST'])
+def post_discussion_reply(course_id, question_id):
+    data = request.get_json()
+    reply = data.get('reply', '')  # Get the reply from the JSON data
+
+    if not reply.strip():
+        return jsonify({'error': 'Reply cannot be empty'}), 400
+
+    # Check if the question exists
+    question = Discussion_question.query.get(question_id)
+    if not question:
+        return jsonify({'error': 'Question not found'}), 404
+
+    # Create a new discussion reply
+    new_reply = Discussion(
+        question_id=question_id,
+        reply=reply,
+    )
+
+    db.session.add(new_reply)
+    db.session.commit()
+
+    return jsonify({'message': 'Reply posted successfully'}), 200
 
 @app.route('/api/save_mcqs', methods=['POST'])
 def save_mcqs():

@@ -17,24 +17,21 @@ const Programming = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextLink, setNextLink] = useState("");
   const [status, setStatus] = useState(null);
-  const [error, setError] = useState(false);
+  const { user } = useUserContext(); // Get user data from context
 
   useEffect(() => {
     fetch(`/courses/problems/${course_id}/${week_no}/${lesson_no}`)
       .then(response => {
         if (!response.ok) {
-          setError(true);
           throw new Error('Network response was not ok');
         }
         return response.json();
       })
       .then(data => {
         setProblemsList(data.problems);
-        setError(false);
       })
       .catch(error => {
         console.error(error);
-        setError(true);
       });
   }, [course_id, week_no, lesson_no]);
 
@@ -47,19 +44,13 @@ const Programming = () => {
     return <p>Loading...</p>;
   }
 
-  const clearAceEditor = () => {
-    if (codeEditorRef.current) {
-      codeEditorRef.current.clearAceEditor();
-    }
-  };
-
   const handleCodeEditorResponse = (status) => {
     setStatus(status);
     if (status === 'Correct') {
       currentSolved++;
       if (currentIndex < problemsList.length - 1 && currentSolved < problemsToSolve) {
         setCurrentIndex(currentIndex + 1);
-      } else if (currentSolved == problemsToSolve) {
+      } else if (currentSolved === problemsToSolve) {
         //move to next Lesson or Week or Course Completed
         fetch(`/get-next/${course_id}/${week_no}/${lesson_no}`)
           .then(response => response.json())
@@ -122,7 +113,6 @@ const Programming = () => {
   //   console.log(wrongOnes);
   // };
 
-  const currentProgram = problemsList[currentIndex];
   return (
     <div className="App">
       <header className="App-header">
@@ -164,14 +154,12 @@ const Programming = () => {
               {status === 'Correct' && currentIndex < problemsList.length - 1 && (
                 <button onClick={() => {
                   setCurrentIndex(currentIndex + 1);
-                  clearAceEditor();
                 }}>
                   Go To Next Problem
                 </button>
               )}
             </div>
             <CodeEditor
-              ref={codeEditorRef}
               question={problemsList[currentIndex].question}
               testCases={problemsList[currentIndex].examples}
               onCodeEditorResponse={handleCodeEditorResponse}

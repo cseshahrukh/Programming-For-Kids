@@ -3,7 +3,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import './App.css';
-import { useAuth } from './useAuth'; // Import the custom hook
 
 import CodeEditor from "./Pages/CodeEditor";
 import ProgrammingProb from './Pages/ProgrammingProblem';
@@ -37,6 +36,9 @@ const router = createBrowserRouter([
   {
     path: "/courses",
     element: <Courses />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   },
   {
     path: "/teacher/courses",
@@ -45,33 +47,56 @@ const router = createBrowserRouter([
   {
     path: "/courses/search/:searchQuery",
     element: <CoursesSearch />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
+    
   }, 
   {
     path: `/courses/:course_id`,
     element: <CourseDetails />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   },
   {
     path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/readingMaterials`,
     element: <ReadingMat />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
+
   },
   {
     
     path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/mcqs`,
     element: <Mcq />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   },
   {
     
     path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/problems`,
     element: <Programming />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   },
 
   {
     path: '/courses/:course_id/:week_no',
     element: <WeekDetails />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   },
   {
     path: '/courses/:course_id/discussion', 
     element: <Discussion />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   },
   {
     path: '/courses/:course_id/:week_no/:lesson_id/programming', 
@@ -80,10 +105,12 @@ const router = createBrowserRouter([
   {
     path: '/addCourse/:course_id/week/:week_no/lesson/:lesson_no/readingMaterials',
     element: <SectionMaterials />,
+
   },
   {
     path: '/addCourse/:course_id/week/:week_no/lesson/:lesson_no/mcqs',
     element: <LectureMcqs />,
+
   },
   {
     path: '/addCourse/:course_id/week/:week_no/lesson/:lesson_no/problems',
@@ -94,8 +121,7 @@ const router = createBrowserRouter([
     path: `/addCourse/:course_id/week/:week_no`,
     element: <AddCourseMaterialsPage />,
   }, 
-  {
-    
+  {    
     path: `/addCourse/:course_id/week/:week_no/lesson/:lesson_no/:which_page`,
     element: <AddCourseLessonsPage />,
   }, 
@@ -125,10 +151,7 @@ const router = createBrowserRouter([
     path: "/login", 
     element: <Login />,
   },
-  // {
-  //   path: "/dashboard", 
-  //   element: <Dashboard />, 
-  // }, 
+
   {
     path: '/dashboard',
     element: <Dashboard />,

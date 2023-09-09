@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
+import { useAuth } from '../useAuth'; // Import the custom hook
 
 import Footer from "./Footer";
 import NavbarStudent from "./NavbarStudent";
@@ -10,6 +12,18 @@ function Discussion() {
     const [newQuestion, setNewQuestion] = useState("");
     const [newReply, setNewReply] = useState("");
 
+    const navigate = useNavigate();
+    const { user } = useUserContext(); // Get user data from context
+    const isAuthenticated = useAuth(); // Use the custom hook
+  
+    // Use useEffect to handle the redirection
+    useEffect(() => {
+      if (!isAuthenticated) {
+        // Redirect to the login page
+        navigate(`/login`);    
+      }
+    }, [isAuthenticated]);
+
     // Fetch discussions (questions and replies) from the server
     useEffect(() => {
         fetch(`/courses/${course_id}/discussion`)
@@ -17,6 +31,11 @@ function Discussion() {
             .then(data => setDiscussions(data.discussions))
             .catch(error => console.error('Error fetching discussions:', error));
     }, [course_id]);
+
+    if (!user) {
+        // Return null when user is null (unauthenticated)
+        return null;
+    }
 
     const handleSubmitQuestion = async (e) => {
         e.preventDefault();

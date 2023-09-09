@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import './ProgrammingProblem.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import CodeEditor from './CodeEditor';
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
+import { useAuth } from '../useAuth'; // Import the custom hook
 
 let currentIndex = 1;
 
@@ -11,6 +13,18 @@ const Programming = () => {
   const { course_id, week_no, lesson_no } = useParams();
   const [problemsList, setProblemsList] = useState([]);
   const [error, setError] = useState(false);
+
+  const navigate = useNavigate();
+  const { user } = useUserContext(); // Get user data from context
+  const isAuthenticated = useAuth(); // Use the custom hook
+
+  // Use useEffect to handle the redirection
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Redirect to the login page
+      navigate(`/login`);    
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     fetch(`/courses/problems/${course_id}/${week_no}/${lesson_no}`)
@@ -30,6 +44,11 @@ const Programming = () => {
         setError(true);
       });
   }, [course_id, week_no, lesson_no]);
+
+  if (!user) {
+    // Return null when user is null (unauthenticated)
+    return null;
+  }
 
   if (Object.keys(problemsList).length === 0) {
     return <p>Loading...</p>;

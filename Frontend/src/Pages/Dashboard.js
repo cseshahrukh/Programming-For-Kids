@@ -1,6 +1,6 @@
 // Dashboard.js
 import React, { useEffect } from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link,useParams } from "react-router-dom";
 import { useUserContext } from '../UserContext'; // Import the useUserContext hook
 import { useAuth } from '../useAuth'; // Import the custom hook
 import Footer from './Footer';
@@ -8,6 +8,7 @@ import NavbarStudent from './NavbarStudent';
 import Profile from './Profile';
 
 function Dashboard() {
+  const { username } = useParams();
   const navigate = useNavigate();
   const { user } = useUserContext(); // Get user data from context
   const isAuthenticated = useAuth(); // Use the custom hook
@@ -28,12 +29,12 @@ function Dashboard() {
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <div>
-                <NavbarStudent />
+                <NavbarStudent username={username}/>
             </div>
             <div style={{ marginTop: '60px', textAlign: 'center' }}>
                 <h2>Your Dashboard</h2>
                 <div>
-                    <Link to="/courses" className="btn btn-primary">Browse Courses</Link>
+                    <Link to={`/student/${username}/courses`} className="btn btn-primary">Browse Courses</Link>
                     {/* Add more dashboard options/buttons */}
                 </div>
             </div>

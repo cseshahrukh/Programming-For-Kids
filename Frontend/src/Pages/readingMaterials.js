@@ -7,7 +7,7 @@ import { useUserContext } from '../UserContext'; // Import the useUserContext ho
 import { useAuth } from '../useAuth'; // Import the custom hook
 
 const ReadingMat = () => {
-  const { course_id, week_no, lesson_no } = useParams();
+  const { username,course_id, week_no, lesson_no } = useParams();
   const [readingMaterials, setReadingMaterials] = useState([]);
   const [displayedSections, setDisplayedSections] = useState([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
@@ -65,7 +65,7 @@ const ReadingMat = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar />
+        <Navbar username={username}/>
       </header>
       <div className="reading-materials-container">
         <div style={{ textAlign: 'center' }}>
@@ -101,7 +101,7 @@ const ReadingMat = () => {
         </button>
       )}
       {showMCQButton && (
-        <Link to={`/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/mcqs`}>
+        <Link to={`/student/${username}/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/mcqs`}>
           <button className="mcq-button">
             Go To MCQ
           </button>

@@ -9,7 +9,7 @@ import { useAuth } from '../useAuth'; // Import the custom hook
 let currentNum = 1;
 
 const MyMCQ = () => {
-  const { course_id, week_no, lesson_no } = useParams();
+  const { username,course_id, week_no, lesson_no } = useParams();
   const [mcqList, setMcqList] = useState([]);
   const [currentMCQIndex, setCurrentMCQIndex] = useState(0);
   const currentMCQ = mcqList[currentMCQIndex];
@@ -105,7 +105,7 @@ const MyMCQ = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar />
+        <Navbar username={username} />
       </header>
       <div className="mcq-container">
         <h1>Multiple Choice Questions</h1>
@@ -166,7 +166,7 @@ const MyMCQ = () => {
           <div className="mcq-button-container">
             {buttonText === 'Go To Problems' ? (
               <Link
-                to={`/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/problems`}
+                to={`/student/${username}/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/problems`}
                 className={`mcq-button ${buttonColor}`}
               >
                 {buttonText}

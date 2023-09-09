@@ -7,7 +7,6 @@ import { useUserContext } from '../UserContext'; // Import the useUserContext ho
 function Login() {
     const navigate = useNavigate();
     const { setUser } = useUserContext(); // Get setUser from context
-
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -41,9 +40,9 @@ function Login() {
       
             // Update user context with the logged-in user data
             const userData = await response.json();
-            setUser(userData); // Use setUser from context
-      
-            navigate('/dashboard');
+            setUser(userData); // Use setUser from context    
+            navigate(`/student/${userData.username}/dashboard`);
+
           } else {
             const errorData = await response.json(); // Parse error response
             const errorMessage = errorData.message || 'Login failed';

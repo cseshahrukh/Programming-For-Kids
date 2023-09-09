@@ -10,7 +10,7 @@ import { useAuth } from '../useAuth'; // Import the custom hook
 let currentIndex = 1;
 
 const Programming = () => {
-  const { course_id, week_no, lesson_no } = useParams();
+  const { username, course_id, week_no, lesson_no } = useParams();
   const [problemsList, setProblemsList] = useState([]);
   const [error, setError] = useState(false);
 
@@ -59,7 +59,7 @@ const Programming = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar />
+        <Navbar username={username}/>
       </header>
       <div className="problem-solver-container">
         <div className="left-pane">

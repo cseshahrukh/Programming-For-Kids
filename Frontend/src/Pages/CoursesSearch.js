@@ -9,7 +9,7 @@ import { useAuth } from '../useAuth'; // Import the custom hook
 function CoursesSearch() {
     console.log("CoursesSearch");
 
-    const { searchQuery } = useParams(); // Get the search query from the URL parameter
+    const { username,searchQuery } = useParams(); // Get the search query from the URL parameter
 
     console.log("searchQuery:", searchQuery);
     const [searchResults, setSearchResults] = useState([]);
@@ -43,7 +43,7 @@ function CoursesSearch() {
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <div>
-                <NavbarStudent />
+                <NavbarStudent username={username}/>
             </div>
             <div >
                 <h1 style={{ margin: "30px", marginTop: "80px" }}>Search Results for "{searchQuery}"</h1>
@@ -51,7 +51,7 @@ function CoursesSearch() {
                     {searchResults.map(course => (
                         <li key={course.course_id}>
                             <div className="course-card">
-                                <Link to={`/courses/${course.course_id}`} className="course-link">
+                                <Link to={`/student/${username}/courses/${course.course_id}`} className="course-link">
                                     <h3>{course.course_name}</h3>
                                 </Link>
                                 <p>{course.short_description}</p>

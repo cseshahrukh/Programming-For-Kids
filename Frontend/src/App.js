@@ -34,7 +34,7 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: "/courses",
+    path: "/student/:username/courses",
     element: <Courses />,
     action: () => {
       return undefined; // No redirection here, check inside the Dashboard component
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
     element: <TeacherCourses />,
   },
   {
-    path: "/courses/search/:searchQuery",
+    path: "/student/:username/courses/search/:searchQuery",
     element: <CoursesSearch />,
     action: () => {
       return undefined; // No redirection here, check inside the Dashboard component
@@ -53,14 +53,14 @@ const router = createBrowserRouter([
     
   }, 
   {
-    path: `/courses/:course_id`,
+    path: `/student/:username/courses/:course_id`,
     element: <CourseDetails />,
     action: () => {
       return undefined; // No redirection here, check inside the Dashboard component
     },
   },
   {
-    path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/readingMaterials`,
+    path: `/student/:username/courses/:course_id/week/:week_no/lesson/:lesson_no/readingMaterials`,
     element: <ReadingMat />,
     action: () => {
       return undefined; // No redirection here, check inside the Dashboard component
@@ -69,7 +69,7 @@ const router = createBrowserRouter([
   },
   {
     
-    path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/mcqs`,
+    path: `/student/:username/courses/:course_id/week/:week_no/lesson/:lesson_no/mcqs`,
     element: <Mcq />,
     action: () => {
       return undefined; // No redirection here, check inside the Dashboard component
@@ -77,7 +77,7 @@ const router = createBrowserRouter([
   },
   {
     
-    path: `/courses/:course_id/week/:week_no/lesson/:lesson_no/problems`,
+    path: `/student/:username/courses/:course_id/week/:week_no/lesson/:lesson_no/problems`,
     element: <Programming />,
     action: () => {
       return undefined; // No redirection here, check inside the Dashboard component
@@ -85,14 +85,14 @@ const router = createBrowserRouter([
   },
 
   {
-    path: '/courses/:course_id/:week_no',
+    path: '/student/:username/courses/:course_id/:week_no',
     element: <WeekDetails />,
     action: () => {
       return undefined; // No redirection here, check inside the Dashboard component
     },
   },
   {
-    path: '/courses/:course_id/discussion', 
+    path: '/student/:username/courses/:course_id/discussion', 
     element: <Discussion />,
     action: () => {
       return undefined; // No redirection here, check inside the Dashboard component
@@ -153,15 +153,14 @@ const router = createBrowserRouter([
   },
 
   {
-    path: '/dashboard',
+    path: '/student/:username/dashboard',
     element: <Dashboard />,
     action: () => {
       return undefined; // No redirection here, check inside the Dashboard component
     },
   },
 
-  {
-    
+  {    
     path: "/logout", 
     element: <Home />,
   },

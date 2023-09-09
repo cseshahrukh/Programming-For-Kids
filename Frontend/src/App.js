@@ -3,6 +3,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import './App.css';
+import { useAuth } from './useAuth'; // Import the custom hook
 
 import CodeEditor from "./Pages/CodeEditor";
 import ProgrammingProb from './Pages/ProgrammingProblem';
@@ -124,10 +125,18 @@ const router = createBrowserRouter([
     path: "/login", 
     element: <Login />,
   },
+  // {
+  //   path: "/dashboard", 
+  //   element: <Dashboard />, 
+  // }, 
   {
-    path: "/dashboard", 
-    element: <Dashboard />, 
-  }, 
+    path: '/dashboard',
+    element: <Dashboard />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
+  },
+
   {
     
     path: "/logout", 

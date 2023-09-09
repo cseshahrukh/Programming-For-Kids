@@ -23,36 +23,68 @@ function Login() {
         }));
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+      
         try {
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (response.ok) {
-                console.log('Login successful');
-
-                // Update user context with the logged-in user data
-                const userData = await response.json();
-                setUser(userData);
-
-                navigate('/dashboard');
-            } else {
-                const errorData = await response.json(); // Parse error response
-                const errorMessage = errorData.message || 'Login failed';
-                setErrorMessage(errorMessage);
-            }
+          const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+      
+          if (response.ok) {
+            console.log('Login successful');
+      
+            // Update user context with the logged-in user data
+            const userData = await response.json();
+            setUser(userData); // Use setUser from context
+      
+            navigate('/dashboard');
+          } else {
+            const errorData = await response.json(); // Parse error response
+            const errorMessage = errorData.message || 'Login failed';
+            setErrorMessage(errorMessage);
+          }
         } catch (error) {
-            console.error('Error submitting login form:', error);
-            setErrorMessage('An error occurred while logging in.');
+          console.error('Error submitting login form:', error);
+          setErrorMessage('An error occurred while logging in.');
         }
-    };
+      };
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const response = await fetch('/login', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(formData),
+    //         });
+
+    //         if (response.ok) {
+    //             console.log('Login successful');
+
+    //             // Update user context with the logged-in user data
+    //             const userData = await response.json();
+    //             setUser(userData);
+
+    //             navigate('/dashboard');
+    //         } else {
+    //             const errorData = await response.json(); // Parse error response
+    //             const errorMessage = errorData.message || 'Login failed';
+    //             setErrorMessage(errorMessage);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error submitting login form:', error);
+    //         setErrorMessage('An error occurred while logging in.');
+    //     }
+    // };
 
     return (
         <div className="login-page">

@@ -484,14 +484,18 @@ def post_course_discussion(course_id):
     print("Inside post_course_discussion")
     data = request.get_json()
     question = data['question']
-    user_name = data['user_name']
 
-    # Check if user_name is None or empty, and set it to "anonymous" if needed
-    if user_name is None or user_name.strip() == "":
-        user_name = "anonymous"
+    try:
+        user_name = data['user_name']
+    except KeyError:
+        user_name = "Anonymous"
 
-    question_id = data['question_id']
-    
+    # Count the total number of questions in the database
+    total_questions = Discussion_question.query.filter_by(course_id=course_id).count()
+
+    # Set question_id to the total number of questions plus one
+    question_id = total_questions + 1
+
     new_question = Discussion_question(
         course_id=course_id,
         question_id=question_id,

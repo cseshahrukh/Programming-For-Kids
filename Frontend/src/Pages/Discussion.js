@@ -118,7 +118,7 @@ function Discussion() {
                                     <h4>Question {questionIndex + 1}:</h4>
                                     <p>{discussion.question}</p>
                                     <ul>
-                                        {discussion.replies.length > 0 ? (
+                                        {discussion.replies && discussion.replies.length > 0 ? (
                                             <div>
                                                 <h5>Replies:</h5>
                                                 <ul>

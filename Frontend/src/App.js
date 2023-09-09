@@ -18,6 +18,7 @@ import Programming from "./Pages/Program";
 import SectionMaterials from "./Pages/SectionMaterials";
 import LectureMcqs from "./Pages/LectureMcqs";
 import LectureProblems from "./Pages/LectureProblems";
+import CourseCompletion from "./Pages/CourseCompletion";
 
 import Signup from "./Pages/Signup";
 import Login from "./Pages/Login";
@@ -107,6 +108,10 @@ const router = createBrowserRouter([
   {
     path: "/editor",
     element: <CodeEditor />,
+  },
+  {
+    path: "/course-completed",
+    element: <CourseCompletion />,
   },
   {
     path: "/problems",

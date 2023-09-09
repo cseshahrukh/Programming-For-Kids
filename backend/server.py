@@ -403,6 +403,20 @@ def get_reading_materials_prev(course_id, week_no):
     return response
 
 
+@app.route('/get-next/<int:course_id>/<int:week_no>/<int:lesson_no>', methods=['GET'])
+def get_next(course_id, week_no, lesson_no):
+    toRedirect = "lesson"
+    nextLesson = reading_materials.query.filter_by(
+        course_id=course_id, week_no=week_no, lesson_id=lesson_no + 1).order_by(reading_materials.section_id).all()
+    if not nextLesson:
+        nextWeek = reading_materials.query.filter_by(
+        course_id=course_id, week_no=week_no + 1, lesson_id=1).order_by(reading_materials.section_id).all()
+        if not nextWeek:
+            toRedirect = "completed"
+        else:
+            toRedirect = "week"
+    return jsonify({'next': toRedirect}), 200
+
 @app.route('/courses/reading_materials/<int:course_id>/<int:week_no>/<int:lesson_no>', methods=['GET'])
 def get_reading_materials_whole(course_id, week_no, lesson_no):
     materials = reading_materials.query.filter_by(

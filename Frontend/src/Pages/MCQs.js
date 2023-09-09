@@ -4,38 +4,37 @@ import './MCQs.css';
 import Navbar from "./Navbar";
 import Footer from './Footer';
 
-let currentNum = 1;
+const maxMCQsToShow = 2;
+let currentSolved = 0;
 
 const MyMCQ = () => {
   const { course_id, week_no, lesson_no } = useParams();
   const [mcqList, setMcqList] = useState([]);
   const [currentMCQIndex, setCurrentMCQIndex] = useState(0);
+  const [currentWrongIndex, setCurrentWrongIndex] = useState(0);
   const currentMCQ = mcqList[currentMCQIndex];
   const [selectedOption, setSelectedOption] = useState('');
   const [buttonText, setButtonText] = useState('Next');
   const [buttonColor, setButtonColor] = useState('');
   const [resultText, setResultText] = useState('');
   const [optionsDisabled, setOptionsDisabled] = useState(false);
-  const [error, setError] = useState(false);
+  const [traverseWrong, setTraverseWrong] = useState(false);
+  const [wrongOnes, setWrongOnes] = useState([]);
 
-  const maxMCQsToShow = 2;
 
   useEffect(() => {
     fetch(`/courses/mcqs/${course_id}/${week_no}/${lesson_no}`)
       .then(response => {
         if (!response.ok) {
-          setError(true);
           throw new Error('Network response was not ok');
         }
         return response.json();
       })
       .then(data => {
         setMcqList(data.mcqs);
-        setError(false);
       })
       .catch(error => {
         console.error(error);
-        setError(true);
       });
   }, [course_id, week_no, lesson_no]);
 
@@ -53,8 +52,19 @@ const MyMCQ = () => {
   const handleButtonClick = () => {
     if (buttonText === 'Next') {
       if (selectedOption) {
-        if (currentNum <= maxMCQsToShow) {
-          setCurrentMCQIndex(currentMCQIndex + 1);
+        if (currentSolved < maxMCQsToShow) {
+          if (!traverseWrong) {
+            if (currentMCQIndex === mcqList.length - 1) {
+              setTraverseWrong(true);
+              setCurrentMCQIndex(wrongOnes[0]);
+            }
+            else if (currentMCQIndex < mcqList.length - 1) {
+              setCurrentMCQIndex(currentMCQIndex + 1);
+            }
+          } else {
+            setCurrentWrongIndex((currentMCQIndex + 1) % wrongOnes.length);
+            setCurrentMCQIndex(wrongOnes[currentWrongIndex]);
+          }
           setSelectedOption('');
           setResultText('');
           setButtonColor('');
@@ -64,23 +74,29 @@ const MyMCQ = () => {
     } else if (buttonText === 'Check') {
       setOptionsDisabled(true);
       const selectedOptionNumber = parseInt(selectedOption.split('_')[1]);
-      console.log(selectedOptionNumber);
-      console.log(currentMCQ.correct);
       if (selectedOptionNumber === currentMCQ.correct) {
         setResultText('Correct!');
         setButtonColor('green');
-        currentNum += 1;
+        currentSolved += 1;
+        if (wrongOnes.includes(currentMCQIndex)) {
+          setWrongOnes(wrongOnes.filter((index) => index !== currentMCQIndex));
+        }
       } else {
         const correctOptionText = mcqList[currentMCQIndex][`option_${currentMCQ.correct}`];
         setResultText(`Correct answer: ${correctOptionText}`);
         setButtonColor('red');
+        if (!wrongOnes.includes(currentMCQIndex)) {
+          setWrongOnes([...wrongOnes, currentMCQIndex]);
+        }
       }
-      if (currentNum > maxMCQsToShow) {
+      if (currentSolved === maxMCQsToShow) {
         setButtonText('Go To Problems');
+        currentSolved = 0;
       } else {
         setButtonText('Next');
       }
     }
+    console.log(wrongOnes);
   };
 
   return (

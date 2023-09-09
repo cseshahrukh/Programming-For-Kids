@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import './ProgrammingProblem.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import CodeEditor from './CodeEditor';
 
-let currentIndex = 1;
+const problemsToSolve = 1;
+let currentSolved = 0;
 
 const Programming = () => {
   const { course_id, week_no, lesson_no } = useParams();
   const [problemsList, setProblemsList] = useState([]);
+  const [lastSkipped, setlastSkipped] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [nextLink, setNextLink] = useState("");
+  const [status, setStatus] = useState(null);
   const [error, setError] = useState(false);
+  const codeEditorRef = useRef(null);
+  const [buttonText, setButtonText] = useState('Next');
 
   useEffect(() => {
     fetch(`/courses/problems/${course_id}/${week_no}/${lesson_no}`)
@@ -35,8 +42,82 @@ const Programming = () => {
     return <p>Loading...</p>;
   }
 
-  const currentProgram = problemsList[currentIndex]; // You should adjust this according to your data structure
+  const clearAceEditor = () => {
+    if (codeEditorRef.current) {
+      codeEditorRef.current.clearAceEditor();
+    }
+  };
 
+  const handleCodeEditorResponse = (status) => {
+    setStatus(status);
+    if (status === 'Correct') {
+      currentSolved++;
+      if (currentIndex < problemsList.length - 1 && currentSolved < problemsToSolve) {
+        setCurrentIndex(currentIndex + 1);
+      } else if (currentSolved == problemsToSolve) {
+        //move to next Lesson or Week or Course Completed
+        fetch(`/get-next/${course_id}/${week_no}/${lesson_no}`)
+          .then(response => response.json())
+          .then(data => setNextLink(data.next))
+          .catch(error => console.error('Error fetching next Page:', error));
+      } else {
+        //Implement skip function
+        // let toJump = lastSkipped;
+        // lastSkipped = currentIndex;
+        // setCurrentIndex(toJump);
+      }
+    }
+  };
+
+  // const handleButtonClick = () => {
+  //   if (buttonText === 'Next') {
+  //     if (currentSolved < maxMCQsToShow) {
+  //       if (!traverseWrong) {
+  //         if (currentMCQIndex === mcqList.length - 1) {
+  //           setTraverseWrong(true);
+  //           setCurrentMCQIndex(wrongOnes[0]);
+  //         }
+  //         else if (currentMCQIndex < mcqList.length - 1) {
+  //           setCurrentMCQIndex(currentMCQIndex + 1);
+  //         }
+  //       } else {
+  //         setCurrentWrongIndex((currentMCQIndex + 1) % wrongOnes.length);
+  //         setCurrentMCQIndex(wrongOnes[currentWrongIndex]);
+  //       }
+  //       setSelectedOption('');
+  //       setResultText('');
+  //       setButtonColor('');
+  //       setOptionsDisabled(false);
+  //     }
+  //   } else if (buttonText === 'Check') {
+  //     setOptionsDisabled(true);
+  //     const selectedOptionNumber = parseInt(selectedOption.split('_')[1]);
+  //     if (selectedOptionNumber === currentMCQ.correct) {
+  //       setResultText('Correct!');
+  //       setButtonColor('green');
+  //       currentSolved += 1;
+  //       if (wrongOnes.includes(currentMCQIndex)) {
+  //         setWrongOnes(wrongOnes.filter((index) => index !== currentMCQIndex));
+  //       }
+  //     } else {
+  //       const correctOptionText = mcqList[currentMCQIndex][`option_${currentMCQ.correct}`];
+  //       setResultText(`Correct answer: ${correctOptionText}`);
+  //       setButtonColor('red');
+  //       if (!wrongOnes.includes(currentMCQIndex)) {
+  //         setWrongOnes([...wrongOnes, currentMCQIndex]);
+  //       }
+  //     }
+  //     if (currentSolved === maxMCQsToShow) {
+  //       setButtonText('Go To Problems');
+  //       currentSolved = 0;
+  //     } else {
+  //       setButtonText('Next');
+  //     }
+  //   }
+  //   console.log(wrongOnes);
+  // };
+
+  const currentProgram = problemsList[currentIndex];
   return (
     <div className="App">
       <header className="App-header">
@@ -47,13 +128,13 @@ const Programming = () => {
           <div className="problem-description">
             <h2>Problem Description</h2>
             <p>
-              {currentProgram.question}
+              {problemsList[currentIndex].question}
             </p>
           </div>
           <div className="test-case-container">
             <h3>Test Cases</h3>
             <div className="test-cases">
-              {currentProgram.examples.map((examples, index) => (
+              {problemsList[currentIndex].examples.map((examples, index) => (
                 <div className="test-case" key={index}>
                   <div className="test-input">
                     <p><strong>Input:</strong></p>
@@ -74,9 +155,21 @@ const Programming = () => {
         </div>
         <div className="right-pane">
           <div className="code-editor">
+            <div>
+              {status === 'Correct' && currentIndex < problemsList.length - 1 && (
+                <button onClick={() => {
+                  setCurrentIndex(currentIndex + 1);
+                  clearAceEditor();
+                }}>
+                  Go To Next Problem
+                </button>
+              )}
+            </div>
             <CodeEditor
-              question={currentProgram.question}
-              testCases={currentProgram.examples}
+              ref={codeEditorRef}
+              question={problemsList[currentIndex].question}
+              testCases={problemsList[currentIndex].examples}
+              onCodeEditorResponse={handleCodeEditorResponse}
             />
           </div>
         </div>

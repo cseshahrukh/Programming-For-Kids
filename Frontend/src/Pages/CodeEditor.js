@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import AceEditor from "react-ace";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,13 +9,14 @@ import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-c_cpp";
 
-const CodeEditor = ({ question, testCases }) => {
+const CodeEditor = ({ question, testCases, onCodeEditorResponse }) => {
   const inputs = [];
   const outputs = [];
   testCases.forEach((testCase) => {
     inputs.push(testCase.Input);
     outputs.push(testCase.Output);
   });
+  let sendBackStatus = "rejected";
   const [selectedLanguage, setSelectedLanguage] = useState("python");
   const [submissionStatus, setSubmissionStatus] = useState("Pending");
   const [isStatusAccepted, setIsStatusAccepted] = useState(false);
@@ -53,6 +54,11 @@ const CodeEditor = ({ question, testCases }) => {
     setIsNotificationsOpen(!isNotificationsOpen);
   };
 
+  const clearAceEditor = () => {
+    if (editorRef.current && editorRef.current.editor) {
+      editorRef.current.editor.setValue('');
+    }
+  };
   const handleSubmit = async () => {
     const code = editorRef.current.editor.getValue();
 
@@ -112,6 +118,10 @@ const CodeEditor = ({ question, testCases }) => {
           setSubmissionStatus('Accepted');
           setIsStatusAccepted(true);
           setSubmissionCount(1);
+          sendBackStatus = "Correct";
+          if (typeof onCodeEditorResponse === 'function') {
+            onCodeEditorResponse(sendBackStatus);
+          }
         } else if (data.status === 'Rejected') {
           setSubmissionStatus('Wrong Answer');
           setIsStatusAccepted(false);

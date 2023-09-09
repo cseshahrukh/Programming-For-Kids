@@ -285,16 +285,17 @@ def get_teacher_courses():
     return jsonify({'courses': course_list})
 
 
-@app.route('/courses/search', methods=['GET'])
-def search_courses():
-    print('searching')
-    search_query = request.args.get('search')
+@app.route('/courses/search=<search_query>', methods=['GET'])
+def search_courses(search_query):
+    print('searching in backend')
 
     if search_query:
-        search_results = Course.query.filter(or_(
-            Course.course_name.ilike(f'%{search_query}%'),
-            Course.short_description.ilike(f'%{search_query}%')
-        )).all()
+        search_results = Course.query.filter(
+            or_(
+                Course.course_name.ilike(f'%{search_query}%'),
+                Course.short_description.ilike(f'%{search_query}%')
+            )
+        ).all()
 
         search_results_list = []
         for result in search_results:
@@ -309,6 +310,26 @@ def search_courses():
 
     return jsonify({'message': 'No search query provided'})
 
+
+@app.route('/courses/search-suggestions', methods=['GET'])
+def search_suggestions():
+    print("in backend search suggestions ")
+    search_query = request.args.get('query')
+
+    if search_query:
+        # Use SQLAlchemy to query the database for suggestions
+        search_results = Course.query.filter(
+            or_(
+                Course.course_name.ilike(f'%{search_query}%'),
+                Course.short_description.ilike(f'%{search_query}%')
+            )
+        ).limit(5).all()  # Limit the number of suggestions to 5
+
+        suggestions = [result.course_name for result in search_results]
+
+        return jsonify({'suggestions': suggestions})
+
+    return jsonify({'suggestions': []})  # Return an empty list if no query provided
 
 
 @app.route('/courses/<int:course_id>', methods=['GET'])

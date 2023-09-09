@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import Footer from "./Footer";
-import Navbar from "./Navbar";
+import NavbarStudent from "./NavbarStudent";
 
 function Discussion() {
     const { course_id } = useParams();
     const [discussions, setDiscussions] = useState([]);
     const [newQuestion, setNewQuestion] = useState("");
+    const [newReply, setNewReply] = useState("");
 
     // Fetch discussions (questions and replies) from the server
     useEffect(() => {
@@ -17,7 +18,7 @@ function Discussion() {
             .catch(error => console.error('Error fetching discussions:', error));
     }, [course_id]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmitQuestion = async (e) => {
         e.preventDefault();
 
         if (newQuestion.trim() !== "") {
@@ -40,23 +41,47 @@ function Discussion() {
         }
     };
 
-    return (
+    // Handle reply submission
+    const handleSubmitReply = async (e, questionIndex) => {
+        e.preventDefault();
 
-        <div className="discussion-page" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <header className="App-header">
-                <Navbar />
+        if (newReply.trim() !== "") {
+            // Simulate sending the reply to the server and updating the discussions list
+            const response = await fetch(`/courses/${course_id}/discussion/${questionIndex}/reply`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    reply: newReply
+                })
+            });
+
+            if (response.status === 200) {
+                const updatedDiscussions = [...discussions];
+                updatedDiscussions[questionIndex].replies.push({ reply: newReply, reply_user_name: "User" });
+                setDiscussions(updatedDiscussions);
+                setNewReply("");
+            }
+        }
+    };
+
+    return (
+        <div className="discussion-page" style={{ display: "flex", flexDirection: "column", minHeight: "100vh", padding: "24px" }}>
+            <header className="App-header" style={{ fontSize: '18px' }}>
+                <NavbarStudent />
             </header>
-            <div style={{ flex: 1, padding: "20px" }}>
-                <h1>Discussion for Course: {course_id}</h1>
+            <div style={{ flex: 1 }}>
+                <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Discussion for Course: {course_id}</h1>
                 <div>
                     <h3>Ask a Question</h3>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmitQuestion}>
                         <textarea
                             value={newQuestion}
                             onChange={(e) => setNewQuestion(e.target.value)}
                             placeholder="Type your question here..."
                             rows="4"
-                            style={{ width: "100%", padding: "10px", fontSize: "16px" }}
+                            style={{ width: "100%", padding: "10px", fontSize: "16px", backgroundColor: "#FFF", border: "2px solid #333", borderRadius: "5px" }}
                         ></textarea>
                         <button type="submit" className="btn btn-primary" style={{ marginTop: "10px" }}>
                             Submit
@@ -69,26 +94,40 @@ function Discussion() {
                         <p>No discussions yet.</p>
                     ) : (
                         <ul>
-                            {discussions.map((discussion, index) => (
-                                <li key={index}>
-                                    <h4>Question {index + 1}:</h4>
+                            {discussions.map((discussion, questionIndex) => (
+                                <li key={questionIndex} style={{ backgroundColor: "#FFF", marginBottom: "20px", padding: "10px", borderRadius: "5px", boxShadow: "0 0 10px rgba(0,0,0,0.2)" }}>
+                                    <h4>Question {questionIndex + 1}:</h4>
                                     <p>{discussion.question}</p>
-                                    {discussion.replies.length > 0 ? (
-                                        <div>
-                                            <h5>Replies:</h5>
-                                            <ul>
-                                                {discussion.replies.map((reply, replyIndex) => (
-                                                    <li key={replyIndex}>
-                                                        <p>Reply: {reply.reply}</p>
-                                                        <p>User: {reply.reply_user_name}</p>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    ) : (
-                                        <p>No replies yet.</p>
-                                    )}
-                                    <p>User: {discussion.user_name}</p>
+                                    <ul>
+                                        {discussion.replies.length > 0 ? (
+                                            <div>
+                                                <h5>Replies:</h5>
+                                                <ul>
+                                                    {discussion.replies.map((reply, replyIndex) => (
+                                                        <li key={replyIndex}>
+                                                            <p>{reply.reply_user_name}: {reply.reply}</p>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ) : (
+                                            <p>No replies yet.</p>
+                                        )}
+                                    </ul>
+
+                                    {/* Reply Form */}
+                                    <form onSubmit={(e) => handleSubmitReply(e, questionIndex)}>
+                                        <textarea
+                                            value={newReply}
+                                            onChange={(e) => setNewReply(e.target.value)}
+                                            placeholder="Type your reply here..."
+                                            rows="4"
+                                            style={{ width: "100%", padding: "10px", fontSize: "16px", backgroundColor: "#FFF", border: "2px solid #333", borderRadius: "5px" }}
+                                        ></textarea>
+                                        <button type="submit" className="btn btn-primary" style={{ marginTop: "10px" }}>
+                                            Reply
+                                        </button>
+                                    </form>
                                 </li>
                             ))}
                         </ul>

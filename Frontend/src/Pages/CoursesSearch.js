@@ -14,7 +14,7 @@ function CoursesSearch() {
 
     useEffect(() => {
         // Fetch data based on the search query
-        fetch(`/courses?search=${searchQuery}`)
+        fetch(`/courses/search=${searchQuery}`)
             .then(response => response.json())
             .then(data => setSearchResults(data.searchResults))
             .catch(error => console.error('Error fetching search results:', error));

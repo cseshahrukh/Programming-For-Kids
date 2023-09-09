@@ -47,19 +47,6 @@ function Home() {
                         </p>
                         <Link to="/signup" className="btn btn-primary">Start Coding Now</Link>
                     </div>
-
-                    {/* Display the contributors' section */}
-                    <div className="contributors">
-                        <h2 className="contributors-title">Meet Our Contributors</h2>
-                        <p className="contributors-description">
-                            We have a team of talented individuals who have contributed to this project. Their dedication and expertise have made this platform possible.
-                        </p>
-                        <ul>
-                            <li>Md. Shahrukh Islam - Frontend and Backend Developer</li>
-                            <li>Ahanaf Tahmid - Frontend Developer</li>
-                            <li>Md. Sohidul Islam - Backend Developer</li>
-                        </ul>
-                    </div>
                 </div>
                 <div className="right-bar">
                     <h3 className="bar-title">Featured Projects</h3>
@@ -68,16 +55,6 @@ function Home() {
                         <li>🎨 Design a Virtual World</li>
                         <li>🤖 Build a Robotic Friend</li>
                     </ul>
-
-                    {/* Display the names of supervisors */}
-                    <div className="supervisors">
-                        <h3>Supervised by:</h3>
-                        <ul>
-                            <li>Tahmid Hasan</li>
-                            <li>Toufik Zaman Pranto</li>
-                            <li>Fahim Hakim</li>
-                        </ul>
-                    </div>
                 </div>
             </div>
 

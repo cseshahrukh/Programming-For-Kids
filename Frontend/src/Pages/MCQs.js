@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link,useNavigate } from "react-router-dom";
 import './MCQs.css';
 import Navbar from "./Navbar";
+import NavbarStudent from './NavbarStudent';
 import Footer from './Footer';
 import { useUserContext } from '../UserContext'; // Import the useUserContext hook
 import { useAuth } from '../useAuth'; // Import the custom hook
@@ -121,7 +122,7 @@ const MyMCQ = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar username={username} />
+        <NavbarStudent username={username} />
       </header>
       <div className="mcq-container">
         <h1>Multiple Choice Questions</h1>

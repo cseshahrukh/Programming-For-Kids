@@ -4,6 +4,7 @@ import { useUserContext } from '../UserContext'; // Import the useUserContext ho
 import { useAuth } from '../useAuth'; // Import the custom hook
 import Footer from "./Footer";
 import Navbar from "./Navbar";
+import NavbarStudent from "./NavbarStudent";
 
 function CourseDetails() {
     const { username,course_id } = useParams();
@@ -46,7 +47,7 @@ function CourseDetails() {
 
     return (
         <div className="App" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Navbar username={username}/>
+            <NavbarStudent username={username}/>
 
             {/* Main Content */}
             <div style={{ display: "flex", flex: 1 }}>

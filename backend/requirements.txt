@@ -26,6 +26,7 @@ urllib3==2.0.4
 Werkzeug
 yarl==1.9.2
 Gunicorn
+flask-cors
 
 
 

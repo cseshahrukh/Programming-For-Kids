@@ -1,0 +1,97 @@
+/* Login.css */
+
+/* Style the card */
+.card {
+    border: none;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Style the buttons */
+.btn {
+    padding: 10px 20px;
+    font-size: 18px;
+}
+
+/* Add animations */
+.fade-in {
+    animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Add hover effect to buttons */
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* Login.css */
+
+.login-page {
+    background-color: #f5f5f5; /* Grey background */
+    position: relative; /* Create a relative positioning context */
+}
+
+/* Container for the login page */
+.login-container {
+    background-color: #f5f5f5; /* Grey background */
+    position: relative;
+    height: 100vh; /* Ensure full viewport height */
+    overflow: hidden; /* Hide overflowing bubbles */
+}
+
+/* Bubble styling */
+.bubble {
+    position: absolute;
+    border-radius: 50%; /* Make it round */
+    opacity: 0.4;
+    width: 35px;
+    height: 35px;
+}
+
+/* Yellow bubble */
+.yellow-bubble {
+    background-color: rgb(197, 228, 41);
+    left: 10%;
+    top: 20%;
+    animation: move-bubble 10s infinite;
+}
+
+/* Red bubble */
+.red-bubble {
+    background-color: red;
+    right: 10%;
+    top: 30%;
+    animation: move-bubble 12s infinite;
+}
+
+/* Blue bubble */
+.blue-bubble {
+    background-color: blue;
+    left: 20%;
+    top: 20%;
+    animation: move-bubble 8s infinite;
+}
+
+/* Green bubble */
+.green-bubble {
+    background-color: green;
+    right: 20%;
+    top: 10%;
+    animation: move-bubble 9s infinite;
+}
+
+/* Keyframes for bubble animation */
+@keyframes move-bubble {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+    50% {
+        transform: translateY(-20px) translateX(20px);
+    }
+    100% {
+        transform: translateY(0) translateX(0);
+    }
+}

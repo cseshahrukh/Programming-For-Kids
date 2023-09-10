@@ -955,8 +955,12 @@ def save_completed_course():
     # Get the request body data
     data = request.get_json()
 
+    # Query the database to get the count of completed courses
+    completed_courses_count = Completed_course.query.count() + 1
+
     # Create a new Completed_course object using the data from the request body
     new_completed_course = Completed_course(
+        id = completed_courses_count,
         username=data['username'],
         course_id=data['course_id']
     )

@@ -1,0 +1,117 @@
+Course: Easy Python
+
+Week 1: Introduction to Python
+Lecture 1: Introduction to Python
+
+What is Python?
+
+Python is a versatile and easy-to-learn programming language that is widely used for various purposes, including web development, data analysis, scientific computing, artificial intelligence, and more. It is known for its simplicity and readability, making it an excellent choice for beginners.
+
+Why Python is Important?
+
+    Python is in high demand in the job market, making it a valuable skill for students to learn.
+    It has a large and active community of developers, which means extensive support and resources are available.
+    Python's syntax is clear and easy to understand, making it an ideal language for teaching programming concepts.
+
+Setting up Python Environment
+
+Before we start coding in Python, you need to set up your Python development environment. Follow these steps:
+
+    Installing Python:
+        Visit the official Python website at python.org.
+        Download the latest version of Python for your operating system (Windows, macOS, or Linux).
+        Run the installer and follow the installation instructions.
+
+    Choosing a Code Editor:
+        You can write Python code in any text editor, but it's recommended to use a code editor or integrated development environment (IDE) for a better coding experience. Some popular options include:
+            Visual Studio Code
+            PyCharm
+            Jupyter Notebook
+
+Now that you have Python installed and a code editor ready, you're all set to start learning Python!
+Assignments:
+
+Multiple Choice Questions (MCQ):
+
+    What is Python primarily used for?
+        a) Web development
+        b) Data analysis
+        c) Game development
+        d) All of the above
+        Answer: d) All of the above
+
+    Which of the following is not a valid data type in Python?
+        a) int
+        b) float
+        c) char
+        d) str
+        Answer: c) char
+
+Programming Problem:
+
+Write a Python program to print "Hello, Python!".
+
+
+
+
+Week 2: Python Variables and Data Types
+Lecture 2: Python Variables and Data Types
+
+What are Variables?
+
+In Python, a variable is a container for storing data. Think of it as a labeled box that can hold different types of information. Variables are used to store values, such as numbers, text, or complex data structures. To create a variable, you give it a name and assign a value to it.
+
+Naming Rules for Variables:
+
+    Variable names can contain letters, numbers, and underscores.
+    They must start with a letter or an underscore (e.g., _my_variable, my_variable).
+    Variable names are case-sensitive (my_variable and My_Variable are different variables).
+    Avoid using Python keywords (e.g., if, for, while) as variable names.
+
+Common Data Types in Python:
+
+Python has several built-in data types that represent different types of values. Here are some of the most common ones:
+
+    int (Integer): Represents whole numbers (e.g., 42, -7, 0).
+    float (Floating-Point): Represents decimal numbers (e.g., 3.14, -0.5).
+    str (String): Represents text (e.g., "Hello, Python!").
+    bool (Boolean): Represents True or False values.
+    list: Represents an ordered collection of values.
+    tuple: Similar to a list but is immutable (cannot be changed).
+    dict (Dictionary): Represents key-value pairs (e.g., {"name": "Alice", "age": 25}).
+
+Example:
+
+python
+
+# Variable assignment
+my_integer = 42
+my_float = 3.14
+my_string = "Hello, Python!"
+
+# Checking data types
+print(type(my_integer))  # <class 'int'>
+print(type(my_float))    # <class 'float'>
+print(type(my_string))   # <class 'str'>
+
+Assignments:
+
+Multiple Choice Questions (MCQ):
+
+    What is the data type of the variable my_string in the example above?
+        a) int
+        b) float
+        c) str
+        d) bool
+        Answer: c) str
+
+    Which data type represents True or False values in Python?
+        a) int
+        b) float
+        c) bool
+        d) str
+        Answer: c) bool
+
+Programming Problem:
+
+Write a Python program that calculates the area of a rectangle. You can ask the user for the length and width as input and then calculate and display the area.

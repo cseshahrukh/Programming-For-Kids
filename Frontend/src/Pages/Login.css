@@ -83,6 +83,40 @@
     animation: move-bubble 9s infinite;
 }
 
+/* Purple bubble */
+.purple-bubble {
+    background-color: purple;
+    left: 90%;
+    top: 70%;
+    animation: move-bubble 11s infinite;
+}
+
+/* Orange bubble */
+.orange-bubble {
+    background-color: orange;
+    right: 80%;
+    top: 70%;
+    animation: move-bubble 10s infinite;
+}
+
+/* white bubble */
+.white-bubble {
+    background-color: white;
+    left: 50%;
+    top: 30%;
+    animation: move-bubble 9s infinite;
+}
+
+/* black bubble */
+.black-bubble {
+    background-color: black;
+    right: 50%;
+    top: 70%;
+    animation: move-bubble 8s infinite;
+}
+
+
+
 /* Keyframes for bubble animation */
 @keyframes move-bubble {
     0% {

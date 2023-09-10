@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Footer from './Footer';
 import Navbar from './Navbar';
 import './Home.css'; // Import your custom CSS file for styling
+import './Login.css';
 
 function Home() {
     return (
@@ -18,6 +19,7 @@ function Home() {
                         <li>🚀 Join Our Coding Contest!</li>
                         <li>📣 Coding Workshops Near You!</li>
                     </ul>
+                    
                 </div>
                 <div className="content">
                     <h1 className="title">
@@ -55,9 +57,9 @@ function Home() {
                             We have a team of talented individuals who have contributed to this project. Their dedication and expertise have made this platform possible.
                         </p>
                         <ul>
-                            <li>Md. Shahrukh Islam - Frontend and Backend Developer</li>
-                            <li>Ahanaf Tahmid - Frontend Developer</li>
-                            <li>Md. Sohidul Islam - Backend Developer</li>
+                            <li>Md. Shahrukh Islam - Full Stack Developer</li>
+                            <li>Ahanaf Tahmid - Full Stack Developer</li>
+                            <li>Md. Sohidul Islam - Full Stack Developer</li>
                         </ul>
                     </div>
                 </div>
@@ -79,12 +81,20 @@ function Home() {
                         </ul>
                     </div>
                 </div>
+                
             </div>
-
+            <div className="bubble orange-bubble"></div>
+            <div className="bubble purple-bubble"></div>
+            <div className="bubble yellow-bubble"></div>
+            <div className="bubble white-bubble"></div>
+            <div className="bubble black-bubble"></div>
+            <div className="bubble red-bubble"></div>
             <div className="footer">
+                
                 <Footer />
             </div>
         </div>
+        
     );
 }
 

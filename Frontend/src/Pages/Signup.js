@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import Navbar from './Navbar';
-
+import './Login.css';
 function Signup() {
     const navigate = useNavigate();
 
@@ -118,6 +118,13 @@ function Signup() {
                     </div>
                 </div>
             </div>
+            {/* Yellow, Red, Blue, and Green bubbles */}
+            <div className="bubble yellow-bubble"></div>
+            <div className="bubble red-bubble"></div>
+            <div className="bubble blue-bubble"></div>
+            <div className="bubble green-bubble"></div>
+            <div className="bubble orange-bubble"></div>
+            <div className="bubble purple-bubble"></div>
             <Footer />
         </div>
     );

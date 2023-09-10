@@ -50,33 +50,42 @@ function Dashboard() {
   console.log('Completed Courses Before return:', completedCourses);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f4f4f4' }}>
       <div>
         <NavbarStudent username={username} />
       </div>
       <div style={{ marginTop: '60px', textAlign: 'center' }}>
-        <h2>Your Dashboard</h2>
+        <h2 style={{ color: '#333' }}>Your Dashboard</h2>
         <div>
-          <Link to={`/student/${username}/courses`} className="btn btn-primary">Browse Courses</Link>
+          <Link to={`/student/${username}/courses`} className="btn btn-primary" style={{ textDecoration: 'none', color: '#fff', background: '#007BFF', padding: '10px 20px', borderRadius: '5px', fontWeight: 'bold' }}>
+            Browse Courses
+          </Link>
         </div>
       </div>
-      <div>
-        <h1>Dashboard</h1>
-        <Profile /> {/* Include the Profile component */}
-        <h3>Completed Courses</h3>
-        <ul>
-          {completedCourses.map((course) => (
-            <li key={course.course_id}>
-              <Link to={`/student/${username}/courses/${course.course_id}`}>
-                {course.course_name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <div style={{ padding: '0 20px', flex: 1 }}>
+        <h1 style={{ color: '#333' }}>Dashboard</h1>
+        <div style={{ background: '#fff', padding: '20px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
+          <h3 style={{ color: '#333' }}>Profile</h3>
+          <Profile /> {/* Include the Profile component */}
+        </div>
+        <div style={{ background: '#fff', padding: '20px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', marginTop: '20px' }}>
+          <h3 style={{ color: '#333' }}>Completed Courses</h3>
+          <ul style={{ listStyleType: 'none', padding: 0 }}>
+            {completedCourses.map((course) => (
+              <li key={course.course_id} style={{ margin: '10px 0' }}>
+                <Link to={`/student/${username}/courses/${course.course_id}`} style={{ textDecoration: 'none', color: '#007BFF', fontWeight: 'bold' }}>
+                  {course.course_name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
         {/* Other dashboard content */}
       </div>
       <div>
         <Footer />
+            <div className="bubble blue-bubble"></div>
+            <div className="bubble green-bubble"></div>
       </div>
     </div>
   );

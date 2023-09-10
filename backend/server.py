@@ -4,7 +4,6 @@ from dbInserters import *
 from compiler import *
 from chatgpt import *
 from sqlalchemy import or_,desc
-from flask_cors import CORS
 
 
 def problemTextFormatter(input_text):
@@ -85,7 +84,6 @@ def handle_data(json_data):
 
 
 app, db = initialize()
-CORS(app, resources={r"/*": {"origins": "https://programmingforkids.onrender.com"}})
 
 
 @app.route('/save_data', methods=['POST'])

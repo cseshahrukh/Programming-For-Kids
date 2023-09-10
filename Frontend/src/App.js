@@ -162,7 +162,7 @@ const router = createBrowserRouter([
     element: <CourseCompletion />,
   },
   {
-    path: "/problems",
+    path: "/playground",
     element: <ProgrammingProb />,
   },
   {

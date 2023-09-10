@@ -921,6 +921,10 @@ def handle_hint():
         hint = getHints(hint_count, question, code)
         return jsonify({'hint': hint})
 
+@app.route('/getProblem', methods=['GET'])
+def getPracticeProblem():
+    return randomProblem()
+
 
 @app.route('/api/completed-courses', methods=['GET'])
 def get_completed_courses():

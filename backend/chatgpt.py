@@ -48,15 +48,15 @@ def getHints3(question, code):
 def randomProblem():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        temperature=0.7,
+        temperature=1.5,
         messages=[
-            {"role": "system", "content": "You return programming problems for school students. You send a JSON in the format such \
-                as question first, then array named examples of 3 elements each containing (input, output, explanation)"},
+            {"role": "system", "content": "You return difficult programming problems for school students to solve. You send a JSON \
+            in the format such as broadly detailed question first, then array named examples of 3 elements each containing (input, \
+                output, explanation). Strictly give the json only. Do not give any other comments."},
             {"role": "user", "content": f"Give the JSON format of the problem"}
         ]
     )
-    print(response['choices'][0]['message']['content'])
-    return response
+    return response['choices'][0]['message']['content']
 
 
 def getErrorExplanation(error):

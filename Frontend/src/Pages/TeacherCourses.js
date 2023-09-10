@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link,useParams,useNavigate } from "react-router-dom";
+import { useUserContext } from '../UserContext'; 
+import { useAuth } from '../useAuth'; 
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 function TeacherCourses() {
   const [courses, setCourses] = useState([]);
-  const teacher_id = 2; //will be changed according to the session information
+  const { teacher_id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useUserContext(); // Get user data from context
+  const isAuthenticated = useAuth(); // Use the custom hook
+
+  // Use useEffect to handle the redirection
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Redirect to the login page
+      navigate(`/login`);    
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     // Fetch teacher-specific courses from the backend
@@ -14,6 +27,11 @@ function TeacherCourses() {
       .then((data) => setCourses(data.courses))
       .catch((error) => console.error('Error fetching teacher courses:', error));
   }, [teacher_id]);
+
+  if (!user) {
+    // Return null when user is null (unauthenticated)
+    return null;
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -28,7 +46,7 @@ function TeacherCourses() {
               <div className="course-card" style={{ marginTop: 10 ,marginBottom: 20 }}>
                   <h3>{course.course_name}</h3>
                 <p>{course.short_description}</p>
-                <Link to={`/addCourse/${course.course_id}/week/1`} className="modify-course-button">
+                <Link to={`/teacher/${teacher_id}/addCourse/${course.course_id}/week/1`} className="modify-course-button">
                   <button className="modify-button">Modify Course</button>              
                 </Link>
               </div>

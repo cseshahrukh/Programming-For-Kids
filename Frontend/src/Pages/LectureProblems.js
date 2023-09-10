@@ -1,6 +1,8 @@
 import React, { useState,useEffect } from 'react';
 import './LectureProblems.css';
 import { useParams, Link ,useNavigate} from "react-router-dom";
+import { useUserContext } from '../UserContext'; 
+import { useAuth } from '../useAuth'; 
 import './AddCourse.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -9,10 +11,21 @@ import Footer from "./Footer";
 
 
 function LectureProblems() {
-    const { course_id, week_no, lesson_no } = useParams(); // Extract course_id, week_no, and lesson_no
+    const { teacher_id, course_id, week_no, lesson_no } = useParams(); // Extract course_id, week_no, and lesson_no
     const navigate = useNavigate();
     const [problems, setProblems] = useState([]);
+
+    const { user } = useUserContext(); // Get user data from context
+    const isAuthenticated = useAuth(); // Use the custom hook 
+    // Use useEffect to handle the redirection
+    useEffect(() => {
+      if (!isAuthenticated) {
+        // Redirect to the login page
+        navigate(`/login`);    
+      }
+    }, [isAuthenticated]);
   
+ 
     const handleProblemDescriptionChange = (problemIndex, e) => {
       const updatedProblems = [...problems];
       updatedProblems[problemIndex].problemDescription = e.target.value;
@@ -53,7 +66,7 @@ function LectureProblems() {
 
         if (response.ok) {
           // Handle success, e.g., show a success message to the user
-          navigate(`/addCourse/${course_id}/week/${week_no}/lesson/${lesson_no}/3`);
+          navigate(`/teacher/${teacher_id}/addCourse/${course_id}/week/${week_no}/lesson/${lesson_no}/3`);
           console.log('Problems have been successfully saved');
         } else {
           console.error('Error saving problems');
@@ -84,6 +97,10 @@ function LectureProblems() {
       fetchProblems();
     }, []);
 
+    if (!user) {
+      // Return null when user is null (unauthenticated)
+      return null;
+    }
 
     return (
       <div className="problem-form">

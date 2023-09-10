@@ -248,6 +248,36 @@ def login():
     return response
 
 
+# Creae API endpoint for login
+@app.route('/teacherlogin', methods=['POST'])
+def teacherlogin():
+    # Get the request body data
+    data = request.get_json()
+
+    # Check if the user exists
+    existing_user = Teacher.query.filter_by(email=data['email']).first()
+
+    if not existing_user:
+        response = jsonify({'message': 'User does not exist.'})
+        response.status_code = 404
+        return response
+
+    # Check if the password matches
+    if existing_user.password != data['password']:
+        response = jsonify({'message': 'Wrong password.'})
+        response.status_code = 401
+        return response
+
+    # return username and email
+    response = jsonify({'teacher_id': existing_user.id,
+                       'email': existing_user.email})
+
+    # response=jsonify({'message': 'User logged in.'})
+    response.status_code = 200
+    return response
+
+
+
 @app.route('/courses', methods=['GET'])
 def fetch_courses():
     all_courses = Course.query.all()
@@ -890,6 +920,34 @@ def handle_hint():
     elif request.method == 'GET':
         hint = getHints(hint_count, question, code)
         return jsonify({'hint': hint})
+
+
+@app.route('/api/completed-courses', methods=['GET'])
+def get_completed_courses():
+    username = request.args.get('username')
+    print("Username is in the completed course backend is ", username)
+
+    # Query the database to get the completed courses for the given username
+    completed_courses = Completed_course.query.filter_by(username=username).all()
+
+    # Fetch course details from the Course table for each completed course
+    completed_courses_list = []
+    for course in completed_courses:
+        course_id = course.course_id
+        course_data = Course.query.get(course_id)
+
+        # Check if the course exists (optional)
+        if course_data:
+            completed_courses_list.append({
+                'course_id': course_id,
+                'course_name': course_data.course_name,
+            })
+
+    # print complted courses
+    print("Completed courses are ", completed_courses_list)
+
+    return jsonify({'completed_courses': completed_courses_list}), 200
+
 
 
 # Running app

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { useParams, Link } from "react-router-dom";
+import React, { useState,useEffect } from 'react';
+import { useParams, Link,useNavigate } from "react-router-dom";
+import { useUserContext } from '../UserContext'; 
+import { useAuth } from '../useAuth'; 
 import './AddCourseLessonsPage.css';
 import './AddCourse.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -8,10 +10,25 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 
 function AddCourseLessonsPage() {
-  const { course_id, week_no, lesson_no, which_page } = useParams();
-
+  const { teacher_id, course_id, week_no, lesson_no, which_page } = useParams();
   // Define an array of week names
   const [lessonNames, setLessonNames] = useState(generateLessonNames(lesson_no));
+
+  const navigate = useNavigate();
+  const { user } = useUserContext(); // Get user data from context
+  const isAuthenticated = useAuth(); // Use the custom hook
+  // Use useEffect to handle the redirection
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Redirect to the login page
+      navigate(`/login`);    
+    }
+  }, [isAuthenticated]);
+
+  if (!user) {
+    // Return null when user is null (unauthenticated)
+    return null;
+  }
 
   function generateLessonNames(n) {
     const lessonNames = [];
@@ -37,11 +54,11 @@ function AddCourseLessonsPage() {
           {lessonNames.map((lessonName, index) => {
             let linkTo = '';
             if (which_page === '1') {
-              linkTo = `/addCourse/${course_id}/week/${week_no}/lesson/${index + 1}/readingMaterials`;
+              linkTo = `/teacher/${teacher_id}/addCourse/${course_id}/week/${week_no}/lesson/${index + 1}/readingMaterials`;
             } else if (which_page === '2') {
-              linkTo = `/addCourse/${course_id}/week/${week_no}/lesson/${index + 1}/mcqs`;
+              linkTo = `/teacher/${teacher_id}/addCourse/${course_id}/week/${week_no}/lesson/${index + 1}/mcqs`;
             } else if (which_page === '3') {
-              linkTo = `/addCourse/${course_id}/week/${week_no}/lesson/${index + 1}/problems`;
+              linkTo = `/teacher/${teacher_id}/addCourse/${course_id}/week/${week_no}/lesson/${index + 1}/problems`;
             }
 
             return (
@@ -60,7 +77,7 @@ function AddCourseLessonsPage() {
         </div>
       </div>
       <div className="complete-button-container">
-        <Link to={`/addCourse/${course_id}/week/${week_no}`}>
+        <Link to={`/teacher/${teacher_id}/addCourse/${course_id}/week/${week_no}`}>
           <button className="complete-button">Complete</button>
         </Link>
       </div>

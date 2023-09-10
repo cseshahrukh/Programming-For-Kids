@@ -32,9 +32,12 @@ function Discussion() {
         return null;
     }
 
+    // print the username
+    console.log("In Discussion.js username: " + user.username);
+
     const handleSubmitQuestion = async (e) => {
         e.preventDefault();
-
+    
         if (newQuestion.trim() !== "") {
             const response = await fetch(`/courses/${course_id}/discussion`, {
                 method: 'POST',
@@ -42,10 +45,11 @@ function Discussion() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    question: newQuestion
+                    question: newQuestion,
+                    user_name: user.username // Set user_name to the current username
                 })
             });
-
+    
             if (response.status === 200) {
                 const updatedDiscussions = [...discussions, { question: newQuestion }];
                 setDiscussions(updatedDiscussions);
@@ -56,10 +60,8 @@ function Discussion() {
 
     const handleSubmitReply = async (e, questionIndex) => {
         e.preventDefault();
-
+    
         if (newReplies[questionIndex].trim() !== "") {
-            // print questionIndex
-            console.log("questionIndex: " + questionIndex);
             const response = await fetch(`/courses/${course_id}/discussion/${questionIndex}/reply`, {
                 method: 'POST',
                 headers: {
@@ -69,12 +71,22 @@ function Discussion() {
                     reply: newReplies[questionIndex]
                 })
             });
-
+    
             if (response.status === 200) {
                 const updatedDiscussions = [...discussions];
-                updatedDiscussions[questionIndex].replies.push({ reply: newReplies[questionIndex], reply_user_name: "User" });
+                const loggedInUsername = user.username;
+    
+                // Ensure that replies array exists and initialize it as an empty array if not
+                if (!updatedDiscussions[questionIndex].replies) {
+                    updatedDiscussions[questionIndex].replies = [];
+                }
+    
+                updatedDiscussions[questionIndex].replies.push({
+                    reply: newReplies[questionIndex],
+                    reply_user_name: loggedInUsername
+                });
                 setDiscussions(updatedDiscussions);
-
+    
                 // Clear the reply field for this question
                 const newRepliesCopy = [...newReplies];
                 newRepliesCopy[questionIndex] = "";
@@ -84,7 +96,7 @@ function Discussion() {
     };
 
     return (
-        <div className="discussion-page" style={{ display: "flex", flexDirection: "column", minHeight: "100vh", padding: "24px" }}>
+        <div className="discussion-page" style={{ display: "flex", flexDirection: "column", minHeight: "100vh", padding: "32px" }}>
             <header className="App-header" style={{ fontSize: '18px' }}>
                 <NavbarStudent />
             </header>
@@ -113,8 +125,14 @@ function Discussion() {
                         <ul>
                             {discussions.map((discussion, questionIndex) => (
                                 <li key={questionIndex} style={{ backgroundColor: "#FFF", marginBottom: "20px", padding: "10px", borderRadius: "5px", boxShadow: "0 0 10px rgba(0,0,0,0.2)" }}>
-                                    <h4>Question {questionIndex + 1}:</h4>
-                                    <p>{discussion.question}</p>
+                                    <h4> Question {questionIndex + 1}:</h4>
+                                    <p>
+                                        {discussion.user_name ? (
+                                            `${discussion.user_name}: ${discussion.question}`
+                                        ) : (
+                                            `${user.username}: ${discussion.question}` // Fallback to the current user's username
+                                        )}
+                                    </p>
                                     <ul>
                                         {discussion.replies && discussion.replies.length > 0 ? (
                                             <div>

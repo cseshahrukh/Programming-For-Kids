@@ -42,8 +42,11 @@ const router = createBrowserRouter([
     },
   },
   {
-    path: "/teacher/courses",
+    path: "/teacher/:teacher_id/courses",
     element: <TeacherCourses />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   },
   {
     path: "/student/:username/courses/search/:searchQuery",
@@ -104,32 +107,50 @@ const router = createBrowserRouter([
     element: <ProgrammingList />,
   }, 
   {
-    path: '/addCourse/:course_id/week/:week_no/lesson/:lesson_no/readingMaterials',
+    path: '/teacher/:teacher_id/addCourse/:course_id/week/:week_no/lesson/:lesson_no/readingMaterials',
     element: <SectionMaterials />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
 
   },
   {
-    path: '/addCourse/:course_id/week/:week_no/lesson/:lesson_no/mcqs',
+    path: '/teacher/:teacher_id/addCourse/:course_id/week/:week_no/lesson/:lesson_no/mcqs',
     element: <LectureMcqs />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
 
   },
   {
-    path: '/addCourse/:course_id/week/:week_no/lesson/:lesson_no/problems',
+    path: '/teacher/:teacher_id/addCourse/:course_id/week/:week_no/lesson/:lesson_no/problems',
     element: <LectureProblems />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   },
   {
     
-    path: `/addCourse/:course_id/week/:week_no`,
+    path: `/teacher/:teacher_id/addCourse/:course_id/week/:week_no`,
     element: <AddCourseMaterialsPage />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   }, 
   {    
-    path: `/addCourse/:course_id/week/:week_no/lesson/:lesson_no/:which_page`,
+    path: `/teacher/:teacher_id/addCourse/:course_id/week/:week_no/lesson/:lesson_no/:which_page`,
     element: <AddCourseLessonsPage />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   }, 
   {
     
     path: `/teacher/:teacher_id/addCourse`,
     element: <CourseInfoInput />,
+    action: () => {
+      return undefined; // No redirection here, check inside the Dashboard component
+    },
   }, 
   
   {

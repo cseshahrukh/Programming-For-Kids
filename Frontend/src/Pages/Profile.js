@@ -8,7 +8,7 @@ function Profile() {
 
     return (
         <div>
-            <h2>Profile</h2>
+            {/* <h2>Profile</h2> */}
             <p>Username: {user.username}</p>
             <p>Email: {user.email}</p>
             

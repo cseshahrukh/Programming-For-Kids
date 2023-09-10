@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link,useNavigate } from "react-router-dom";
 import './MCQs.css';
 import Navbar from "./Navbar";
-import NavbarStudent from './NavbarStudent';
+import NavbarStudent from "./NavbarStudent";
 import Footer from './Footer';
 import { useUserContext } from '../UserContext'; // Import the useUserContext hook
 import { useAuth } from '../useAuth'; // Import the custom hook

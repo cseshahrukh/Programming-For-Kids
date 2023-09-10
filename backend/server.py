@@ -949,6 +949,27 @@ def get_completed_courses():
     return jsonify({'completed_courses': completed_courses_list}), 200
 
 
+# Create the API endpoint for saving completed courses
+@app.route('/api/save-completed-course', methods=['POST'])
+def save_completed_course():
+    # Get the request body data
+    data = request.get_json()
+
+    # Create a new Completed_course object using the data from the request body
+    new_completed_course = Completed_course(
+        username=data['username'],
+        course_id=data['course_id']
+    )
+
+    # Add the new completed course to the database
+    db.session.add(new_completed_course)
+    db.session.commit()
+
+    response = jsonify({'message': 'Completed course saved successfully.'})
+    response.status_code = 201
+    return response
+
+
 
 # Running app
 if __name__ == '__main__':

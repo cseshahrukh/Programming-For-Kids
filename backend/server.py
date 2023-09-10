@@ -922,6 +922,34 @@ def handle_hint():
         return jsonify({'hint': hint})
 
 
+@app.route('/api/completed-courses', methods=['GET'])
+def get_completed_courses():
+    username = request.args.get('username')
+    print("Username is in the completed course backend is ", username)
+
+    # Query the database to get the completed courses for the given username
+    completed_courses = Completed_course.query.filter_by(username=username).all()
+
+    # Fetch course details from the Course table for each completed course
+    completed_courses_list = []
+    for course in completed_courses:
+        course_id = course.course_id
+        course_data = Course.query.get(course_id)
+
+        # Check if the course exists (optional)
+        if course_data:
+            completed_courses_list.append({
+                'course_id': course_id,
+                'course_name': course_data.course_name,
+            })
+
+    # print complted courses
+    print("Completed courses are ", completed_courses_list)
+
+    return jsonify({'completed_courses': completed_courses_list}), 200
+
+
+
 # Running app
 if __name__ == '__main__':
     app.run(debug=True)

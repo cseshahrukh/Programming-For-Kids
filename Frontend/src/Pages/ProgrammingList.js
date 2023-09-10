@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-import NavbarStudent from "./NavbarStudent";
 
 function ProgrammingList() {
     const { course_id, week_no, lesson_id } = useParams();
@@ -18,7 +17,7 @@ function ProgrammingList() {
 
     return (
         <div className="programming-details" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <NavbarStudent />
+            <Navbar />
             <div style={{ flex: 1 }}>
                 <h1>Programming Problems for Week {week_no}, Lesson {lesson_id}</h1>
                 <ul>

@@ -6,6 +6,7 @@ import Footer from './Footer';
 import CodeEditor from './CodeEditor';
 import { useUserContext } from '../UserContext'; // Import the useUserContext hook
 import { useAuth } from '../useAuth'; // Import the custom hook
+import NavbarStudent from './NavbarStudent';
 
 const problemsToSolve = 1;
 let currentSolved = 0;
@@ -116,7 +117,7 @@ const Programming = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar username={username}/>
+        <NavbarStudent username={username}/>
       </header>
       <div className="problem-solver-container">
         <div className="left-pane">

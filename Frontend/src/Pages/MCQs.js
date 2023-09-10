@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link,useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import './MCQs.css';
 import Navbar from "./Navbar";
 import Footer from './Footer';
 import { useUserContext } from '../UserContext'; // Import the useUserContext hook
 import { useAuth } from '../useAuth'; // Import the custom hook
 
-const maxMCQsToShow = 2;
-let currentSolved = 0;
-
 const MyMCQ = () => {
   const { username,course_id, week_no, lesson_no } = useParams();
   const [mcqList, setMcqList] = useState([]);
   const [currentMCQIndex, setCurrentMCQIndex] = useState(0);
   const [currentWrongIndex, setCurrentWrongIndex] = useState(0);
+  const [currentSolved, setCurrentSolved] = useState(0);
+  const [maxMCQsToShow] = useState(2);
   const currentMCQ = mcqList[currentMCQIndex];
   const [selectedOption, setSelectedOption] = useState('');
   const [buttonText, setButtonText] = useState('Next');
@@ -75,13 +74,18 @@ const MyMCQ = () => {
           if (!traverseWrong) {
             if (currentMCQIndex === mcqList.length - 1) {
               setTraverseWrong(true);
-              setCurrentMCQIndex(wrongOnes[0]);
+              setCurrentWrongIndex(0);
+              setCurrentMCQIndex(wrongOnes[currentWrongIndex]);
             }
             else if (currentMCQIndex < mcqList.length - 1) {
               setCurrentMCQIndex(currentMCQIndex + 1);
             }
           } else {
-            setCurrentWrongIndex((currentMCQIndex + 1) % wrongOnes.length);
+            if (currentWrongIndex === wrongOnes.length - 1) {
+              setCurrentWrongIndex(0);
+            } else {
+              setCurrentWrongIndex(currentWrongIndex + 1);
+            }
             setCurrentMCQIndex(wrongOnes[currentWrongIndex]);
           }
           setSelectedOption('');
@@ -96,7 +100,7 @@ const MyMCQ = () => {
       if (selectedOptionNumber === currentMCQ.correct) {
         setResultText('Correct!');
         setButtonColor('green');
-        currentSolved += 1;
+        setCurrentSolved(currentSolved + 1);
         if (wrongOnes.includes(currentMCQIndex)) {
           setWrongOnes(wrongOnes.filter((index) => index !== currentMCQIndex));
         }
@@ -108,14 +112,13 @@ const MyMCQ = () => {
           setWrongOnes([...wrongOnes, currentMCQIndex]);
         }
       }
-      if (currentSolved === maxMCQsToShow) {
+      if (currentSolved >= maxMCQsToShow - 1) {
         setButtonText('Go To Problems');
-        currentSolved = 0;
+        setCurrentSolved(0);
       } else {
         setButtonText('Next');
       }
     }
-    console.log(wrongOnes);
   };
 
   return (

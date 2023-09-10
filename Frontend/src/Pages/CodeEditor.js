@@ -54,11 +54,6 @@ const CodeEditor = ({ question, testCases, onCodeEditorResponse }) => {
     setIsNotificationsOpen(!isNotificationsOpen);
   };
 
-  const clearAceEditor = () => {
-    if (editorRef.current && editorRef.current.editor) {
-      editorRef.current.editor.setValue('');
-    }
-  };
   const handleSubmit = async () => {
     const code = editorRef.current.editor.getValue();
 
@@ -121,6 +116,7 @@ const CodeEditor = ({ question, testCases, onCodeEditorResponse }) => {
           sendBackStatus = "Correct";
           if (typeof onCodeEditorResponse === 'function') {
             onCodeEditorResponse(sendBackStatus);
+            // editorRef.current.editor.setValue('');
           }
         } else if (data.status === 'Rejected') {
           setSubmissionStatus('Wrong Answer');

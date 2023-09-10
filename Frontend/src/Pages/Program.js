@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import './ProgrammingProblem.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -7,17 +7,22 @@ import CodeEditor from './CodeEditor';
 import { useUserContext } from '../UserContext'; // Import the useUserContext hook
 import { useAuth } from '../useAuth'; // Import the custom hook
 
-const problemsToSolve = 1;
-let currentSolved = 0;
+let solved = 0;
+let btext = "Next Problem";
+let reply = "";
+let link = "";
 
 const Programming = () => {
   const { username, course_id, week_no, lesson_no } = useParams();
   const [problemsList, setProblemsList] = useState([]);
   const [lastSkipped, setlastSkipped] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentSolved, setCurrentSolved] = useState(0);
+  const [problemsToSolve] = useState(2);
   const [nextLink, setNextLink] = useState("");
   const [status, setStatus] = useState(null);
   const { user } = useUserContext(); // Get user data from context
+  const [buttonText, setButtonText] = useState('Next Problem');
 
   useEffect(() => {
     fetch(`/courses/problems/${course_id}/${week_no}/${lesson_no}`)
@@ -45,78 +50,68 @@ const Programming = () => {
   }
 
   const handleCodeEditorResponse = (status) => {
-    setStatus(status);
     if (status === 'Correct') {
-      currentSolved++;
-      if (currentIndex < problemsList.length - 1 && currentSolved < problemsToSolve) {
-        setCurrentIndex(currentIndex + 1);
-      } else if (currentSolved === problemsToSolve) {
-        //move to next Lesson or Week or Course Completed
-        fetch(`/get-next/${course_id}/${week_no}/${lesson_no}`)
-          .then(response => response.json())
-          .then(data => setNextLink(data.next))
-          .catch(error => console.error('Error fetching next Page:', error));
-      } else {
-        //Implement skip function
-        // let toJump = lastSkipped;
-        // lastSkipped = currentIndex;
-        // setCurrentIndex(toJump);
-      }
+      setCurrentSolved(currentSolved + 1);
+      solved++;
+      handleButtonText();
     }
   };
 
-  // const handleButtonClick = () => {
-  //   if (buttonText === 'Next') {
-  //     if (currentSolved < maxMCQsToShow) {
-  //       if (!traverseWrong) {
-  //         if (currentMCQIndex === mcqList.length - 1) {
-  //           setTraverseWrong(true);
-  //           setCurrentMCQIndex(wrongOnes[0]);
-  //         }
-  //         else if (currentMCQIndex < mcqList.length - 1) {
-  //           setCurrentMCQIndex(currentMCQIndex + 1);
-  //         }
-  //       } else {
-  //         setCurrentWrongIndex((currentMCQIndex + 1) % wrongOnes.length);
-  //         setCurrentMCQIndex(wrongOnes[currentWrongIndex]);
-  //       }
-  //       setSelectedOption('');
-  //       setResultText('');
-  //       setButtonColor('');
-  //       setOptionsDisabled(false);
-  //     }
-  //   } else if (buttonText === 'Check') {
-  //     setOptionsDisabled(true);
-  //     const selectedOptionNumber = parseInt(selectedOption.split('_')[1]);
-  //     if (selectedOptionNumber === currentMCQ.correct) {
-  //       setResultText('Correct!');
-  //       setButtonColor('green');
-  //       currentSolved += 1;
-  //       if (wrongOnes.includes(currentMCQIndex)) {
-  //         setWrongOnes(wrongOnes.filter((index) => index !== currentMCQIndex));
-  //       }
-  //     } else {
-  //       const correctOptionText = mcqList[currentMCQIndex][`option_${currentMCQ.correct}`];
-  //       setResultText(`Correct answer: ${correctOptionText}`);
-  //       setButtonColor('red');
-  //       if (!wrongOnes.includes(currentMCQIndex)) {
-  //         setWrongOnes([...wrongOnes, currentMCQIndex]);
-  //       }
-  //     }
-  //     if (currentSolved === maxMCQsToShow) {
-  //       setButtonText('Go To Problems');
-  //       currentSolved = 0;
-  //     } else {
-  //       setButtonText('Next');
-  //     }
-  //   }
-  //   console.log(wrongOnes);
-  // };
+  const handleClick = () => {
+    if (btext !== "Next Problem") {
+      setStatus('Incorrect');
+      solved = 0;
+      btext = "Next Problem";
+      reply = "";
+      link = "";
+    } else {
+      setCurrentIndex(currentIndex + 1);
+      setStatus('Incorrect');
+    }
+
+  };
+
+  const handleButtonText = async () => {
+    console.log(solved, "WHY");
+    if (solved === problemsToSolve) {
+      try {
+        const response = await fetch(`/get-next/${course_id}/${week_no}/${lesson_no}`);
+        const data = await response.json();
+        reply = data.next;
+        // setStatus("Incorrect");
+
+        if (reply === "week") {
+          setButtonText("Go To Next Week");
+          btext = "Go To Next Week";
+          const weekNumber = parseInt(week_no, 10);
+          link = `/student/${username}/courses/${course_id}/week/${weekNumber + 1}/lesson/${lesson_no}/readingMaterials`;
+        } else if (reply === "lesson") {
+          setButtonText("Go To Next Lesson");
+          btext = "Go To Next Lesson";
+          const lessonNumber = parseInt(lesson_no, 10);
+          link = `/student/${username}/courses/${course_id}/week/${week_no}/lesson/${lessonNumber + 1}/readingMaterials`;
+        } else {
+          setButtonText("Nicely Done. Get Your Certificate Here");
+          btext = "Nicely Done. Get Your Certificate Here";
+          link = `/student/${username}/courses/${course_id}/course-completed`
+        }
+      } catch (error) {
+        console.error('Error fetching next Page:', error);
+      }
+      // console.log(btext, " ", link);
+    } else {
+      // Implement skip function
+      // let toJump = lastSkipped;
+      // lastSkipped = currentIndex;
+      // setCurrentIndex(toJump);
+    }
+    setStatus("Correct");
+  };
 
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar username={username}/>
+        <Navbar username={username} />
       </header>
       <div className="problem-solver-container">
         <div className="left-pane">
@@ -151,13 +146,21 @@ const Programming = () => {
         <div className="right-pane">
           <div className="code-editor">
             <div>
-              {status === 'Correct' && currentIndex < problemsList.length - 1 && (
-                <button onClick={() => {
-                  setCurrentIndex(currentIndex + 1);
-                }}>
-                  Go To Next Problem
-                </button>
-              )}
+              <>
+                {status === 'Correct' && (
+                  <button onClick={handleClick}>
+                    {btext === 'Next Problem' ? (
+                        btext
+                    ) : btext === 'Go To Next Week' ? (
+                      <Link to={link}>{btext}</Link>
+                    ) : btext === 'Go To Next Lesson' ? (
+                      <Link to={link}>{btext}</Link>
+                    ) : (
+                      <Link to={link}>{btext}</Link>
+                    )}
+                  </button>
+                )}
+              </>
             </div>
             <CodeEditor
               question={problemsList[currentIndex].question}

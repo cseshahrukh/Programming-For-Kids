@@ -137,7 +137,7 @@ const router = createBrowserRouter([
     element: <CodeEditor />,
   },
   {
-    path: "/course-completed",
+    path: "/student/:username/courses/:course_id/course-completed",
     element: <CourseCompletion />,
   },
   {

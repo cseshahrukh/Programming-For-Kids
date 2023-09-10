@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { useParams, Link } from "react-router-dom";
+import React, { useState,useEffect } from 'react';
+import { useParams, Link ,useNavigate } from "react-router-dom";
+import { useUserContext } from '../UserContext'; 
+import { useAuth } from '../useAuth'; 
 import './AddCourseMaterialsPage.css';
 import './AddCourse.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -8,9 +10,26 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 
 function AddCourseMaterialsPage() {
-  const { course_id, week_no} = useParams();
+  const { teacher_id, course_id, week_no} = useParams();
   // Define an array of week names
   const [weekNames, setWeekNames] = useState(generateWeekNames(week_no));
+
+  const navigate = useNavigate();
+  const { user } = useUserContext(); // Get user data from context
+  const isAuthenticated = useAuth(); // Use the custom hook
+  // Use useEffect to handle the redirection
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Redirect to the login page
+      navigate(`/login`);    
+    }
+  }, [isAuthenticated]);
+
+  if (!user) {
+    // Return null when user is null (unauthenticated)
+    return null;
+  }
+
 
 
   function generateWeekNames(n) {
@@ -36,7 +55,7 @@ function AddCourseMaterialsPage() {
         <div className="sidebar-content">
           {/* Map over the weekNames array to generate buttons */}
           {weekNames.map((weekName, index) => (
-            <Link to={`/addCourse/${course_id}/week/${index+1}`}>
+            <Link to={`/teacher/${teacher_id}/addCourse/${course_id}/week/${index+1}`}>
               <button className="week-button">
                 {weekName}
               </button>
@@ -52,19 +71,19 @@ function AddCourseMaterialsPage() {
       <div className="content">
         <h1>Add Course Materials For Week {week_no}</h1>
         <div className="action-buttons">
-          <Link to={`/addCourse/${course_id}/week/${week_no}/lesson/1/1`}>
+          <Link to={`/teacher/${teacher_id}/addCourse/${course_id}/week/${week_no}/lesson/1/1`}>
             <button className="action-button">Add Reading Materials</button>
           </Link>
-          <Link to={`/addCourse/${course_id}/week/${week_no}/lesson/1/2`}>
+          <Link to={`/teacher/${teacher_id}/addCourse/${course_id}/week/${week_no}/lesson/1/2`}>
             <button className="action-button">Add MCQs</button>
           </Link>
-          <Link to={`/addCourse/${course_id}/week/${week_no}/lesson/1/3`}>
+          <Link to={`/teacher/${teacher_id}/addCourse/${course_id}/week/${week_no}/lesson/1/3`}>
             <button className="action-button">Add Problems</button>
           </Link>
         </div>
 
         <div className="complete-button-container">
-        <Link to={`/teacher/courses`}>
+        <Link to={`/teacher/${teacher_id}/courses`}>
           <button className="complete-button">Finish Uploading</button>
         </Link>
         </div>

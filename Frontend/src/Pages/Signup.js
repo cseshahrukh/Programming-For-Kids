@@ -37,7 +37,7 @@ function Signup() {
 
             if (response.ok) {
                 console.log('Signup successful');
-                navigate('/dashboard');
+                navigate('/login');
             } else {
                 const errorData = await response.json(); // Parse error response
                 const errorMessage = errorData.message || 'Signup failed';

@@ -3,6 +3,7 @@ import { useParams,useNavigate } from 'react-router-dom';
 import './ProgrammingProblem.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import NavbarStudent from './NavbarStudent';
 import CodeEditor from './CodeEditor';
 import { useUserContext } from '../UserContext'; // Import the useUserContext hook
 import { useAuth } from '../useAuth'; // Import the custom hook
@@ -116,7 +117,7 @@ const Programming = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar username={username}/>
+        <NavbarStudent username={username}/>
       </header>
       <div className="problem-solver-container">
         <div className="left-pane">

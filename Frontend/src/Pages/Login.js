@@ -52,38 +52,40 @@ function Login() {
           console.error('Error submitting login form:', error);
           setErrorMessage('An error occurred while logging in.');
         }
-      };
+    };
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
 
-    //     try {
-    //         const response = await fetch('/login', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(formData),
-    //         });
+    const handleTeacherLogin = async (e) => {
+        e.preventDefault();
+      
+        try {
+          const response = await fetch('/teacherlogin', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+      
+          if (response.ok) {
+            console.log('Login successful');
+      
+            // Update user context with the logged-in user data
+            const userData = await response.json();
+            setUser(userData); // Use setUser from context    
+            navigate(`/teacher/${userData.teacher_id}/courses`);
 
-    //         if (response.ok) {
-    //             console.log('Login successful');
+          } else {
+            const errorData = await response.json(); // Parse error response
+            const errorMessage = errorData.message || 'Login failed';
+            setErrorMessage(errorMessage);
+          }
+        } catch (error) {
+          console.error('Error submitting login form:', error);
+          setErrorMessage('An error occurred while logging in.');
+        }
+    };
 
-    //             // Update user context with the logged-in user data
-    //             const userData = await response.json();
-    //             setUser(userData);
-
-    //             navigate('/dashboard');
-    //         } else {
-    //             const errorData = await response.json(); // Parse error response
-    //             const errorMessage = errorData.message || 'Login failed';
-    //             setErrorMessage(errorMessage);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error submitting login form:', error);
-    //         setErrorMessage('An error occurred while logging in.');
-    //     }
-    // };
 
     return (
         <div className="login-page">
@@ -123,7 +125,22 @@ function Login() {
                                         />
                                     </div>
                                     <button type="submit" className="btn btn-primary w-100">Log In</button>
-                                </form>
+                                    <button
+                                        onClick={handleTeacherLogin}
+                                        className="complete"
+                                        style={{
+                                            backgroundColor: 'blue', // Change the background color
+                                            color: 'white', // Change the text color
+                                            padding: '10px 20px', // Adjust padding for better appearance
+                                            borderRadius: '5px', // Add rounded corners
+                                            marginTop: 5,
+                                            marginLeft:200,
+                                        }}
+                                        >
+                                    Login as Teacher
+                                    </button>
+
+                               </form>
                                 <p className="text-center mt-3">
                                     Don't have an account? <Link to="/signup">Sign up</Link>
                                 </p>

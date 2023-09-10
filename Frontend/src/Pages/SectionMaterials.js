@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { useUserContext } from '../UserContext'; 
+import { useAuth } from '../useAuth'; 
 import './AddCourse.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -7,11 +9,22 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 function SectionMaterials() {
-  const { course_id, week_no, lesson_no } = useParams(); // Extract course_id, week_no, and lesson_no
+  const { teacher_id, course_id, week_no, lesson_no } = useParams(); // Extract course_id, week_no, and lesson_no
   const navigate = useNavigate();
   const [sections, setSections] = useState([]);
   const [completed, setCompleted] = useState(false);
-   
+
+  const { user } = useUserContext(); // Get user data from context
+  const isAuthenticated = useAuth(); // Use the custom hook
+  // Use useEffect to handle the redirection
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Redirect to the login page
+      navigate(`/login`);    
+    }
+  }, [isAuthenticated]);
+
+  
   const handleAddSection = () => {
     // Find the maximum section_id and increment it
     const maxSectionId = Math.max(...sections.map(section => section.section_id), 0);
@@ -48,7 +61,7 @@ function SectionMaterials() {
 
       if (response.ok) {
         setCompleted(true);
-        navigate(`/addCourse/${course_id}/week/${week_no}/lesson/${lesson_no}/1`);
+        navigate(`/teacher/${teacher_id}/addCourse/${course_id}/week/${week_no}/lesson/${lesson_no}/1`);
       } else {
         console.error('Error saving section contents');
       }
@@ -75,6 +88,11 @@ function SectionMaterials() {
 
     fetchData();
   }, [course_id, week_no, lesson_no]);
+
+  if (!user) {
+    // Return null when user is null (unauthenticated)
+    return null;
+  }
 
   return (
     <div className="App">

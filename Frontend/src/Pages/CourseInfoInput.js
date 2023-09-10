@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useUserContext } from '../UserContext'; 
+import { useAuth } from '../useAuth'; 
 import './CourseInfoInput.css';
 import './AddCourse.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -7,10 +9,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-function CourseInfoInput() {
-  
+function CourseInfoInput() {  
   const { teacher_id }=useParams();
-
   const [courseInfo, setCourseInfo] = useState({
     title: '',
     shortDescription: '',
@@ -18,10 +18,24 @@ function CourseInfoInput() {
     courseLevel: 'Beginner',
     teacher_id:teacher_id,
   });
-
   const [error, setError] = useState('');
-
   const navigate = useNavigate();
+
+  const { user } = useUserContext(); // Get user data from context
+  const isAuthenticated = useAuth(); // Use the custom hook
+  // Use useEffect to handle the redirection
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Redirect to the login page
+      navigate(`/login`);    
+    }
+  }, [isAuthenticated]);
+
+  if (!user) {
+    // Return null when user is null (unauthenticated)
+    return null;
+  }
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,7 +83,7 @@ function CourseInfoInput() {
 
           if (saveResponse.ok) {
             const courseData = await saveResponse.json();
-            navigate(`/addCourse/${courseData.course_id}/week/1`);
+            navigate(`/teacher/${teacher_id}/addCourse/${courseData.course_id}/week/1`);
           } else {
             setError('Error saving course information.');
           }

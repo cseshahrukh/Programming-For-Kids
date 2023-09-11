@@ -45,18 +45,18 @@ def getHints3(question, code):
     return response['choices'][0]['message']['content']
 
 
-def checkCorrectness(question, code):
+def randomProblem():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        temperature=2.0,
+        temperature=1.5,
         messages=[
-            {"role": "system", "content": "You are a competitive programming problem site judge. Check the submitted code against \
-             the programming problem question for test cases and edge cases. Pick even minor faults too. Don't return code. Strcitly \
-             return a single word - either CORRECT or INCORRECT as the final word of your response."},
-            {"role": "user", "content": f"The Programming Problem is - {question} The code is - {code}"}
+            {"role": "system", "content": "You return difficult programming problems for school students to solve. You send a JSON \
+            in the format such as broadly detailed question first, then array named examples of 3 elements each containing (input, \
+                output, explanation). Strictly give the json only. Do not give any other comments."},
+            {"role": "user", "content": f"Give the JSON format of the problem"}
         ]
     )
-    return response
+    return response['choices'][0]['message']['content']
 
 
 def getErrorExplanation(error):
@@ -82,3 +82,6 @@ def getHints(n, question, code):
         return getHints3(question, code)
     else:
         print("Invalid option")
+
+
+randomProblem()

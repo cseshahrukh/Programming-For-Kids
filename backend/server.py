@@ -921,6 +921,10 @@ def handle_hint():
         hint = getHints(hint_count, question, code)
         return jsonify({'hint': hint})
 
+@app.route('/getProblem', methods=['GET'])
+def getPracticeProblem():
+    return randomProblem()
+
 
 @app.route('/api/completed-courses', methods=['GET'])
 def get_completed_courses():
@@ -947,6 +951,31 @@ def get_completed_courses():
     print("Completed courses are ", completed_courses_list)
 
     return jsonify({'completed_courses': completed_courses_list}), 200
+
+
+# Create the API endpoint for saving completed courses
+@app.route('/api/save-completed-course', methods=['POST'])
+def save_completed_course():
+    # Get the request body data
+    data = request.get_json()
+
+    # Query the database to get the count of completed courses
+    completed_courses_count = Completed_course.query.count() + 1
+
+    # Create a new Completed_course object using the data from the request body
+    new_completed_course = Completed_course(
+        id = completed_courses_count,
+        username=data['username'],
+        course_id=data['course_id']
+    )
+
+    # Add the new completed course to the database
+    db.session.add(new_completed_course)
+    db.session.commit()
+
+    response = jsonify({'message': 'Completed course saved successfully.'})
+    response.status_code = 201
+    return response
 
 
 

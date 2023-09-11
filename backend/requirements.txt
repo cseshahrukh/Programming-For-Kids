@@ -26,3 +26,8 @@ typing_extensions==4.7.1
 urllib3==2.0.4
 Werkzeug==2.2.3
 yarl==1.9.2
+Gunicorn
+flask-cors
+
+
+

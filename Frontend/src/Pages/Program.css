@@ -1,0 +1,13 @@
+.code-editor {
+    /* Your existing styles for the code editor go here */
+    /* For example, you can set a border, background color, etc. */
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 10px;
+  }
+  
+  /* Grayed-out effect when the 'grayed-out' class is present */
+  .code-editor.grayed-out {
+    opacity: 0.5; /* Adjust the opacity to control the degree of gray-out */
+    pointer-events: none; /* Prevent interactions with grayed-out content */
+  }

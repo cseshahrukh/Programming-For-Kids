@@ -82,6 +82,3 @@ def getHints(n, question, code):
         return getHints3(question, code)
     else:
         print("Invalid option")
-
-
-randomProblem()

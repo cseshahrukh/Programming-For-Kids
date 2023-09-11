@@ -27,6 +27,7 @@ const ReadingMat = () => {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    updateCurrentSession();
     fetch(`/courses/reading_materials/${course_id}/${week_no}/${lesson_no}`)
       .then(response => response.json())
       .then(data => {
@@ -35,6 +36,38 @@ const ReadingMat = () => {
       })
       .catch(error => console.error('Error fetching reading materials:', error));
   }, [course_id, week_no, lesson_no]);
+
+   const updateCurrentSession = async () => {
+    try {
+      // Create a data object with the required parameters
+      const data = {
+        username: username, // Replace with your username variable
+        course_id: course_id, // Replace with your course_id variable
+        week_no: week_no, // Replace with your week_no variable
+        lesson_id: lesson_no // Replace with your lesson_id variable
+      };
+  
+      // Make a POST request to the /updatecurrentsession endpoint with the data
+      const response = await fetch('/updatecurrentsession', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (response.ok) {
+        console.log('Current session updated successfully.');
+        // Handle any success actions here
+      } else {
+        console.error('Failed to update current session.');
+        // Handle any error actions here
+      }
+    } catch (error) {
+      console.error('Error updating current session:', error);
+      // Handle any error actions here
+    }
+  };
 
   
   if (!user) {

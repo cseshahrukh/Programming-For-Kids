@@ -4,6 +4,7 @@ import { useUserContext } from '../UserContext';
 import { useAuth } from '../useAuth'; 
 import Footer from "./Footer";
 import Navbar from "./Navbar";
+import NavbarStudent from "./NavbarStudent";
 
 function TeacherCourses() {
   const [courses, setCourses] = useState([]);
@@ -36,7 +37,7 @@ function TeacherCourses() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div>
-        <Navbar />
+        <NavbarStudent />
       </div>
       <div>
         <h1 style={{ margin: "30px", marginTop: "80px" }}>Your Courses</h1>

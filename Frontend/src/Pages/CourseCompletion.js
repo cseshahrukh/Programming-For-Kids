@@ -41,10 +41,10 @@ const CourseCompletion = () => {
       <header className="App-header">
         <NavbarStudent username={username} />
       </header>
-      <div className="container">
+      <div className="container" style={{ marginTop: '200px' }}>
         <button onClick={handleCompletedCourse}>Click To Mark As Completed</button>
       </div>
-      <div>
+      <div style={{ marginTop: '20px' }}>
         <Footer />
       </div>
     </div>

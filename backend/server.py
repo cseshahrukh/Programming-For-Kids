@@ -929,7 +929,7 @@ def getPracticeProblem():
 @app.route('/api/completed-courses', methods=['GET'])
 def get_completed_courses():
     username = request.args.get('username')
-    print("Username is in the completed course backend is ", username)
+    #print("Username is in the completed course backend is ", username)
 
     # Query the database to get the completed courses for the given username
     completed_courses = Completed_course.query.filter_by(username=username).all()
@@ -948,7 +948,7 @@ def get_completed_courses():
             })
 
     # print complted courses
-    print("Completed courses are ", completed_courses_list)
+    #print("Completed courses are ", completed_courses_list)
 
     return jsonify({'completed_courses': completed_courses_list}), 200
 
@@ -977,7 +977,98 @@ def save_completed_course():
     response.status_code = 201
     return response
 
+# enroll a course
+@app.route('/enroll-course', methods=['POST'])
+def enroll_course():
+    # Get the request body data
+    data = request.get_json()
 
+    # Check if the user already has an enrolled course for the same course_id
+    existing_enrolled_course = Progression.query.filter_by(
+        username=data['username'],
+        course_id=data['course_id']
+    ).first()
+
+    if existing_enrolled_course:
+        response = jsonify({'error': 'User already enrolled in this course.'})
+        response.status_code = 400  # You can choose an appropriate HTTP status code
+        return response
+
+    # Query the database to get the count of completed courses
+    enrolled_courses_count = Progression.query.count() + 1
+
+    # Create a new Completed_course object using the data from the request body
+    new_enrolled_course = Progression(
+        username=data['username'],
+        course_id=data['course_id'], 
+        lesson_id=1,
+        week_no=1,
+    )
+
+    # Add the new enrolled course to the database
+    db.session.add(new_enrolled_course)
+    db.session.commit()
+
+    response = jsonify({'message': 'Enrolled course saved successfully.'})
+    response.status_code = 201
+    return response
+
+# get current session 
+@app.route('/currentsession', methods=['GET'])
+def get_current_session():
+    print("Inside current session")
+    username = request.args.get('username')
+
+    # Query the database to get the count of completed courses
+    current_session = Progression.query.filter_by(username=username).first()
+    print("Current session is Heee", current_session)
+    if not current_session:
+        response = jsonify({'error': 'No current session found.'})
+        response.status_code = 404
+        return response
+
+    response_data = {'current_session': current_session.as_dict()}  # Convert to dictionary
+    response = jsonify({'course_id': current_session.course_id, 'week_no': current_session.week_no, 'lesson_no': current_session.lesson_id})
+    # response = jsonify(response_data)
+    response.status_code = 200
+    return response
+
+# Update current session
+@app.route('/updatecurrentsession', methods=['POST'])
+def update_current_session():
+    print("Inside update current session")
+    data = request.get_json()
+    username = data['username']
+    course_id = int(data['course_id'])
+    week_no = data['week_no']
+    lesson_id = data['lesson_id']
+
+    # Query the database to get the current session for the user
+    current_session = Progression.query.filter_by(username=username).first()
+
+    if not current_session:
+        response = jsonify({'error': 'No current session found.'})
+        response.status_code = 404
+        return response
+    
+    # Delete the previous session data
+    db.session.delete(current_session)
+    db.session.commit()
+
+    # Create a new session with the updated data
+    new_session = Progression(
+        username=username,
+        course_id=course_id,
+        week_no=week_no,
+        lesson_id=lesson_id
+    )
+    
+    db.session.add(new_session)
+    db.session.commit()
+
+    response = jsonify({'message': 'Current session updated successfully.'})
+    response.status_code = 200
+    return response
 
 # Running app
 if __name__ == '__main__':

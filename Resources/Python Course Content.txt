@@ -9,9 +9,7 @@ Python is a versatile and easy-to-learn programming language that is widely used
 
 Why Python is Important?
 
-    Python is in high demand in the job market, making it a valuable skill for students to learn.
-    It has a large and active community of developers, which means extensive support and resources are available.
-    Python's syntax is clear and easy to understand, making it an ideal language for teaching programming concepts.
+    Python is in high demand in the job market, making it a valuable skill for students to learn. It has a large and active community of developers, which means extensive support and resources are available. Python's syntax is clear and easy to understand, making it an ideal language for teaching programming concepts.
 
 Setting up Python Environment
 

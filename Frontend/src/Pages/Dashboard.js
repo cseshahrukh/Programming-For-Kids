@@ -12,6 +12,10 @@ function Dashboard() {
   const { user } = useUserContext(); // Get user data from context
   const isAuthenticated = useAuth(); // Use the custom hook
   const [completedCourses, setCompletedCourses] = useState([]);
+  const [hasCourseInProgress, setHasCourseInProgress] = useState(false);
+  const [course_id, setCourse] = useState([]);
+  const [week_no, setWeek] = useState([]);
+  const [lesson_no, setLesson] = useState([]);
 
   // Use useEffect to handle the redirection
   useEffect(() => {
@@ -24,6 +28,7 @@ function Dashboard() {
   useEffect(() => {
     console.log('Fetching completed courses...');
     fetchCompletedCourses();
+    checkCourseInProgress();
   }, []);
 
   const fetchCompletedCourses = async () => {
@@ -31,7 +36,6 @@ function Dashboard() {
       const response = await fetch(`/api/completed-courses?username=${username}`);
 
       if (response.ok) {
-        console.log('Response was ok!')
         const data = await response.json();
         setCompletedCourses(data.completed_courses);
       } else {
@@ -42,12 +46,32 @@ function Dashboard() {
     }
   };
 
+  const checkCourseInProgress = async () => {
+    try {
+      // Make an API call to check if the user has a course in progress
+      console.log('Checking if user has a course in progress...');
+      const response = await fetch(`/currentsession?username=${username}`);
+      console.log('Response:', response);
+      if (response.ok) {
+        const data = await response.json();
+        setCourse(data.course_id);
+        setWeek(data.week_no);
+        setLesson(data.lesson_no);
+        console.log('User has a course in progress');
+        setHasCourseInProgress(true);
+      } else {
+        console.log('User has no course in progress');
+        setHasCourseInProgress(false);
+      }
+    } catch (error) {
+      console.error('Error checking course in progress:', error);
+    }
+  };
+
   if (!user) {
     // Return null when user is null (unauthenticated)
     return null;
   }
-
-  console.log('Completed Courses Before return:', completedCourses);
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f4f4f4' }}>
@@ -57,10 +81,23 @@ function Dashboard() {
       <div style={{ marginTop: '60px', textAlign: 'center' }}>
         <h2 style={{ color: '#333' }}>Your Dashboard</h2>
         <div>
-          <Link to={`/student/${username}/courses`} className="btn btn-primary" style={{ textDecoration: 'none', color: '#fff', background: '#007BFF', padding: '10px 20px', borderRadius: '5px', fontWeight: 'bold' }}>
+        <Link to={`/student/${username}/courses`}
+          className="btn btn-primary" style={{ textDecoration: 'none', color: '#fff', background: '#007BFF', padding: '10px 20px', borderRadius: '5px', fontWeight: 'bold' }}>
             Browse Courses
           </Link>
         </div>
+        <div>
+          {hasCourseInProgress && (
+            
+            <Link to={`/student/${username}/courses/${course_id}/week/${week_no}/lesson/${lesson_no}/readingMaterials`} 
+              className="btn btn-primary"
+              style={{ textDecoration: 'none', color: '#fff', background: '#007BFF', padding: '10px 20px', borderRadius: '5px', fontWeight: 'bold', marginTop: '3%' }}
+            >
+              Continue Where You Left Off
+            </Link>
+          )}
+        </div>
+
       </div>
       <div style={{ padding: '0 20px', flex: 1 }}>
         <h1 style={{ color: '#333' }}>Dashboard</h1>
@@ -84,8 +121,8 @@ function Dashboard() {
       </div>
       <div>
         <Footer />
-            <div className="bubble blue-bubble"></div>
-            <div className="bubble green-bubble"></div>
+        <div className="bubble blue-bubble"></div>
+        <div className="bubble green-bubble"></div>
       </div>
     </div>
   );

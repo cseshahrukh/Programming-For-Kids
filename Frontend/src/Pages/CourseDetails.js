@@ -22,6 +22,26 @@ function CourseDetails() {
       }
     }, [isAuthenticated]);
 
+    const enroll = async () => {
+        try {
+          const response = await fetch('/enroll-course', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, course_id }),
+          });
+    
+          if (response.ok) {
+            
+          } else {
+            console.error('Error sending code to backend:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error sending code to backend:', error);
+        }
+      }
+
     useEffect(() => {
         fetch(`/courses/${course_id}`)
             .then(response => response.json())
@@ -60,7 +80,7 @@ function CourseDetails() {
                         {courseDetails.long_description}
                     </p>
                     <Link to={`/student/${username}/courses/${course_id}/week/1/lesson/1/readingMaterials`}>
-                        <button className="btn btn-primary" style={{ backgroundColor: "green" }}>
+                        <button onClick={enroll} className="btn btn-primary" style={{ backgroundColor: "green" }}>
                             Start
                         </button>
                     </Link>

@@ -125,3 +125,23 @@ class Completed_course(db.Model):
 
     def __repr__(self):
         return f"Completed_course(username={self.username}, course_id={self.course_id})"
+    
+class Progression(db.Model):
+    __tablename__ = 'Progression'
+    
+    username = db.Column(db.String(50), primary_key=True, nullable=False)
+    course_id = db.Column(db.Integer, nullable=False)
+    week_no = db.Column(db.Integer, nullable=False)
+    lesson_id = db.Column(db.Integer, nullable=False)
+    material = db.Column(db.String(50), nullable=True); 
+    def __repr__(self):
+        return f"Progression(username={self.username}, course_id={self.course_id}, week_no={self.week_no}, lesson_id={self.lesson_id}, material={self.material})"
+    
+    def as_dict(self):
+        return {
+            'username': self.username,
+            'course_id': self.course_id,
+            'week_no': self.week_no,
+            'lesson_id': self.lesson_id,
+            'material': self.material,
+        }

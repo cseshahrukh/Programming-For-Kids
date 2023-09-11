@@ -30,6 +30,7 @@ const MyMCQ = () => {
 
   // Use useEffect to handle the redirection
   useEffect(() => {
+    setCurrentMCQIndex(0);
     if (!isAuthenticated) {
       // Redirect to the login page
       navigate(`/login`);    
@@ -70,6 +71,7 @@ const MyMCQ = () => {
 
   const handleButtonClick = () => {
     if (buttonText === 'Next') {
+      console.log(currentMCQIndex);
       if (selectedOption) {
         if (currentSolved < maxMCQsToShow) {
           if (!traverseWrong) {

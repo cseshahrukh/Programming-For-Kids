@@ -1,53 +1,90 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import './ProgrammingProblem.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import NavbarStudent from './NavbarStudent';
 import CodeEditor from './CodeEditor';
+import { useUserContext } from '../UserContext'; // Import the useUserContext hook
+import { useAuth } from '../useAuth'; // Import the custom hook
 
 const ProgrammingProb = () => {
+  const [problem, setProblem] = useState([]);
+  const { username } = useParams();
 
+  useEffect(() => {
+    fetch(`/getProblem`)
+      .then(response => response.json())
+      .then(data => setProblem(data))
+      .catch(error => console.error('Error fetching course details:', error));
+  }, []);
+
+  const handleCodeEditorResponse = (status) => {
+  };
+
+  if (Object.keys(problem).length === 0) {
+    return <p>Loading...</p>;
+  }
+  console.log(problem);
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar />
+        <NavbarStudent username={username} />
       </header>
       <div className="problem-solver-container">
         <div className="left-pane">
           <div className="problem-description">
             <h2>Problem Description</h2>
             <p>
-              Given an array of integers, find the maximum possible sum you can get by adding non-adjacent elements. Write a function that takes an array of integers as input and returns the maximum sum.
+              {problem.question}
             </p>
           </div>
           <div className="test-case-container">
             <h3>Test Cases</h3>
             <div className="test-cases">
-              <div className="test-case">
-                <div className="test-input">
-                  <p><strong>Input:</strong></p>
-                  <pre>[2, 4, 6, 2, 5]</pre>
+              {problem.examples.map((examples, index) => (
+                <div className="test-case" key={index}>
+                  <div className="test-input">
+                    <p><strong>Input:</strong></p>
+                    <pre>{JSON.stringify(examples.input, null, 2)}</pre>
+                  </div>
+                  <div className="test-output">
+                    <p><strong>Output:</strong></p>
+                    <pre>{JSON.stringify(examples.output, null, 2)}</pre>
+                  </div>
+                  <div className="test-explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>{examples.explanation}</p>
+                  </div>
                 </div>
-                <div className="test-output">
-                  <p><strong>Output:</strong></p>
-                  <pre>13</pre>
-                </div>
-              </div>
-              <div className="test-case">
-                <div className="test-input">
-                  <p><strong>Input:</strong></p>
-                  <pre>[5, 1, 1, 5]</pre>
-                </div>
-                <div className="test-output">
-                  <p><strong>Output:</strong></p>
-                  <pre>10</pre>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
         <div className="right-pane">
           <div className="code-editor">
-            <CodeEditor />
+            {/* <div>
+              <>
+                {status === 'Correct' && (
+                  <button onClick={handleClick}>
+                    {btext === 'Next Problem' ? (
+                      btext
+                    ) : btext === 'Go To Next Week' ? (
+                      <Link to={link}>{btext}</Link>
+                    ) : btext === 'Go To Next Lesson' ? (
+                      <Link to={link}>{btext}</Link>
+                    ) : (
+                      <Link to={link}>{btext}</Link>
+                    )}
+                  </button>
+                )}
+              </>
+            </div> */}
+            <CodeEditor
+              question={problem.question}
+              testCases={problem.examples}
+              onCodeEditorResponse={handleCodeEditorResponse}
+            />
           </div>
         </div>
       </div>

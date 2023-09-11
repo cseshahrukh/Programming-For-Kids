@@ -23,7 +23,7 @@ function Navbar({username}) {
                             <Link className="nav-link active" aria-current="page" to={`/student/${username}/dashboard`}>Dashboard</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link active" to="/problems">Playground</Link>
+                            <Link className="nav-link active" to="/playground">Playground</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link active" to="/mcq">MCQ</Link>
